@@ -24,9 +24,9 @@ void Camera::move(float x, float y, float z){
 }
 
 void Camera::move(float loc[3]){
-	camX=loc[0];
-	camY=loc[1];
-	camZ=loc[2];
+	camX=loc[0]*zoom;
+	camY=loc[1]*zoom;
+	camZ=loc[2]*zoom;
 }
 
 
