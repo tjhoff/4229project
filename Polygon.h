@@ -1,41 +1,34 @@
 #ifndef POLYGON_H
 #define POLYGON_H
 
+#include <QList>
 
-class Vec3;
+#include "Vec3.h"
 
+
+//--------------------------------------
+//        The Polygon Class
+// 
+//        Polygons must be drawn in ccw 
+//        order, or the normal vector 
+//        calculation will bork!
+//--------------------------------------
 class Polygon 
 {
 	public:
 		Polygon();
-		Polygon(Vec3 v1, Vec3 v2, Vec3 v3, Vec3 v4);
+		Polygon(Vec3 v1, Vec3 v2, Vec3 v3, Vec3 v4, Vec3 color);
 		
 		void set_vertices(Vec3 v1, Vec3 v2, Vec3 v3, Vec3 v4);
+		void set_color(Vec3 color);
 		
-		double** get_vertices();
-		double* get_normal(); 
+		QList<float*> get_vertices();
+		float* get_color();
+		float* get_normal(); 
 	
 	private:
-		Vec3* m_vertices;
-};
-
-
-class Vec3
-{
-	public:
-		Vec3();
-		Vec3(double x, double y, double z);
-		Vec3(const Vec3& source);
-		
-		Vec3& operator=(const Vec3& source);
-		Vec3& operator+(const Vec3& rhs);
-		Vec3& operator-(const Vec3& rhs);
-		double operator*(const Vec3& rhs);
-		
-		double x;
-		double y;
-		double z;
-		
+		QList<Vec3> m_vertices;
+		Vec3 m_color;
 };
 
 
