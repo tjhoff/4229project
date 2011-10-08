@@ -8,17 +8,15 @@ GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 	
 	m_xrot = 15;
 	m_yrot = 45;
-	m_zrot = 0;
+	m_zrot = 0;	
 	
-	m_cubeSize = 0.5;
-	
-	m_faceColors[0] = Qt::red;
-	m_faceColors[1] = Qt::green;
-	m_faceColors[2] = Qt::blue;
-	m_faceColors[3] = Qt::yellow;
-	m_faceColors[4] = Qt::darkMagenta;
-	m_faceColors[5] = Qt::gray;
-}
+	m_ambient = 0.0; 
+	m_diffuse = 1.0;  
+	m_specular = 1.0;  
+	m_xpos = 0;
+	m_ypos = 0;
+	m_zpos = 1;
+}		
 
 ////////////////////////
 //     Protected
@@ -28,6 +26,44 @@ void GLWidget::initializeGL()
 {
 	qglClearColor(Qt::black);
 	glEnable(GL_DEPTH_TEST);
+	glEnable (GL_BLEND);
+	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	
+	glEnable(GL_NORMALIZE);
+	glEnable(GL_LIGHTING);
+	glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);
+	glEnable(GL_COLOR_MATERIAL);
+	
+	float ambient[] = {0.3, 0.1, 0.3, 1.0};
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
+
+	glEnable(GL_LIGHT0);
+	
+	initLists();
+}
+
+void GLWidget::initLists()
+{
+	m_displayList = glGenLists(1);
+	m_generator = new Generator();
+	m_polygons = m_generator->polygons();
+	
+	glNewList(m_displayList, GL_COMPILE);
+	
+	for(GLuint i = 0; i < m_polygons.size(); i++)
+	{		
+		glBegin(GL_POLYGON);
+		glColor3fv(m_polygons[i]->get_color());
+		glNormal3fv(m_polygons[i]->get_normal());
+
+		for(int j = 0; j < 4; j++)
+		{
+			glVertex3fv(m_polygons[i]->get_vertices()[j]);
+		}
+
+		glEnd();
+	}
+	glEndList();
 }
 
 
@@ -79,60 +115,30 @@ void GLWidget::draw()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
-	glTranslatef(0.0, 0.0, -5.0);
+	lighting();
+	
+	glTranslatef(0.0, 0.0, -7.0);
+	
 	glRotatef(m_xrot, 1.0, 0.0, 0.0);
 	glRotatef(m_yrot, 0.0, 1.0, 0.0);
-	glRotatef(m_zrot, 0.0, 0.0, 1.0);
 	
-	glBegin(GL_QUADS);
-	
-	//top face
-	qglColor(m_faceColors[0]);
-	glVertex3f(-m_cubeSize, m_cubeSize, -m_cubeSize);
-	glVertex3f(m_cubeSize, m_cubeSize, -m_cubeSize);
-	glVertex3f(m_cubeSize, m_cubeSize, m_cubeSize);
-	glVertex3f(-m_cubeSize, m_cubeSize, m_cubeSize);
-	
-	// left face
-	qglColor(m_faceColors[1]);
-	glVertex3f(-m_cubeSize, -m_cubeSize, -m_cubeSize);
-	glVertex3f(-m_cubeSize, m_cubeSize, -m_cubeSize);
-	glVertex3f(-m_cubeSize, m_cubeSize, m_cubeSize);
-	glVertex3f(-m_cubeSize, -m_cubeSize, m_cubeSize);
-	
-	// right face
-	qglColor(m_faceColors[2]);
-	glVertex3f(m_cubeSize, -m_cubeSize, -m_cubeSize);
-	glVertex3f(m_cubeSize, m_cubeSize, -m_cubeSize);
-	glVertex3f(m_cubeSize, m_cubeSize, m_cubeSize);
-	glVertex3f(m_cubeSize, -m_cubeSize, m_cubeSize);
-	
-	//front face
-	qglColor(m_faceColors[3]);
-	glVertex3f(-m_cubeSize, -m_cubeSize, m_cubeSize);
-	glVertex3f(-m_cubeSize, m_cubeSize, m_cubeSize);
-	glVertex3f(m_cubeSize, m_cubeSize, m_cubeSize);
-	glVertex3f(m_cubeSize, -m_cubeSize, m_cubeSize);
-	
-	//back face
-	qglColor(m_faceColors[4]);
-	glVertex3f(-m_cubeSize, -m_cubeSize, -m_cubeSize);
-	glVertex3f(-m_cubeSize, m_cubeSize, -m_cubeSize);
-	glVertex3f(m_cubeSize, m_cubeSize, -m_cubeSize);
-	glVertex3f(m_cubeSize, -m_cubeSize, -m_cubeSize);
-	
-	//bottom face
-	qglColor(m_faceColors[5]);
-	glVertex3f(-m_cubeSize, -m_cubeSize, -m_cubeSize);
-	glVertex3f(m_cubeSize, -m_cubeSize, -m_cubeSize);
-	glVertex3f(m_cubeSize, -m_cubeSize, m_cubeSize);
-	glVertex3f(-m_cubeSize, -m_cubeSize, m_cubeSize);
-	
-	glEnd();
-	
+	glScalef(0.5, 0.5, 0.5);
+
+	glCallList(m_displayList);
 }
 
-
+void GLWidget::lighting()
+{
+	float Ambient[] = {m_ambient, m_ambient, m_ambient, 1.0};
+	float Diffuse[] = {m_diffuse, m_diffuse, m_diffuse, 1.0};
+	float Specular[] = {m_specular, m_specular, m_specular, 1.0};
+	float Position[] = {m_xpos, m_ypos, m_zpos, 1.0};
+	
+	glLightfv(GL_LIGHT0, GL_AMBIENT , Ambient);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE , Diffuse);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, Specular);
+	glLightfv(GL_LIGHT0, GL_POSITION, Position);
+}
 
 
 
