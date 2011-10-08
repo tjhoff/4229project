@@ -9,5 +9,5 @@ INCLUDEPATH += .
 QT += opengl
 
 # Input
-HEADERS += GLWidget.h MainWindow.h
-SOURCES += GLWidget.cpp main.cpp MainWindow.cpp
+HEADERS += GLWidget.h MainWindow.h Polygon.h Vec3.h Generator.h
+SOURCES += GLWidget.cpp main.cpp MainWindow.cpp Polygon.cpp Vec3.cpp Generator.cpp
