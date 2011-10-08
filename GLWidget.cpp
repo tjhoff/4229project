@@ -16,7 +16,27 @@ GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 	m_xpos = 0;
 	m_ypos = 0;
 	m_zpos = 1;
+	
+	m_wireframe = false;
 }		
+
+
+void GLWidget::toggleWireframe()
+{
+	if(m_wireframe)
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		m_wireframe = false;
+	}
+	else
+	{
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		m_wireframe = true;
+	}
+	
+	updateGL();
+}
+
 
 ////////////////////////
 //     Protected

@@ -31,6 +31,7 @@ class MainWindow : public QMainWindow
 		QToolBar* m_toolBar;
 		QAction* m_generateAction;
 		QAction* m_fullScreenAction;
+		QAction* m_toggleWireframeAction;
 		
 		GLWidget* m_glWidget;
 		

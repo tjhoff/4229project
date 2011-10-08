@@ -16,6 +16,9 @@ class GLWidget : public QGLWidget
 	public:
 		GLWidget(QWidget *parent = 0);
 		
+	public slots:
+		void toggleWireframe();
+		
 	protected:
 		void initializeGL();
 		void resizeGL(int width, int height);
@@ -50,6 +53,8 @@ class GLWidget : public QGLWidget
 		GLfloat m_xpos;
 		GLfloat m_ypos;
 		GLfloat m_zpos;
+		
+		bool m_wireframe;
 };
 
 #endif
