@@ -2,6 +2,11 @@
 ## @brief Contains the algorithms for producing perlin noise.
 ## Tutorial: http://www.luma.co.za/labs/2008/01/20/perlin-noise/
 
+## teej - edit: 
+## 	I found this code and the imager on http://code-spot.co.za/python-image-code/ . Download it, 
+## change the perlin-demo to run 2dtest instead of whatever it does, and then a couple of seconds later it'll
+## crap out an image in the dir. 
+
 from __future__ import division
 from __future__ import with_statement
 
