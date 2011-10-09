@@ -119,11 +119,3 @@ float ** perlin_noise(int width, int height, int layers, float falloff){
 
 }
 
-int main(int argc, char* argv[]){
-
-	srand(time(NULL));
-	int height = 100;
-	int width = height;
-	float ** p;
-	p = perlin_noise(width, height, 1,.5);
-}
