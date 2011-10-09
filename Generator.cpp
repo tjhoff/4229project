@@ -3,6 +3,7 @@
 #include <math.h>
 #include <QString>
 #include <QDebug>
+#include "perlintake3.cpp"
 
 Generator::Generator()
 {
@@ -206,6 +207,38 @@ void Generator::cube()
 	m_polys.append(new Polygon(bfr, bfl, bbl, bbr, yellow));
 }
 
+// teej add
+
+void Generator::perlin_object(){
+	int d = 50;
+	float step = 5.0/d;
+	float ** p;
+	float x,y,z;
+	float colorVal;
+	Vec3 points[d][d];
+	p = perlin_noise(d,d,1,.5);
+	
+	for(int i = 0; i<d;i++){
+		x = i*step;
+		for(int j = 0; j<d; j++){
+			z = j*step;
+			y = p[i][j]*(3.0/2.0)*step;
+			Vec3 point(x,y*2,z);
+			points[i][j] = point;
+		}
+	}
+	
+	for(int i = 0; i < d-1; i++)
+	{
+		for(int j = 0; j < d-1; j++)
+		{
+			colorVal = p[i][j]*(3.0/2.0)+.5;
+			Vec3 color(1-colorVal,colorVal,colorVal);
+			m_polys.append(new Polygon(points[i][j], points[i][j+1], points[i+1][j+1], points[i+1][j], color));
+		}
+	}
+
+}
 
 QList<Polygon*> Generator::polygons(QString scene_name)
 {
@@ -231,7 +264,10 @@ QList<Polygon*> Generator::polygons(QString scene_name)
 	{
 		high_poly_sombrero();
 	}
-	
+	else if(scene_name == "Perlin Object")
+	{
+		perlin_object();
+	}
 	return m_polys;
 }
 

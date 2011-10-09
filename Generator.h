@@ -24,6 +24,7 @@ class Generator
 		void high_poly_sombrero();
 		void high_poly_sinewave();
 		double sombrero_height(double x, double y);
+		void perlin_object();
 		QList<Polygon*> m_polys;
 };
 

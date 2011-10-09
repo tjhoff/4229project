@@ -37,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(par
 	m_displayNameDropdown->addItem("Sine Wave");
 	m_displayNameDropdown->addItem("High-poly Sine Wave");
 	m_displayNameDropdown->addItem("High-poly Sombrero");
+	m_displayNameDropdown->addItem("Perlin Object");
 	
 	connect(m_displayNameDropdown, SIGNAL(currentIndexChanged(QString)), m_glWidget, SLOT(drawScene(QString)));
 	m_toolBar->addWidget(m_displayNameDropdown);	
