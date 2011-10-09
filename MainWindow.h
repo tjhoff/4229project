@@ -6,6 +6,7 @@
 #include <QMenu>
 #include <QAction>
 #include <QToolBar>
+#include <QComboBox>
 
 #include "GLWidget.h"
 
@@ -32,6 +33,8 @@ class MainWindow : public QMainWindow
 		QAction* m_generateAction;
 		QAction* m_fullScreenAction;
 		QAction* m_toggleWireframeAction;
+		
+		QComboBox* m_displayNameDropdown;
 		
 		GLWidget* m_glWidget;
 		

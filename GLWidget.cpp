@@ -18,6 +18,9 @@ GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 	m_zpos = 1;
 	
 	m_wireframe = false;
+	m_generator = new Generator();
+	m_displayList = 0;
+	m_default_translation = new float[3];
 }		
 
 
@@ -33,6 +36,39 @@ void GLWidget::toggleWireframe()
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		m_wireframe = true;
 	}
+	
+	updateGL();
+}
+
+
+void GLWidget::drawScene(QString scene_name)
+{
+	if(m_polygons.size() != 0)
+	{
+		m_polygons.clear();
+		glDeleteLists(m_displayList, 1);
+	}
+	
+	m_displayList = glGenLists(1);
+	m_polygons = m_generator->polygons(scene_name);
+	m_default_translation = m_generator->default_translation(scene_name);
+	
+	glNewList(m_displayList, GL_COMPILE);
+	
+	for(GLuint i = 0; i < m_polygons.size(); i++)
+	{		
+		glBegin(GL_POLYGON);
+		glColor3fv(m_polygons[i]->get_color());
+		glNormal3fv(m_polygons[i]->get_normal());
+
+		for(int j = 0; j < 4; j++)
+		{
+			glVertex3fv(m_polygons[i]->get_vertices()[j]);
+		}
+
+		glEnd();
+	}
+	glEndList();
 	
 	updateGL();
 }
@@ -58,32 +94,6 @@ void GLWidget::initializeGL()
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
 
 	glEnable(GL_LIGHT0);
-	
-	initLists();
-}
-
-void GLWidget::initLists()
-{
-	m_displayList = glGenLists(1);
-	m_generator = new Generator();
-	m_polygons = m_generator->polygons();
-	
-	glNewList(m_displayList, GL_COMPILE);
-	
-	for(GLuint i = 0; i < m_polygons.size(); i++)
-	{		
-		glBegin(GL_POLYGON);
-		glColor3fv(m_polygons[i]->get_color());
-		glNormal3fv(m_polygons[i]->get_normal());
-
-		for(int j = 0; j < 4; j++)
-		{
-			glVertex3fv(m_polygons[i]->get_vertices()[j]);
-		}
-
-		glEnd();
-	}
-	glEndList();
 }
 
 
@@ -144,7 +154,10 @@ void GLWidget::draw()
 	
 	glScalef(0.5, 0.5, 0.5);
 
+	glPushMatrix();
+	glTranslatef(m_default_translation[0], m_default_translation[1], m_default_translation[2]);
 	glCallList(m_displayList);
+	glPopMatrix();
 }
 
 void GLWidget::lighting()

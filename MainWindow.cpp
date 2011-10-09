@@ -31,8 +31,18 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(par
 	connect(m_fullScreenAction, SIGNAL(triggered()), this, SLOT(toggleFullscreen()));
 	connect(m_toggleWireframeAction, SIGNAL(triggered()), m_glWidget, SLOT(toggleWireframe()));
 	
+	m_displayNameDropdown = new QComboBox();
+	m_displayNameDropdown->addItem("Cube");
+	m_displayNameDropdown->addItem("Sombrero");
+	m_displayNameDropdown->addItem("Sine Wave");
+	m_displayNameDropdown->addItem("High-poly Sine Wave");
+	m_displayNameDropdown->addItem("High-poly Sombrero");
 	
+	connect(m_displayNameDropdown, SIGNAL(currentIndexChanged(QString)), m_glWidget, SLOT(drawScene(QString)));
+	m_toolBar->addWidget(m_displayNameDropdown);	
+
 	m_fullscreen = false;
+	m_glWidget->drawScene("Cube");
 }
 
 ////////////////////////////////////////

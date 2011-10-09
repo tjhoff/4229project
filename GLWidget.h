@@ -18,6 +18,7 @@ class GLWidget : public QGLWidget
 		
 	public slots:
 		void toggleWireframe();
+		void drawScene(QString scene_name);
 		
 	protected:
 		void initializeGL();
@@ -25,7 +26,6 @@ class GLWidget : public QGLWidget
 		void paintGL();
 		void mousePressEvent(QMouseEvent* event);
 		void mouseMoveEvent(QMouseEvent* event);
-		void initLists();
 
 	private:
 		void draw();
@@ -35,14 +35,11 @@ class GLWidget : public QGLWidget
 		GLfloat m_yrot;
 		GLfloat m_zrot;
 		
-		QColor m_faceColors[6];
 		GLfloat m_width;
-	
-		GLfloat m_cubeSize;
 		
 		QPoint m_lastPos;
 		
-		std::vector<Polygon*> m_polygons;
+		QList<Polygon*> m_polygons;
 		Generator* m_generator;
 		
 		GLuint m_displayList;
@@ -55,6 +52,8 @@ class GLWidget : public QGLWidget
 		GLfloat m_zpos;
 		
 		bool m_wireframe;
+		
+		float* m_default_translation;
 };
 
 #endif

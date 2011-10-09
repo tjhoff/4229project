@@ -1,8 +1,7 @@
 #ifndef GENERATOR_H
 #define GENERATOR_H
 
-#include <vector>
-
+#include <QList>
 #include "Polygon.h"
 
 //-------------------------------
@@ -15,10 +14,17 @@ class Generator
 {
 	public:
 		Generator();
-		std::vector<Polygon*> polygons();
+		QList<Polygon*> polygons(QString scene_name);
+		float* default_translation(QString scene_name);
 		
 	private:
-		std::vector<Polygon*> m_polys;
+		void cube();
+		void sombrero();
+		void sinewave();
+		void high_poly_sombrero();
+		void high_poly_sinewave();
+		double sombrero_height(double x, double y);
+		QList<Polygon*> m_polys;
 };
 
 #endif
