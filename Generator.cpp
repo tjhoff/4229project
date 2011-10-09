@@ -1,9 +1,10 @@
 #include "Generator.h"
+#include "Perlin.cpp"
 
 #include <math.h>
 #include <QString>
 #include <QDebug>
-#include "perlintake3.cpp"
+
 
 Generator::Generator()
 {
