@@ -5,9 +5,13 @@
 #include <iostream>
 #define PI 3.141592653589793
 
+// random floating point bewteen -1 and 1
+
 float frand(){
 	return (float)rand()/(float)RAND_MAX;
 }
+
+// makes some uniform noise
 
 float ** makeUniform(int width, int height){
 	float ** noise = new float*[height];
@@ -21,6 +25,8 @@ float ** makeUniform(int width, int height){
 	return noise;
 }
 
+// tbh I have no idea what this does
+
 int * sample_points(int x, int t, int max_x){
 	int * ret = new int[3];
 	ret[0] = (floor(x/t*t));
@@ -28,6 +34,8 @@ int * sample_points(int x, int t, int max_x){
 	ret[2] = (x - ret[0]) / t;
 	return ret;
 }
+
+// second-best interpolation (smoothing?)
 
 float ** cosine_interpolation(int k,int width, int height){
 	int t = pow(2,k);
@@ -58,6 +66,8 @@ float ** cosine_interpolation(int k,int width, int height){
 	}
 	return smoothNoise;
 }
+
+// again, wtf
 
 float ** perlinFromSmooth(int width,int height,int layers,float falloff, bool normalize){
 	
@@ -97,6 +107,9 @@ float ** perlinFromSmooth(int width,int height,int layers,float falloff, bool no
 	
 	return perlinNoise;
 }
+
+// aaaaand it returns a [height][width] array. I ran it and it seemed like it was producing random numbers,
+// and the python graphic seemed to point to that version of it working. We should test it out!
 
 float ** perlin_noise(int width, int height, int layers, float falloff){
 
