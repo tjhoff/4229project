@@ -113,9 +113,4 @@ int main(int argc, char* argv[]){
 	int width = height;
 	float ** p;
 	p = perlin_noise(width, height, 1,.5);
-	for(int i = 0; i<height; i++){
-		for(int j = 0; j<width; j++){
-			std::cout<<p[i][j]<< " holy FUCKING jesus that bass is loud\n";
-		}
-	}
 }
