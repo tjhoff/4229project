@@ -3,6 +3,7 @@
 
 #include <QtOpenGL>
 #include <QGLWidget>
+#include <QTimer>
 
 #include "Generator.h"
 #include "Polygon.h"
@@ -20,10 +21,11 @@ class GLWidget : public QGLWidget
 		void toggleWireframe();
 		void drawScene(QString scene_name);
 		
-	protected:
+	protected slots:
 		void initializeGL();
 		void resizeGL(int width, int height);
 		void paintGL();
+		void updateGL();
 		void mousePressEvent(QMouseEvent* event);
 		void mouseMoveEvent(QMouseEvent* event);
 		void wheelEvent(QWheelEvent* event);
@@ -31,6 +33,7 @@ class GLWidget : public QGLWidget
 	private:
 		void draw();
 		void lighting();
+		void gluPerspective(GLdouble fovy, GLdouble aspect, GLdouble near, GLdouble far);
 		
 		GLfloat m_xrot;
 		GLfloat m_yrot;
@@ -38,6 +41,8 @@ class GLWidget : public QGLWidget
 		GLfloat m_zoom;
 		
 		GLfloat m_width;
+		
+		QTimer* m_update_timer;
 		
 		QPoint m_lastPos;
 		
@@ -52,6 +57,7 @@ class GLWidget : public QGLWidget
 		GLfloat m_xpos;
 		GLfloat m_ypos;
 		GLfloat m_zpos;
+		GLfloat m_light_rotation;
 		
 		bool m_wireframe;
 		

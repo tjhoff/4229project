@@ -17,11 +17,16 @@ GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 	m_xpos = 0;
 	m_ypos = 0;
 	m_zpos = 1;
+	m_light_rotation = 0.0;
 	
 	m_wireframe = false;
 	m_generator = new Generator();
 	m_displayList = 0;
 	m_default_translation = new float[3];
+	
+	m_update_timer = new QTimer();
+	connect(m_update_timer, SIGNAL(timeout()), this, SLOT(updateGL()));
+	m_update_timer->start(1000/60.0);
 }		
 
 
@@ -56,7 +61,7 @@ void GLWidget::drawScene(QString scene_name)
 	
 	glNewList(m_displayList, GL_COMPILE);
 	
-	for(GLuint i = 0; i < m_polygons.size(); i++)
+	for(int i = 0; i < m_polygons.size(); i++)
 	{		
 		glBegin(GL_POLYGON);
 		glNormal3fv(m_polygons[i]->get_normal());
@@ -104,7 +109,7 @@ void GLWidget::resizeGL(int width, int height)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	m_width = (height>0) ? (GLfloat)width/height : 1;
-	glFrustum(-m_width, +m_width, -1.0, 1.0, 4, 15);
+	gluPerspective(45, m_width, 0.1, 15);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
@@ -113,6 +118,11 @@ void GLWidget::paintGL()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	draw();
+}
+
+void GLWidget::updateGL()
+{
+	QGLWidget::updateGL();
 }
 
 void GLWidget::mousePressEvent(QMouseEvent* event)
@@ -160,7 +170,10 @@ void GLWidget::draw()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
+	glPushMatrix();
+	glRotatef(m_light_rotation, 0.0, 1.0, 0.0);
 	lighting();
+	glPopMatrix();
 	
 	glTranslatef(0.0, 0.0, -7.0);
 	
@@ -189,7 +202,18 @@ void GLWidget::lighting()
 	glLightfv(GL_LIGHT0, GL_POSITION, Position);
 }
 
+void GLWidget::gluPerspective(GLdouble fovy, GLdouble aspect, GLdouble zNear, GLdouble zFar)
+{
+   GLdouble xmin, xmax, ymin, ymax;
 
+   ymax = zNear * tan(fovy * M_PI / 360.0);
+   ymin = -ymax;
+   xmin = ymin * aspect;
+   xmax = ymax * aspect;
+
+
+   glFrustum(xmin, xmax, ymin, ymax, zNear, zFar);
+}
 
 
 
