@@ -186,7 +186,7 @@ void Generator::smooth_perlin()
 	float step = 5.0/m_d;
 	float x,y,z;
 	Vec3 color;
-	Perlin* perlin = new Perlin(6, 2, 1, 94);
+	Perlin* perlin = new Perlin(6, 2, 1, time(NULL));
 	
 	m_vertices = new Vec3*[m_d];
 	m_colors = new Vec3*[m_d];
@@ -225,7 +225,7 @@ void Generator::high_poly_smooth_perlin()
 	float step = 5.0/m_d;
 	float x,y,z;
 	Vec3 color;
-	Perlin* perlin = new Perlin(6, 2, 1, 94);
+	Perlin* perlin = new Perlin(6, 2, 1, time(NULL));
 	
 	m_vertices = new Vec3*[m_d];
 	m_colors = new Vec3*[m_d];
