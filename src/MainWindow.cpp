@@ -38,13 +38,14 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(par
 	m_displayNameDropdown->addItem("High-poly Sombrero");
 	m_displayNameDropdown->addItem("Perlin Object");
 	m_displayNameDropdown->addItem("Smooth Perlin");
-	m_displayNameDropdown->addItem("High-poly Smooth Perlin");
+	m_displayNameDropdown->addItem("High-poly Smooth Perlin"); 
 	
-	connect(m_displayNameDropdown, SIGNAL(currentIndexChanged(QString)), m_glWidget, SLOT(drawScene(QString)));
 	m_toolBar->addWidget(m_displayNameDropdown);	
+	m_regenAction = m_toolBar->addAction("Generate Scene");
+	
+	connect(m_regenAction, SIGNAL(triggered()), this, SLOT(generateScene()));
 
 	m_fullscreen = false;
-	m_glWidget->drawScene("Cube");
 }
 
 ////////////////////////////////////////
@@ -64,3 +65,11 @@ void MainWindow::toggleFullscreen()
 		m_fullscreen = true;
 	}
 }
+
+
+void MainWindow::generateScene()
+{
+	m_glWidget->drawScene(m_displayNameDropdown->currentText());
+}
+
+

@@ -19,6 +19,7 @@ class MainWindow : public QMainWindow
 		
 	private slots:
 		void toggleFullscreen();
+		void generateScene();
 		
 		
 	private:
@@ -33,6 +34,7 @@ class MainWindow : public QMainWindow
 		QAction* m_generateAction;
 		QAction* m_fullScreenAction;
 		QAction* m_toggleWireframeAction;
+		QAction* m_regenAction;
 		
 		QComboBox* m_displayNameDropdown;
 		
