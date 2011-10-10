@@ -13,23 +13,45 @@ Generator::Generator()
 }
 
 
+Generator::~Generator()
+{
+	if(m_d != 0)
+	{
+		for(int i = 0; i < m_d; i++)
+		{
+			delete[] m_colors[i];
+			delete[] m_vertices[i];
+		}
+		delete[] m_colors;
+		delete[] m_vertices;
+		delete[] m_default_translation;
+		
+		for(int i = 0; i < m_polys.size(); i++)
+		{
+			delete m_polys[i];
+		}
+	}
+}
+		
+
+
 float* Generator::default_translation(QString scene_name)
 {
 	if(scene_name == "Sine Wave" || scene_name == "High-poly Sine Wave" || scene_name == "Perlin Object" || scene_name == "Smooth Perlin" || scene_name == "High-poly Smooth Perlin")
 	{
-		float* t = new float[3];
-		t[0] = -2.5;
-		t[1] = 0.0;
-		t[2] = -2.5;
-		return t;
+		m_default_translation = new float[3];
+		m_default_translation[0] = -2.5;
+		m_default_translation[1] = 0.0;
+		m_default_translation[2] = -2.5;
+		return m_default_translation;
 	}
 	else
 	{
-		float* t = new float[3];
-		t[0] = 0;
-		t[1] = 0.0;
-		t[2] = 0;
-		return t;
+		m_default_translation = new float[3];
+		m_default_translation[0] = 0;
+		m_default_translation[1] = 0.0;
+		m_default_translation[2] = 0;
+		return m_default_translation;
 	}
 }
 
@@ -262,6 +284,25 @@ void Generator::high_poly_smooth_perlin()
 QList<Polygon*> Generator::polygons(QString scene_name)
 {
 	m_polys.clear();
+	
+	if(m_d != 0)
+	{
+		for(int i = 0; i < m_d; i++)
+		{
+			delete[] m_colors[i];
+			delete[] m_vertices[i];
+		}
+		delete[] m_colors;
+		delete[] m_vertices;
+		
+		for(int i = 0; i < m_polys.size(); i++)
+		{
+			delete m_polys[i];
+		}
+		
+		m_d = 0;
+	}
+	
 	
 	if(scene_name == "Sine Wave")
 	{

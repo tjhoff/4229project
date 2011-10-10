@@ -14,6 +14,7 @@ class Generator
 {
 	public:
 		Generator();
+		~Generator();
 		QList<Polygon*> polygons(QString scene_name);
 		float* default_translation(QString scene_name);
 		
@@ -28,6 +29,8 @@ class Generator
 		void high_poly_smooth_perlin();
 		
 		QList<Polygon*> m_polys;
+		
+		float* m_default_translation;
 		
 		int m_d;
 		Vec3** m_vertices;

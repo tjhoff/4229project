@@ -20,7 +20,6 @@ GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 	m_light_rotation = 0.0;
 	
 	m_wireframe = false;
-	m_generator = new Generator();
 	m_displayList = 0;
 	m_default_translation = new float[3];
 	
@@ -28,6 +27,15 @@ GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 	connect(m_update_timer, SIGNAL(timeout()), this, SLOT(updateGL()));
 	m_update_timer->start(1000/60.0);
 }		
+
+
+GLWidget::~GLWidget()
+{
+	if(m_generator != NULL) 
+		delete m_generator;
+		
+	delete[] m_default_translation;
+}
 
 
 void GLWidget::toggleWireframe()
@@ -53,13 +61,15 @@ void GLWidget::drawScene(QString scene_name)
 	{
 		m_polygons.clear();
 		glDeleteLists(m_displayList, 1);
+		delete m_generator;
 	}
 	
-	m_displayList = glGenLists(1);
+	m_generator = new Generator();
+	//m_displayList = glGenLists(1);
 	m_polygons = m_generator->polygons(scene_name);
 	m_default_translation = m_generator->default_translation(scene_name);
 	
-	glNewList(m_displayList, GL_COMPILE);
+	/*glNewList(m_displayList, GL_COMPILE);
 	
 	for(int i = 0; i < m_polygons.size(); i++)
 	{		
@@ -74,7 +84,7 @@ void GLWidget::drawScene(QString scene_name)
 
 		glEnd();
 	}
-	glEndList();
+	glEndList();*/
 	
 	updateGL();
 }
@@ -185,7 +195,7 @@ void GLWidget::draw()
 
 	glPushMatrix();
 	glTranslatef(m_default_translation[0], m_default_translation[1], m_default_translation[2]);
-	glCallList(m_displayList);
+	//glCallList(m_displayList);
 	glPopMatrix();
 }
 

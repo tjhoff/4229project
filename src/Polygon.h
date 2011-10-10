@@ -18,6 +18,7 @@ class Polygon
 	public:
 		Polygon();
 		Polygon(Vec3 v1, Vec3 v2, Vec3 v3, Vec3 v4, Vec3 c1, Vec3 c2, Vec3 c3, Vec3 c4);
+		~Polygon();
 		
 		void set_vertices(Vec3 v1, Vec3 v2, Vec3 v3, Vec3 v4);
 		void set_colors(Vec3 c1, Vec3 c2, Vec3 c3, Vec3 c4);
@@ -29,6 +30,10 @@ class Polygon
 	private:
 		QList<Vec3> m_vertices;
 		QList<Vec3> m_colors;
+		
+		float* m_fnormal;
+		QList<float*> m_fcolors;
+		QList<float*> m_fvertices;
 };
 
 

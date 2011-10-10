@@ -16,6 +16,7 @@ class GLWidget : public QGLWidget
 	
 	public:
 		GLWidget(QWidget *parent = 0);
+		~GLWidget();
 		
 	public slots:
 		void toggleWireframe();
