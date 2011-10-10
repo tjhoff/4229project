@@ -9,5 +9,22 @@ INCLUDEPATH += .
 QT += opengl
 
 # Input
-HEADERS += GLWidget.h MainWindow.h Polygon.h Vec3.h Generator.h
-SOURCES += GLWidget.cpp main.cpp MainWindow.cpp Polygon.cpp Vec3.cpp Generator.cpp Perlin.cpp
+HEADERS += \
+	src/GLWidget.h\
+	src/MainWindow.h\ 
+	src/Polygon.h\
+	src/Vec3.h\
+	src/Generator.h\
+ 	src/Perlin2.h
+
+SOURCES += \
+	src/GLWidget.cpp\
+	src/main.cpp\
+	src/MainWindow.cpp\
+	src/Polygon.cpp\
+	src/Vec3.cpp\
+	src/Generator.cpp\
+	src/Perlin2.cpp
+
+OBJECTS_DIR = obj
+MOC_DIR = obj
