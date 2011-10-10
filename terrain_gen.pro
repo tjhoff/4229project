@@ -15,7 +15,8 @@ HEADERS += \
 	src/Polygon.h\
 	src/Vec3.h\
 	src/Generator.h\
- 	src/Perlin2.h
+ 	src/Perlin2.h\
+ 	src/Camera3d.h
 
 SOURCES += \
 	src/GLWidget.cpp\
@@ -24,7 +25,8 @@ SOURCES += \
 	src/Polygon.cpp\
 	src/Vec3.cpp\
 	src/Generator.cpp\
-	src/Perlin2.cpp
+	src/Perlin2.cpp\
+	src/Camera3d.cpp
 
 OBJECTS_DIR = obj
 MOC_DIR = obj

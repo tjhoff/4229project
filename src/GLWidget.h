@@ -7,6 +7,7 @@
 
 #include "Generator.h"
 #include "Polygon.h"
+#include "Camera3d.h"
 
 #include <vector>
 
@@ -59,6 +60,8 @@ class GLWidget : public QGLWidget
 		GLfloat m_ypos;
 		GLfloat m_zpos;
 		GLfloat m_light_rotation;
+		
+		Camera3d * cam;
 		
 		bool m_wireframe;
 		

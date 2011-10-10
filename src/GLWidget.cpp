@@ -23,6 +23,8 @@ GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 	m_displayList = 0;
 	m_default_translation = new float[3];
 	
+	cam = new Camera3d(0.0,0.0,-7.0);
+	
 	m_update_timer = new QTimer();
 	connect(m_update_timer, SIGNAL(timeout()), this, SLOT(updateGL()));
 	m_update_timer->start(1000/60.0);
@@ -150,8 +152,9 @@ void GLWidget::mouseMoveEvent(QMouseEvent* event)
 	
 	if(event->buttons() & Qt::LeftButton)
 	{
-		m_xrot += 180 * dy;
-		m_yrot += 180 * dx;
+		cam->rotate(180*dx,180*dy);
+		/*m_xrot += 180 * dy;
+		m_yrot += 180 * dx;*/
 		updateGL();
 		m_lastPos = event->pos();
 	}	
@@ -161,11 +164,13 @@ void GLWidget::wheelEvent(QWheelEvent* event)
 {
 	if(event->delta() > 0)
 	{
-		m_zoom += 0.1;
+		cam->zoom(.1);
+		//m_zoom += 0.1;
 	}
 	else if(event->delta() < 0)
 	{
-		m_zoom -= 0.1;
+		cam->zoom(-.1);
+		//m_zoom -= 0.1;
 	}
 	
 	updateGL();
@@ -185,13 +190,15 @@ void GLWidget::draw()
 	lighting();
 	glPopMatrix();
 	
-	glTranslatef(0.0, 0.0, -7.0);
+	cam->transformCamera();
+	
+	/*glTranslatef(0.0, 0.0, -7.0);
 	
 	glRotatef(m_xrot, 1.0, 0.0, 0.0);
 	glRotatef(m_yrot, 0.0, 1.0, 0.0);
 	
 	glScalef(0.5, 0.5, 0.5);
-	glScalef(m_zoom, m_zoom, m_zoom);
+	glScalef(m_zoom, m_zoom, m_zoom);*/
 
 	glPushMatrix();
 	glTranslatef(m_default_translation[0], m_default_translation[1], m_default_translation[2]);
