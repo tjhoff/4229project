@@ -2,6 +2,8 @@
 
 #include <QDebug>
 
+#include <QPainter>
+
 GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 {
 	setFormat(QGLFormat(QGL::DoubleBuffer | QGL::DepthBuffer));
@@ -67,11 +69,11 @@ void GLWidget::drawScene(QString scene_name)
 	}
 	
 	m_generator = new Generator();
-	//m_displayList = glGenLists(1);
+	m_displayList = glGenLists(1);
 	m_polygons = m_generator->polygons(scene_name);
 	m_default_translation = m_generator->default_translation(scene_name);
 	
-	/*glNewList(m_displayList, GL_COMPILE);
+	glNewList(m_displayList, GL_COMPILE);
 	
 	for(int i = 0; i < m_polygons.size(); i++)
 	{		
@@ -86,7 +88,7 @@ void GLWidget::drawScene(QString scene_name)
 
 		glEnd();
 	}
-	glEndList();*/
+	glEndList();
 	
 	updateGL();
 }
@@ -107,6 +109,8 @@ void GLWidget::initializeGL()
 	glEnable(GL_LIGHTING);
 	glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_COLOR_MATERIAL);
+	
+	glEnable(GL_CULL_FACE);
 	
 	float ambient[] = {0.3, 0.3, 0.3, 1.0};
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
@@ -176,6 +180,9 @@ void GLWidget::wheelEvent(QWheelEvent* event)
 	updateGL();
 }
 
+
+
+
 ///////////////////////////
 //       Private
 ///////////////////////////
@@ -184,11 +191,6 @@ void GLWidget::draw()
 {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	
-	glPushMatrix();
-	glRotatef(m_light_rotation, 0.0, 1.0, 0.0);
-	lighting();
-	glPopMatrix();
 	
 	cam->transformCamera();
 	
@@ -199,10 +201,15 @@ void GLWidget::draw()
 	
 	glScalef(0.5, 0.5, 0.5);
 	glScalef(m_zoom, m_zoom, m_zoom);*/
+	
+	glPushMatrix();
+	glTranslatef(3, 5, 5);
+	lighting();
+	glPopMatrix();
 
 	glPushMatrix();
 	glTranslatef(m_default_translation[0], m_default_translation[1], m_default_translation[2]);
-	//glCallList(m_displayList);
+	glCallList(m_displayList);
 	glPopMatrix();
 }
 
