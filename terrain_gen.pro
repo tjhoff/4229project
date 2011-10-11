@@ -27,7 +27,7 @@ SOURCES += \
 	src/Vec3.cpp\
 	src/Generator.cpp\
 	src/Perlin2.cpp\
-	src/Camera3d.cpp
+	src/Camera3d.cpp\
 	src/Heightmap.cpp
 
 OBJECTS_DIR = obj
