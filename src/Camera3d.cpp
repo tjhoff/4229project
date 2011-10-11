@@ -11,11 +11,11 @@ Camera3d::Camera3d(float ax, float ay, float az){
 }
 
 void Camera3d::transformCamera(){
-	glTranslatef(x, y, z);
+
 	glRotatef(pitch,1.0,0.0,0.0);
 	glRotatef(yaw,0.0,1.0,0.0);
+	glTranslatef(x,y,z);
 	glScalef(czoom,czoom,czoom);
-	
 	
 }
 
@@ -34,9 +34,9 @@ void Camera3d::moveTo(float ax, float ay, float az){
 }
 
 void Camera3d::move(float forward){
-	x += forward * (cos(yaw*PI/180));
-	y += forward * (cos(pitch*PI/180));
-	z += forward * (sin(yaw*PI/180));
+	x += forward * (sin(-yaw*PI/180));
+	y += forward * (sin(pitch*PI/180));
+	z += forward * (cos(yaw*PI/180));
 }
 
 void Camera3d::rotateTo(float ayaw, float apitch){

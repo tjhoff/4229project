@@ -26,7 +26,7 @@ GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 	m_default_translation = new float[3];
 	
 	cam = new Camera3d(0.0,0.0,-7.0);
-	
+	setFocusPolicy(Qt::StrongFocus);
 	m_update_timer = new QTimer();
 	connect(m_update_timer, SIGNAL(timeout()), this, SLOT(updateGL()));
 	m_update_timer->start(1000/60.0);
@@ -180,7 +180,11 @@ void GLWidget::wheelEvent(QWheelEvent* event)
 	updateGL();
 }
 
+void GLWidget::keyPressEvent(QKeyEvent* event){
 
+	if (event->key() == Qt::Key_Up) cam->move(.1);
+	if (event->key() == Qt::Key_Down) cam->move(-.1);
+}
 
 
 ///////////////////////////

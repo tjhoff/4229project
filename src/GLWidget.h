@@ -31,7 +31,8 @@ class GLWidget : public QGLWidget
 		void mousePressEvent(QMouseEvent* event);
 		void mouseMoveEvent(QMouseEvent* event);
 		void wheelEvent(QWheelEvent* event);
-
+		void keyPressEvent(QKeyEvent* event);
+		
 	private:
 		void draw();
 		void lighting();
