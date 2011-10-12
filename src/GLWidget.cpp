@@ -12,10 +12,10 @@ GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 	m_yrot = 45;
 	m_zrot = 0;	
 	m_zoom = 1.0;
-	
+	m_speed = .001;
 	m_ambient = 0.0; 
-	m_diffuse = 1.0;  
-	m_specular = 1.0;  
+	m_diffuse = .5;  
+	m_specular = .3;  
 	m_xpos = 0;
 	m_ypos = 0;
 	m_zpos = 1;
@@ -72,8 +72,17 @@ void GLWidget::drawScene(QString scene_name)
 	m_displayList = glGenLists(1);
 	m_polygons = m_generator->polygons(scene_name);
 	m_default_translation = m_generator->default_translation(scene_name);
-	
-	glNewList(m_displayList, GL_COMPILE);
+	qDebug()<<scene_name;
+	if(scene_name == "High-poly Smooth Perlin") {
+		delete cam;
+		cam = new TerrainCamera(2.5,2.5, m_generator->heightmap);
+		//cam = new Camera3d(2.5,1.0,2.5);
+		qDebug() << "new camera added";
+		}
+	else {
+		delete cam;
+		cam = new Camera3d(2.5,1.0,2.5);
+	}glNewList(m_displayList, GL_COMPILE);
 	
 	for(int i = 0; i < m_polygons.size(); i++)
 	{		
@@ -104,7 +113,7 @@ void GLWidget::initializeGL()
 	glEnable(GL_DEPTH_TEST);
 	glEnable (GL_BLEND);
 	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	
+	glShadeModel(GL_FLAT);
 	glEnable(GL_NORMALIZE);
 	glEnable(GL_LIGHTING);
 	glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);
@@ -114,7 +123,8 @@ void GLWidget::initializeGL()
 	
 	float ambient[] = {0.3, 0.3, 0.3, 1.0};
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
-
+	float specular[] = {0.1,0.1,0.1,1.0};
+	glMaterialfv(GL_FRONT,GL_SPECULAR,specular);
 	glEnable(GL_LIGHT0);
 }
 
@@ -125,7 +135,7 @@ void GLWidget::resizeGL(int width, int height)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	m_width = (height>0) ? (GLfloat)width/height : 1;
-	gluPerspective(45, m_width, 0.1, 15);
+	gluPerspective(45, m_width, 0.005, 15);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
@@ -156,7 +166,7 @@ void GLWidget::mouseMoveEvent(QMouseEvent* event)
 	
 	if(event->buttons() & Qt::LeftButton)
 	{
-		cam->rotate(180*dx,180*dy);
+		cam->rotate(180*-dx,180*-dy);
 		/*m_xrot += 180 * dy;
 		m_yrot += 180 * dx;*/
 		updateGL();
@@ -168,12 +178,12 @@ void GLWidget::wheelEvent(QWheelEvent* event)
 {
 	if(event->delta() > 0)
 	{
-		cam->zoom(.1);
+		m_speed += .001;
 		//m_zoom += 0.1;
 	}
 	else if(event->delta() < 0)
 	{
-		cam->zoom(-.1);
+		m_speed -= .001;
 		//m_zoom -= 0.1;
 	}
 	
@@ -182,8 +192,8 @@ void GLWidget::wheelEvent(QWheelEvent* event)
 
 void GLWidget::keyPressEvent(QKeyEvent* event){
 
-	if (event->key() == Qt::Key_Up) cam->move(.1);
-	if (event->key() == Qt::Key_Down) cam->move(-.1);
+	if (event->key() == Qt::Key_Up) cam->move(m_speed);
+	if (event->key() == Qt::Key_Down) cam->move(-m_speed);
 }
 
 
@@ -197,7 +207,8 @@ void GLWidget::draw()
 	glLoadIdentity();
 	
 	cam->transformCamera();
-	
+
+	//qDebug()<<cam->x<<","<<cam->y<<","<<cam->z<<","<<cam->yaw<<","<<cam->pitch;
 	/*glTranslatef(0.0, 0.0, -7.0);
 	
 	glRotatef(m_xrot, 1.0, 0.0, 0.0);
@@ -207,14 +218,19 @@ void GLWidget::draw()
 	glScalef(m_zoom, m_zoom, m_zoom);*/
 	
 	glPushMatrix();
-	glTranslatef(3, 5, 5);
+	glTranslatef(5, 5, 5);
 	lighting();
 	glPopMatrix();
 
 	glPushMatrix();
-	glTranslatef(m_default_translation[0], m_default_translation[1], m_default_translation[2]);
+	//glTranslatef(m_default_translation[0], m_default_translation[1], m_default_translation[2]);
 	glCallList(m_displayList);
 	glPopMatrix();
+	
+	char cameraLocation[100];
+	sprintf(cameraLocation, "x:%2.3f y:%2.3f z:%2.3f yaw:%2.3f pitch:%2.3f", cam->x, cam->y, cam->z, cam->yaw, cam->pitch);
+	glColor3f(1.0,1.0,1.0);
+	renderText(0,50, cameraLocation);
 }
 
 void GLWidget::lighting()

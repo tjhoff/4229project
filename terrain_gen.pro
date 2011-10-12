@@ -16,7 +16,8 @@ HEADERS += \
 	src/Vec3.h\
 	src/Generator.h\
  	src/Perlin2.h\
- 	src/Camera3d.h
+ 	src/Camera3d.h\
+ 	src/Heightmap.h
 
 SOURCES += \
 	src/GLWidget.cpp\
@@ -26,7 +27,8 @@ SOURCES += \
 	src/Vec3.cpp\
 	src/Generator.cpp\
 	src/Perlin2.cpp\
-	src/Camera3d.cpp
+	src/Camera3d.cpp\
+	src/Heightmap.cpp
 
 OBJECTS_DIR = obj
 MOC_DIR = obj

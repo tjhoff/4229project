@@ -1,8 +1,15 @@
 #include "Heightmap.h"
 
-Heightmap::Heightmap(float ** heightVals,int width, int height, float hScale){
+Heightmap::Heightmap(float ** heightVals,int iwidth, int iheight, float hScale, float offx = 0.0, float offz = 0.0){
 	scale = hScale;
-
+	width = iwidth;
+	height = iheight;
+	xOffset = offx;
+	zOffset = offz;
+	baseHeights = new float*[height-1];
+	for(int i = 0; i<height-1;i++){
+		baseHeights[i] = new float[width-1];
+	}
 	slopes = new Vec3*[height-1];
 	float square[4];
 	for(int i = 0; i<height-1;i++){
@@ -10,6 +17,7 @@ Heightmap::Heightmap(float ** heightVals,int width, int height, float hScale){
 	}
 	for(int i = 0; i<height-1; i++){
 		for (int j = 0; j<width-1; j++){
+			baseHeights[i][j] = square[0];
 			square[0] = heightVals[i+1][j];
 			square[1] = heightVals[i+1][j+1];
 			square[2] = heightVals[i][j+1];
@@ -22,7 +30,6 @@ Heightmap::Heightmap(float ** heightVals,int width, int height, float hScale){
 void Heightmap::calcSlope(float * yVals, Vec3& slope){
 	float x = yVals[1]-yVals[0];
 	float z = yVals[3]-yVals[0];
-	
 	float min = yVals[0];
 	float max = 0;
 	
@@ -38,13 +45,19 @@ void Heightmap::calcSlope(float * yVals, Vec3& slope){
 }
 
 float Heightmap::getYValue(float x, float z){
-	x = x*scale; //get to appropriate scale
-	z = z*scale;
+	
+	x = (x-xOffset)/scale; //get to appropriate offset, then scale
+	z = (z-zOffset)/scale;
+	
+	
+	
 	int ix = (int)x; // get integer value to grab quad
 	int iz = (int)z;
 	
-	Vec3 slope(slopes[iz][ix]);
+	if ((ix>=width)||(ix<0)||(iz>=height)||(iz<0)) return .5; // if out of bounds
 	
+	Vec3 slope(slopes[iz][ix]);
+	float base = baseHeights[iz][ix];
 	x = x - ix;
 	z = z - iz;
 	
@@ -52,7 +65,7 @@ float Heightmap::getYValue(float x, float z){
 	float k = slope.z;
 	float j = slope.y;
 	
-	return (-(i*x) - (k*z))/j; // formula is y = (-ix - kz)/j, where
+	return base+((-(i*x) - (k*z))/j)*scale/2; // formula is y = (-ix - kz)/j, where
 									// i is the gradient coefficient of x,
 									// j of y;
 									// and k of z.

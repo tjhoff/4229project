@@ -4,10 +4,12 @@
 #include <QtOpenGL>
 #include <QGLWidget>
 #include <QTimer>
+#include <stdio.h>
 
 #include "Generator.h"
 #include "Polygon.h"
 #include "Camera3d.h"
+#include "Heightmap.h"
 
 #include <vector>
 
@@ -42,7 +44,7 @@ class GLWidget : public QGLWidget
 		GLfloat m_yrot;
 		GLfloat m_zrot;
 		GLfloat m_zoom;
-		
+		GLfloat m_speed;
 		GLfloat m_width;
 		
 		QTimer* m_update_timer;
@@ -62,7 +64,7 @@ class GLWidget : public QGLWidget
 		GLfloat m_zpos;
 		GLfloat m_light_rotation;
 		
-		Camera3d * cam;
+		Camera * cam;
 		
 		bool m_wireframe;
 		
