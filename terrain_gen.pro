@@ -7,6 +7,7 @@ TARGET =
 DEPENDPATH += .
 INCLUDEPATH += .
 QT += opengl
+CONFIG += qt debug
 
 # Input
 HEADERS += \
