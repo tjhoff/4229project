@@ -22,6 +22,7 @@ class GLWidget : public QGLWidget
 	public slots:
 		void toggleWireframe();
 		void drawScene(QString scene_name);
+		void toggleCameraMode();
 		
 	protected slots:
 		void initializeGL();
@@ -65,6 +66,7 @@ class GLWidget : public QGLWidget
 		Camera3d * cam;
 		
 		bool m_wireframe;
+		bool m_fps_camera;
 		
 		float* m_default_translation;
 };

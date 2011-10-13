@@ -3,6 +3,7 @@
 #include <QDebug>
 
 #include <QPainter>
+#include <unistd.h>
 
 GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 {
@@ -21,6 +22,8 @@ GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 	m_zpos = 1;
 	m_light_rotation = 0.0;
 	
+	m_fps_camera = true;
+	
 	m_wireframe = false;
 	m_displayList = 0;
 	m_default_translation = new float[3];
@@ -35,6 +38,7 @@ GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 
 GLWidget::~GLWidget()
 {
+	qDebug() << "GLWidget destructor";
 	if(m_generator != NULL) 
 		delete m_generator;
 		
@@ -64,12 +68,15 @@ void GLWidget::drawScene(QString scene_name)
 	if(m_polygons.size() != 0)
 	{
 		m_polygons.clear();
-		glDeleteLists(m_displayList, 1);
 		delete m_generator;
+		
+		qDebug() << "deleting display list: " << m_displayList;
+		glDeleteLists(m_displayList, 1);
 	}
 	
 	m_generator = new Generator();
 	m_displayList = glGenLists(1);
+	qDebug() << "new display list: " << m_displayList;
 	m_polygons = m_generator->polygons(scene_name);
 	m_default_translation = m_generator->default_translation(scene_name);
 	
@@ -91,6 +98,11 @@ void GLWidget::drawScene(QString scene_name)
 	glEndList();
 	
 	updateGL();
+}
+
+void GLWidget::toggleCameraMode()
+{
+	m_fps_camera = !m_fps_camera;
 }
 
 
@@ -156,9 +168,15 @@ void GLWidget::mouseMoveEvent(QMouseEvent* event)
 	
 	if(event->buttons() & Qt::LeftButton)
 	{
-		cam->rotate(180*dx,180*dy);
-		/*m_xrot += 180 * dy;
-		m_yrot += 180 * dx;*/
+		if(m_fps_camera)
+		{
+			cam->rotate(180*dx,180*dy);
+		}
+		else
+		{
+			m_xrot += 180 * dy;
+			m_yrot += 180 * dx;
+		}
 		updateGL();
 		m_lastPos = event->pos();
 	}	
@@ -166,15 +184,27 @@ void GLWidget::mouseMoveEvent(QMouseEvent* event)
 
 void GLWidget::wheelEvent(QWheelEvent* event)
 {
-	if(event->delta() > 0)
+	if(m_fps_camera)
 	{
-		cam->zoom(.1);
-		//m_zoom += 0.1;
+		if(event->delta() > 0)
+		{
+			cam->zoom(.1);
+		}
+		else if(event->delta() < 0)
+		{
+			cam->zoom(-.1);
+		}
 	}
-	else if(event->delta() < 0)
-	{
-		cam->zoom(-.1);
-		//m_zoom -= 0.1;
+	else
+	{	
+		if(event->delta() > 0)
+		{
+			m_zoom += 0.1;
+		}
+		else if(event->delta() < 0)
+		{
+			m_zoom -= 0.1;
+		}
 	}
 	
 	updateGL();
@@ -182,8 +212,11 @@ void GLWidget::wheelEvent(QWheelEvent* event)
 
 void GLWidget::keyPressEvent(QKeyEvent* event){
 
-	if (event->key() == Qt::Key_Up) cam->move(.1);
-	if (event->key() == Qt::Key_Down) cam->move(-.1);
+	if(m_fps_camera)
+	{
+		if (event->key() == Qt::Key_Up) cam->move(.1);
+		if (event->key() == Qt::Key_Down) cam->move(-.1);
+	}
 }
 
 
@@ -196,15 +229,20 @@ void GLWidget::draw()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	
-	cam->transformCamera();
+	if(m_fps_camera)
+	{
+		cam->transformCamera();
+	}
+	else
+	{
+		glTranslatef(0.0, 0.0, -7.0);
 	
-	/*glTranslatef(0.0, 0.0, -7.0);
+		glRotatef(m_xrot, 1.0, 0.0, 0.0);
+		glRotatef(m_yrot, 0.0, 1.0, 0.0);
 	
-	glRotatef(m_xrot, 1.0, 0.0, 0.0);
-	glRotatef(m_yrot, 0.0, 1.0, 0.0);
-	
-	glScalef(0.5, 0.5, 0.5);
-	glScalef(m_zoom, m_zoom, m_zoom);*/
+		glScalef(0.5, 0.5, 0.5);
+		glScalef(m_zoom, m_zoom, m_zoom);
+	}
 	
 	glPushMatrix();
 	glTranslatef(3, 5, 5);

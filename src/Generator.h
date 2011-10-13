@@ -27,6 +27,7 @@ class Generator
 		void perlin_object();
 		void smooth_perlin();
 		void high_poly_smooth_perlin();
+		void high_poly_mesas();
 		
 		QList<Polygon*> m_polys;
 		

@@ -16,6 +16,7 @@ class MainWindow : public QMainWindow
 	
 	public:
 		MainWindow(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+		virtual ~MainWindow();
 		
 	private slots:
 		void toggleFullscreen();
@@ -35,6 +36,7 @@ class MainWindow : public QMainWindow
 		QAction* m_fullScreenAction;
 		QAction* m_toggleWireframeAction;
 		QAction* m_regenAction;
+		QAction* m_toggleCameraAction;
 		
 		QComboBox* m_displayNameDropdown;
 		

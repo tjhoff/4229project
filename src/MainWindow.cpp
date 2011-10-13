@@ -31,6 +31,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(par
 	connect(m_fullScreenAction, SIGNAL(triggered()), this, SLOT(toggleFullscreen()));
 	connect(m_toggleWireframeAction, SIGNAL(triggered()), m_glWidget, SLOT(toggleWireframe()));
 	
+	m_toggleCameraAction = m_toolBar->addAction("Switch Camera Mode");
+	connect(m_toggleCameraAction, SIGNAL(triggered()), m_glWidget, SLOT(toggleCameraMode()));
+	
 	m_displayNameDropdown = new QComboBox();
 	m_displayNameDropdown->addItem("Sombrero");
 	m_displayNameDropdown->addItem("Sine Wave");
@@ -39,13 +42,19 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(par
 	m_displayNameDropdown->addItem("Perlin Object");
 	m_displayNameDropdown->addItem("Smooth Perlin");
 	m_displayNameDropdown->addItem("High-poly Smooth Perlin"); 
+	m_displayNameDropdown->addItem("High-poly Mesas");
 	
 	m_toolBar->addWidget(m_displayNameDropdown);	
 	m_regenAction = m_toolBar->addAction("Generate Scene");
-	
 	connect(m_regenAction, SIGNAL(triggered()), this, SLOT(generateScene()));
 
 	m_fullscreen = false;
+}
+
+MainWindow::~MainWindow()
+{
+	qDebug() << "MainWindow destructor";
+	delete m_glWidget;
 }
 
 ////////////////////////////////////////

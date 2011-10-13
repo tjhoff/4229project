@@ -15,6 +15,7 @@ Generator::Generator()
 
 Generator::~Generator()
 {
+	qDebug() << "Generator destructor";
 	if(m_d != 0)
 	{
 		for(int i = 0; i < m_d; i++)
@@ -26,10 +27,7 @@ Generator::~Generator()
 		delete[] m_vertices;
 		delete[] m_default_translation;
 		
-		for(int i = 0; i < m_polys.size(); i++)
-		{
-			delete m_polys[i];
-		}
+		m_polys.clear();
 	}
 }
 		
@@ -37,7 +35,7 @@ Generator::~Generator()
 
 float* Generator::default_translation(QString scene_name)
 {
-	if(scene_name == "Sine Wave" || scene_name == "High-poly Sine Wave" || scene_name == "Perlin Object" || scene_name == "Smooth Perlin" || scene_name == "High-poly Smooth Perlin")
+	if(scene_name == "Sine Wave" || scene_name == "High-poly Sine Wave" || scene_name == "Perlin Object" || scene_name == "Smooth Perlin" || scene_name == "High-poly Smooth Perlin" || scene_name == "High-poly Mesas")
 	{
 		m_default_translation = new float[3];
 		m_default_translation[0] = -2.5;
@@ -249,6 +247,10 @@ void Generator::high_poly_smooth_perlin()
 	Vec3 color;
 	Perlin* perlin = new Perlin(6, 2, 1, time(NULL));
 	
+	qDebug() << "Perlin is" << sizeof(Perlin) << "bytes";
+	
+	qDebug() << "Allocating" << m_d*m_d*sizeof(Vec3)*2 << "bytes for vertices and colors";
+	
 	m_vertices = new Vec3*[m_d];
 	m_colors = new Vec3*[m_d];
 	
@@ -259,7 +261,7 @@ void Generator::high_poly_smooth_perlin()
 		for(int j = 0; j<m_d; j++){
 			z = j*step;
 			y = perlin->Get(x/3, z/3);
-			y /= (1/y);
+			y *= y;
 			m_vertices[i][j] = Vec3(x,y*2,z);
 			
 			if(y > 0.2)
@@ -272,9 +274,46 @@ void Generator::high_poly_smooth_perlin()
 			}
 			else
 			{
-				color = Vec3(0.0, 0.5, 0.0);
+				color = Vec3(0.1, 0.4, 0.1);
 			}
 			
+			m_colors[i][j] = color;
+		}
+	}
+}
+
+
+void Generator::high_poly_mesas()
+{
+	m_d = 400;
+	float step = 5.0/m_d;
+	float x,y,z;
+	Vec3 color;
+	Perlin* perlin = new Perlin(6, 2, 1, time(NULL));
+	
+	m_vertices = new Vec3*[m_d];
+	m_colors = new Vec3*[m_d];
+	
+	for(int i = 0; i<m_d;i++){
+		m_vertices[i] = new Vec3[m_d];
+		m_colors[i] = new Vec3[m_d];
+		x = i*step;
+		for(int j = 0; j<m_d; j++){
+			z = j*step;
+			y = perlin->Get(x/5, z/5);
+			y *= y*2;
+			
+			if(y > 0.3)
+			{
+				y = (y*0.1)+0.27;
+				color = Vec3(0.4, 0.2, 0.1);			
+			}
+			else
+			{	
+				color = Vec3(0.4, 0.2, 0.1);			
+			}
+			
+			m_vertices[i][j] = Vec3(x,y,z);
 			m_colors[i][j] = color;
 		}
 	}
@@ -332,6 +371,10 @@ QList<Polygon*> Generator::polygons(QString scene_name)
 	{
 		high_poly_smooth_perlin();
 	}
+	else if(scene_name == "High-poly Mesas")
+	{
+		high_poly_mesas();
+	}
 	
 	for(int i = 0; i < m_d-1; i++)
 	{
@@ -343,6 +386,8 @@ QList<Polygon*> Generator::polygons(QString scene_name)
 			m_polys.append(poly);
 		}
 	}
+	
+	qDebug() << "Allocated" << m_d*m_d*sizeof(Polygon) << "bytes for polygons.";
 	
 	return m_polys;
 }
