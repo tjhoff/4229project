@@ -39,7 +39,7 @@ void Heightmap::calcSlope(float * yVals, Vec3& slope){
 	}
 	
 	float y = max-min;
-	
+	y = (y==0)?1:y;
 	Vec3 TempVec(x,y,z);
 	slope = TempVec;
 }
@@ -56,12 +56,12 @@ float Heightmap::getYValue(float x, float z){
 	
 	if ((ix>=width)||(ix<0)||(iz>=height)||(iz<0)) return .5; // if out of bounds
 	
-	Vec3 slope(slopes[iz][ix]);
-	float base = baseHeights[iz][ix];
-	x = x - ix;
+	Vec3 slope(slopes[iz][ix]); // get the slope vector
+	float base = baseHeights[iz][ix]; // get the base height of v[0]
+	x = x - ix; // get floating-point remainders
 	z = z - iz;
 	
-	float i = slope.x;
+	float i = slope.x; // coefficients of slope
 	float k = slope.z;
 	float j = slope.y;
 	

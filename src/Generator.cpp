@@ -250,7 +250,7 @@ void Generator::high_poly_smooth_perlin()
 	float ** yVals = new float *[m_d];
 	for(int i = 0; i<m_d; i++) yVals[i] = new float[m_d];
 	Vec3 color;
-	Perlin* perlin = new Perlin(6, 1.5, 1, time(NULL));
+	Perlin* perlin = new Perlin(6, 2.0, 1, time(NULL));
 	
 	m_vertices = new Vec3*[m_d];
 	m_colors = new Vec3*[m_d];
@@ -263,22 +263,27 @@ void Generator::high_poly_smooth_perlin()
 			z = j*step;
 			y = perlin->Get(x/3, z/3);
 			y /= (1/y);
-			yVals[j][i] = y*2;
-			m_vertices[i][j] = Vec3(x,y*2,z);
 			
-			if(y > 0.22)
+			
+			if(y > 0.20)
 			{
-				color = Vec3(0.85, 0.9, 0.9);
+				y = (y>.24)?.24:y;
+				color = Vec3(.5, 0.2, 0.0);
 			}
-			else if(y > 0.1)
+			else if(y > 0.15)
 			{
-				color = Vec3(0.35, 0.4, 0.3);
+				color = Vec3(.35, 0.4, 0.3);
+			}
+			else if(y < .03){
+				y = .02;
+				color = Vec3(.1,.1,.4);
 			}
 			else
 			{
 				color = Vec3(0.0, 0.2, 0.0);
 			}
-			
+			yVals[j][i] = y*2;
+			m_vertices[i][j] = Vec3(x,y*2,z);
 			m_colors[i][j] = color;
 		}
 	}
