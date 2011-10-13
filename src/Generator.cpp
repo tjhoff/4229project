@@ -288,6 +288,10 @@ void Generator::high_poly_mesas()
 	m_d = 400;
 	float step = 5.0/m_d;
 	float x,y,z;
+	
+	float ** yVals = new float *[m_d];
+	for(int i = 0; i<m_d; i++) yVals[i] = new float[m_d]; //heightmap yVals
+	
 	Vec3 color;
 	Perlin* perlin = new Perlin(6, 2, 1, time(NULL));
 	
@@ -310,13 +314,19 @@ void Generator::high_poly_mesas()
 			}
 			else
 			{	
-				color = Vec3(0.4, 0.2, 0.1);			
+				color = Vec3(0.4, 0.25, 0.1);			
 			}
 			
 			m_vertices[i][j] = Vec3(x,y,z);
 			m_colors[i][j] = color;
+			yVals[j][i] = y;
 		}
 	}
+	heightmap = new Heightmap(yVals,m_d,m_d,5.0/m_d,0.0,0.0);
+	for(int i = 0; i<m_d; i++){
+		delete yVals[i];
+	}
+	delete yVals;
 }
 
 

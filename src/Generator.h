@@ -3,6 +3,7 @@
 
 #include <QList>
 #include "Polygon.h"
+#include "Heightmap.h"
 
 //-------------------------------
 //     Base Generator Class
@@ -17,7 +18,7 @@ class Generator
 		~Generator();
 		QList<Polygon*> polygons(QString scene_name);
 		float* default_translation(QString scene_name);
-		
+		Heightmap * heightmap;
 	private:
 		void sombrero();
 		void sinewave();
@@ -30,6 +31,8 @@ class Generator
 		void high_poly_mesas();
 		
 		QList<Polygon*> m_polys;
+		
+		
 		
 		float* m_default_translation;
 		
