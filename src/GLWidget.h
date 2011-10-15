@@ -10,6 +10,7 @@
 #include "Polygon.h"
 #include "Camera3d.h"
 #include "Heightmap.h"
+#include "TriangleMesh.h"
 
 #include <vector>
 
@@ -56,7 +57,7 @@ class GLWidget : public QGLWidget
 		
 		QList<Polygon*> m_polygons;
 		Generator* m_generator;
-		
+		TriangleMesh * tMesh;
 		GLuint m_displayList;
 		
 		GLfloat m_ambient;

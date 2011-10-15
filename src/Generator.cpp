@@ -186,9 +186,9 @@ void Generator::perlin_object(){
 	for(int i = 0; i<m_d;i++){
 		m_vertices[i] = new Vec3[m_d];
 		m_colors[i] = new Vec3[m_d];
-		x = i*step;
+		z = i*step;
 		for(int j = 0; j<m_d; j++){
-			z = j*step;
+			x = j*step;
 			y = p[i][j]*(3.0/2.0)*step;
 			Vec3 point(x,y*2,z);
 			m_vertices[i][j] = point;
@@ -214,9 +214,9 @@ void Generator::smooth_perlin()
 	for(int i = 0; i<m_d;i++){
 		m_vertices[i] = new Vec3[m_d];
 		m_colors[i] = new Vec3[m_d];
-		x = i*step;
+		z = i*step;
 		for(int j = 0; j<m_d; j++){
-			z = j*step;
+			x = j*step;
 			y = perlin->Get(x/3, z/3);
 			y /= (1/y);
 			m_vertices[i][j] = Vec3(x,y*2,z);
@@ -257,9 +257,9 @@ void Generator::high_poly_smooth_perlin()
 	for(int i = 0; i<m_d;i++){
 		m_vertices[i] = new Vec3[m_d];
 		m_colors[i] = new Vec3[m_d];
-		x = i*step;
+		z = i*step;
 		for(int j = 0; j<m_d; j++){
-			z = j*step;
+			x = j*step;
 			y = perlin->Get(x/3, z/3);
 			y *= y;
 			m_vertices[i][j] = Vec3(x,y*2,z);
@@ -301,10 +301,10 @@ void Generator::high_poly_mesas()
 	for(int i = 0; i<m_d;i++){
 		m_vertices[i] = new Vec3[m_d];
 		m_colors[i] = new Vec3[m_d];
-		x = i*step;
+		z = i*step;
 		for(int j = 0; j<m_d; j++){
-			z = j*step;
-			y = perlin->Get(x/5, z/5);
+			x = j*step;
+			y = perlin->Get(x/2, z/2);
 			y *= y*2;
 			
 			if(y > 0.3)
@@ -312,9 +312,12 @@ void Generator::high_poly_mesas()
 				y = (y*0.1)+0.27;
 				color = Vec3(0.4, 0.2, 0.1);			
 			}
-			else
+			else if (y > .02)
 			{	
-				color = Vec3(0.4, 0.25, 0.1);			
+				color = Vec3(.6*y + .6, 0.40*y +.25, 0.1);			
+			}
+			else{
+				color = Vec3(.8,.8,.7);
 			}
 			
 			m_vertices[i][j] = Vec3(x,y,z);
@@ -386,7 +389,7 @@ QList<Polygon*> Generator::polygons(QString scene_name)
 		high_poly_mesas();
 	}
 	
-	for(int i = 0; i < m_d-1; i++)
+	/*for(int i = 0; i < m_d-1; i++)
 	{
 		for(int j = 0; j < m_d-1; j++)
 		{
@@ -395,7 +398,7 @@ QList<Polygon*> Generator::polygons(QString scene_name)
 			poly->set_colors(m_colors[i][j], m_colors[i][j+1], m_colors[i+1][j+1], m_colors[i+1][j]);
 			m_polys.append(poly);
 		}
-	}
+	}*/
 	
 	qDebug() << "Allocated" << m_d*m_d*sizeof(Polygon) << "bytes for polygons.";
 	

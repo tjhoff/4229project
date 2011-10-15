@@ -19,6 +19,9 @@ class Generator
 		QList<Polygon*> polygons(QString scene_name);
 		float* default_translation(QString scene_name);
 		Heightmap * heightmap;
+		Vec3** m_vertices;
+		Vec3** m_colors;
+		int m_d;
 	private:
 		void sombrero();
 		void sinewave();
@@ -36,9 +39,9 @@ class Generator
 		
 		float* m_default_translation;
 		
-		int m_d;
-		Vec3** m_vertices;
-		Vec3** m_colors;
+		
+		
+		
 };
 
 #endif

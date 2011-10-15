@@ -18,7 +18,8 @@ HEADERS += \
 	src/Generator.h\
  	src/Perlin2.h\
  	src/Camera3d.h\
-	src/Heightmap.h
+	src/Heightmap.h\
+	src/TriangleMesh.h
 
 SOURCES += \
 	src/GLWidget.cpp\
@@ -29,7 +30,8 @@ SOURCES += \
 	src/Generator.cpp\
 	src/Perlin2.cpp\
 	src/Camera3d.cpp\
-	src/Heightmap.cpp
+	src/Heightmap.cpp\
+	src/TriangleMesh.cpp
 
 OBJECTS_DIR = obj
 MOC_DIR = obj

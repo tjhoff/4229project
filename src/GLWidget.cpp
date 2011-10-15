@@ -17,11 +17,11 @@ GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 	m_speed = .001;
 	
 	m_ambient = 0.0; 
-	m_diffuse = 1.0;  
+	m_diffuse = .5;  
 	m_specular = 1.0;  
 	m_xpos = 0;
 	m_ypos = 0;
-	m_zpos = 1;
+	m_zpos = 0;
 	m_light_rotation = 0.0;
 	
 	m_fps_camera = true;
@@ -93,21 +93,26 @@ void GLWidget::drawScene(QString scene_name)
 		cam = new Camera3d(2.5,1.0,2.5);
 	}
 	
+	// TODO:: NEED DEALLOCATION OF tMESH (INCLUDES ~TMESH)
+	
+	tMesh = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
+	qDebug() << "Harp Darp";
 	glNewList(m_displayList, GL_COMPILE);
 	
-	for(int i = 0; i < m_polygons.size(); i++)
-	{		
-		glBegin(GL_POLYGON);
-		glNormal3fv(m_polygons[i]->get_normal());
+	//for(int i = 0; i < m_polygons.size(); i++)
+	/*{		
+		//glBegin(GL_POLYGON);
+		//glNormal3fv(m_polygons[i]->get_normal());
 		
 		for(int j = 0; j < 4; j++)
 		{
-			glColor3fv(m_polygons[i]->get_colors()[j]);
-			glVertex3fv(m_polygons[i]->get_vertices()[j]);
+			//glColor3fv(m_polygons[i]->get_colors()[j]);
+			//glVertex3fv(m_polygons[i]->get_vertices()[j]);
 		}
 
-		glEnd();
-	}
+		//glEnd();
+	}*/
+	tMesh->compile();
 	glEndList();
 	
 	updateGL();
@@ -129,18 +134,19 @@ void GLWidget::initializeGL()
 	glEnable(GL_DEPTH_TEST);
 	glEnable (GL_BLEND);
 	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glShadeModel(GL_FLAT);
+	glShadeModel(GL_SMOOTH);
 	glEnable(GL_NORMALIZE);
 	glEnable(GL_LIGHTING);
-	glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);
+	glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_COLOR_MATERIAL);
 	
 	glEnable(GL_CULL_FACE);
 	
-	float ambient[] = {0.3, 0.3, 0.3, 1.0};
+	float ambient[] = {0.1, 0.1, 0.1, 1.0};
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
 
 	glEnable(GL_LIGHT0);
+	glLighti(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1);
 }
 
 
@@ -260,7 +266,7 @@ void GLWidget::draw()
 	}
 	
 	glPushMatrix();
-	glTranslatef(3, 5, 5);
+	glTranslatef(3.0,1.0,2.5);
 	lighting();
 	glPopMatrix();
 
