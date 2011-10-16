@@ -51,7 +51,8 @@ SOURCES       = src/GLWidget.cpp \
 		src/Generator.cpp \
 		src/Perlin2.cpp \
 		src/Camera3d.cpp \
-		src/Heightmap.cpp obj/moc_GLWidget.cpp \
+		src/Heightmap.cpp \
+		obj/moc_GLWidget.cpp \
 		obj/moc_MainWindow.cpp
 OBJECTS       = obj/GLWidget.o \
 		obj/main.o \
