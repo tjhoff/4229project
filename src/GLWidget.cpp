@@ -81,10 +81,14 @@ void GLWidget::drawScene(QString scene_name)
 	qDebug() << "new display list: " << m_displayList;
 	m_polygons = m_generator->polygons(scene_name);
 	m_default_translation = m_generator->default_translation(scene_name);
+
+	// TODO:: NEED DEALLOCATION OF tMESH (INCLUDES ~TMESH)
 	
-	if(scene_name == "High-poly Smooth Perlin") {
+	tMesh = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
+	heightmap = new Heightmap(tMesh,tMesh->width,tMesh->height,5.0/tMesh->width,0.0,0.0);
+	if(scene_name == "High-poly Mesas") {
 		delete cam;
-		cam = new TerrainCamera(2.5,2.5, m_generator->heightmap);
+		cam = new TerrainCamera(2.5,2.5, heightmap);
 		//cam = new Camera3d(2.5,1.0,2.5);
 		qDebug() << "terrain camera added";
 		}
@@ -93,9 +97,6 @@ void GLWidget::drawScene(QString scene_name)
 		cam = new Camera3d(2.5,1.0,2.5);
 	}
 	
-	// TODO:: NEED DEALLOCATION OF tMESH (INCLUDES ~TMESH)
-	
-	tMesh = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
 	qDebug() << "Harp Darp";
 	glNewList(m_displayList, GL_COMPILE);
 	
@@ -249,7 +250,9 @@ void GLWidget::draw()
 {
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	
+
+	m_light_rotation += .003;
+
 	if(m_fps_camera)
 	{
 		cam->transformCamera();
@@ -266,7 +269,7 @@ void GLWidget::draw()
 	}
 	
 	glPushMatrix();
-	glTranslatef(3.0,1.0,2.5);
+	glTranslatef(2.5, 5.0*sin(m_light_rotation), 2.5*cos(m_light_rotation)+2.5);
 	lighting();
 	glPopMatrix();
 

@@ -52,6 +52,7 @@ SOURCES       = src/GLWidget.cpp \
 		src/Perlin2.cpp \
 		src/Camera3d.cpp \
 		src/Heightmap.cpp \
+		src/TriangleMesh.cpp \
 		obj/moc_GLWidget.cpp \
 		obj/moc_MainWindow.cpp
 OBJECTS       = obj/GLWidget.o \
@@ -63,6 +64,7 @@ OBJECTS       = obj/GLWidget.o \
 		obj/Perlin2.o \
 		obj/Camera3d.o \
 		obj/Heightmap.o \
+		obj/TriangleMesh.o \
 		obj/moc_GLWidget.o \
 		obj/moc_MainWindow.o
 DIST          = /usr/share/qt4/mkspecs/common/g++.conf \

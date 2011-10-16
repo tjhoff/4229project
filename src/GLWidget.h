@@ -57,6 +57,7 @@ class GLWidget : public QGLWidget
 		
 		QList<Polygon*> m_polygons;
 		Generator* m_generator;
+		Heightmap * heightmap;
 		TriangleMesh * tMesh;
 		GLuint m_displayList;
 		

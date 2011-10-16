@@ -247,9 +247,9 @@ void Generator::high_poly_smooth_perlin()
 	Vec3 color;
 	Perlin* perlin = new Perlin(6, 2, 1, time(NULL));
 	
-	qDebug() << "Perlin is" << sizeof(Perlin) << "bytes";
+	//qDebug() << "Perlin is" << sizeof(Perlin) << "bytes";
 	
-	qDebug() << "Allocating" << m_d*m_d*sizeof(Vec3)*2 << "bytes for vertices and colors";
+	//qDebug() << "Allocating" << m_d*m_d*sizeof(Vec3)*2 << "bytes for vertices and colors";
 	
 	m_vertices = new Vec3*[m_d];
 	m_colors = new Vec3*[m_d];
@@ -289,11 +289,8 @@ void Generator::high_poly_mesas()
 	float step = 5.0/m_d;
 	float x,y,z;
 	
-	float ** yVals = new float *[m_d];
-	for(int i = 0; i<m_d; i++) yVals[i] = new float[m_d]; //heightmap yVals
-	
 	Vec3 color;
-	Perlin* perlin = new Perlin(6, 2, 1, time(NULL));
+	Perlin* perlin = new Perlin(6, 2, 1.0, time(NULL));
 	
 	m_vertices = new Vec3*[m_d];
 	m_colors = new Vec3*[m_d];
@@ -314,7 +311,7 @@ void Generator::high_poly_mesas()
 			}
 			else if (y > .02)
 			{	
-				color = Vec3(.6*y + .6, 0.40*y +.25, 0.1);			
+				color = Vec3(.6*y + .4, 0.40*y +.2, 0.1);			
 			}
 			else{
 				color = Vec3(.8,.8,.7);
@@ -322,14 +319,10 @@ void Generator::high_poly_mesas()
 			
 			m_vertices[i][j] = Vec3(x,y,z);
 			m_colors[i][j] = color;
-			yVals[j][i] = y;
+
 		}
 	}
-	heightmap = new Heightmap(yVals,m_d,m_d,5.0/m_d,0.0,0.0);
-	for(int i = 0; i<m_d; i++){
-		delete yVals[i];
-	}
-	delete yVals;
+
 }
 
 

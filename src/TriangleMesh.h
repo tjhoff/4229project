@@ -1,4 +1,7 @@
 //TriangleMesh.h
+#ifndef TRIANGLEMESH
+#define TRIANGLEMESH
+
 #include <QtOpenGL>
 #include <math.h>
 #include "Vec3.h"
@@ -20,3 +23,5 @@ class TriangleMesh{
 		Vec3 ** tNormals;
 
 };
+
+#endif
