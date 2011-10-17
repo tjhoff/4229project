@@ -63,7 +63,7 @@ void GLWidget::toggleWireframe()
 }
 
 
-void GLWidget::drawScene(QString scene_name)
+void GLWidget::drawScene()
 {
 	if(m_polygons.size() != 0)
 	{

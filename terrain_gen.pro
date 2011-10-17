@@ -16,7 +16,7 @@ HEADERS += \
 	src/Polygon.h\
 	src/Vec3.h\
 	src/Generator.h\
- 	src/Perlin2.h\
+ 	src/Perlin.h\
  	src/Camera3d.h\
 	src/Heightmap.h\
 	src/TriangleMesh.h
@@ -28,7 +28,7 @@ SOURCES += \
 	src/Polygon.cpp\
 	src/Vec3.cpp\
 	src/Generator.cpp\
-	src/Perlin2.cpp\
+	src/Perlin.cpp\
 	src/Camera3d.cpp\
 	src/Heightmap.cpp\
 	src/TriangleMesh.cpp

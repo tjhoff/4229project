@@ -34,19 +34,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(par
 	m_toggleCameraAction = m_toolBar->addAction("Switch Camera Mode");
 	connect(m_toggleCameraAction, SIGNAL(triggered()), m_glWidget, SLOT(toggleCameraMode()));
 	
-	m_displayNameDropdown = new QComboBox();
-	m_displayNameDropdown->addItem("Sombrero");
-	m_displayNameDropdown->addItem("Sine Wave");
-	m_displayNameDropdown->addItem("High-poly Sine Wave");
-	m_displayNameDropdown->addItem("High-poly Sombrero");
-	m_displayNameDropdown->addItem("Perlin Object");
-	m_displayNameDropdown->addItem("Smooth Perlin");
-	m_displayNameDropdown->addItem("High-poly Smooth Perlin"); 
-	m_displayNameDropdown->addItem("High-poly Mesas");
-	
-	m_toolBar->addWidget(m_displayNameDropdown);	
-	m_regenAction = m_toolBar->addAction("Generate Scene");
-	connect(m_regenAction, SIGNAL(triggered()), this, SLOT(generateScene()));
+	m_regenAction = m_toolBar->addAction("Regenerate Scene");
+	connect(m_regenAction, SIGNAL(triggered()), m_glWidget, SLOT(drawScene()));
 
 	m_fullscreen = false;
 }
@@ -74,11 +63,4 @@ void MainWindow::toggleFullscreen()
 		m_fullscreen = true;
 	}
 }
-
-
-void MainWindow::generateScene()
-{
-	m_glWidget->drawScene(m_displayNameDropdown->currentText());
-}
-
 

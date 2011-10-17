@@ -24,7 +24,7 @@ class GLWidget : public QGLWidget
 		
 	public slots:
 		void toggleWireframe();
-		void drawScene(QString scene_name);
+		void drawScene();
 		void toggleCameraMode();
 		
 	protected slots:
