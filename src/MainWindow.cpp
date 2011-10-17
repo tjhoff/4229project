@@ -37,8 +37,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(par
 	m_regenAction = m_toolBar->addAction("Regenerate Scene");
 	connect(m_regenAction, SIGNAL(triggered()), m_glWidget, SLOT(drawScene()));
 
-	m_fullscreen = false;
+	m_fullscreen = true;
+	showFullScreen();
+	
+	m_glWidget->drawScene();
 }
+
 
 MainWindow::~MainWindow()
 {
