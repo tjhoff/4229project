@@ -3,7 +3,6 @@
 #define TRIANGLEMESH
 
 #include <QtOpenGL>
-#include <QDebug>
 #include <math.h>
 #include "Vec3.h"
 #ifndef TIME

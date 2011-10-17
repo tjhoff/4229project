@@ -26,9 +26,9 @@ TriangleMesh::TriangleMesh(Vec3 ** vertices, Vec3 ** colors, int vwidth, int vhe
 			tColors[i][j] = colors[i][j];
 		}
 	}
-	double start_time = clock()/1000;
+	//double start_time = clock()/1000;
 	computeNormals();
-	qDebug()<<"Calculating normals took "<< clock()/1000 - start_time << "mirriseconds";
+	//qDebug()<<"Calculating normals took "<< clock()/1000 - start_time << "mirriseconds";
 	
 }
 

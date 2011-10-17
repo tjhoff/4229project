@@ -446,7 +446,6 @@ void GLWidget::change_current_chunk(Direction dir)
 			m_nwList = glGenLists(1);
 			m_wList = glGenLists(1);
 			m_swList = glGenLists(1);
-
 			glNewList(m_nwList, GL_COMPILE);
 			m_generator->polygons_at(m_current_xchunk-1, m_current_zchunk-1);
 			tmesh_nw = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
