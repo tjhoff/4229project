@@ -1,6 +1,4 @@
 #include "Generator.h"
-#include "Perlin.cpp"
-#include "Perlin2.h"
 
 #include <math.h>
 #include <QString>
@@ -10,6 +8,9 @@
 Generator::Generator()
 {
 	m_d = 0;
+	m_seed = 5;
+	m_base_height_perlin = new Perlin(6, 2, 1, m_seed);
+	m_chunk_size = 2;
 }
 
 
@@ -33,264 +34,26 @@ Generator::~Generator()
 		
 
 
-float* Generator::default_translation(QString scene_name)
+float* Generator::default_translation()
 {
-	if(scene_name == "Sine Wave" || scene_name == "High-poly Sine Wave" || scene_name == "Perlin Object" || scene_name == "Smooth Perlin" || scene_name == "High-poly Smooth Perlin" || scene_name == "High-poly Mesas")
-	{
-		m_default_translation = new float[3];
-		m_default_translation[0] = -2.5;
-		m_default_translation[1] = 0.0;
-		m_default_translation[2] = -2.5;
-		return m_default_translation;
-	}
-	else
-	{
-		m_default_translation = new float[3];
-		m_default_translation[0] = 0;
-		m_default_translation[1] = 0.0;
-		m_default_translation[2] = 0;
-		return m_default_translation;
-	}
+	m_default_translation = new float[3];
+	m_default_translation[0] = -2.5;
+	m_default_translation[1] = 0.0;
+	m_default_translation[2] = -2.5;
+	return m_default_translation;
 }
 
 
-void Generator::sinewave()
+void Generator::chunk_at(int chunk_x, int chunk_z)
 {
-	m_d = 50;
-	double step = 5.0/m_d;
-	
-	m_vertices = new Vec3*[m_d];
-	m_colors = new Vec3*[m_d];
-	
-	for(int i = 0; i < m_d; i++)
-	{
-		m_vertices[i] = new Vec3[m_d];
-		m_colors[i] = new Vec3[m_d];
-		for(int j = 0; j < m_d; j++)
-		{
-			Vec3 point(i*step, sin(i*step*j*step)/2.0, j*step);
-			m_vertices[i][j] = point;
-			double colorfactor = (i+j)/2.0;
-			m_colors[i][j] = Vec3(colorfactor*(1.0/m_d), colorfactor*(1.0/m_d), 1-(colorfactor*(1.0/m_d)));
-		}
-	}
-}
-
-void Generator::high_poly_sinewave()
-{
-	m_d = 300;
-	double step = 5.0/m_d;
-	
-	m_vertices = new Vec3*[m_d];
-	m_colors = new Vec3*[m_d];
-	
-	for(int i = 0; i < m_d; i++)
-	{
-		m_vertices[i] = new Vec3[m_d];
-		m_colors[i] = new Vec3[m_d];
-		for(int j = 0; j < m_d; j++)
-		{
-			Vec3 point(i*step, sin(i*step*j*step)/2.0, j*step);
-			m_vertices[i][j] = point;
-			double colorfactor = (i+j)/2.0;
-			m_colors[i][j] = Vec3(colorfactor*(1.0/m_d), colorfactor*(1.0/m_d), 1-(colorfactor*(1.0/m_d)));
-		}
-	}
-}
-
-void Generator::sombrero()
-{
-	m_d = 50;
-	double step = 5.0/m_d;
-	
-	m_vertices = new Vec3*[m_d];
-	m_colors = new Vec3*[m_d];
-	
-	for(int i = 0; i < m_d; i++)
-	{
-		m_vertices[i] = new Vec3[m_d];
-		m_colors[i] = new Vec3[m_d];
-		for(int j = 0; j < m_d; j++)
-		{
-			double x = (i - (m_d/2.0)) * step;
-			double y = (j - (m_d/2.0)) * step;
-			Vec3 point(x, sombrero_height(x*5, y*5)*2, y);
-			m_vertices[i][j] = point;
-			
-			x = (i * (1.0/m_d)) - 0.5;
-			y = (j * (1.0/m_d)) - 0.5;
-			double colorfactor = sqrt((x*x) + (y*y))*1.5;
-
-			m_colors[i][j] = Vec3(1-colorfactor+0.05, 1-colorfactor+0.05, 1-colorfactor+0.1);
-		}
-	}
-}
-
-
-void Generator::high_poly_sombrero()
-{
-	m_d = 300;
-	double step = 5.0/m_d;
-	
-	m_vertices = new Vec3*[m_d];
-	m_colors = new Vec3*[m_d];
-	
-	for(int i = 0; i < m_d; i++)
-	{
-		m_vertices[i] = new Vec3[m_d];
-		m_colors[i] = new Vec3[m_d];
-		for(int j = 0; j < m_d; j++)
-		{
-			double x = (i - (m_d/2.0)) * step;
-			double y = (j - (m_d/2.0)) * step;
-			Vec3 point(x, sombrero_height(x*5, y*5)*2, y);
-			m_vertices[i][j] = point;
-			
-			x = (i * (1.0/m_d)) - 0.5;
-			y = (j * (1.0/m_d)) - 0.5;
-			double colorfactor = sqrt((x*x) + (y*y))*1.5;
-
-			m_colors[i][j] = Vec3(1-colorfactor, 0.0, colorfactor);
-		}
-	}
-}
-
-
-double Generator::sombrero_height(double x, double y)
-{
-	double r = sqrt(x*x + y*y);
-	
-	if(r == 0)
-	{
-		return 1;
-	}
-	else
-	{
-		return  sin (r) / r;
-	}
-}
-
-
-// teej add
-
-void Generator::perlin_object(){
-	m_d = 50;
-	float step = 5.0/m_d;
-	float ** p;
+	m_d = 150;
+	float step = m_chunk_size/m_d;
 	float x,y,z;
-	float colorVal;
-	p = perlin_noise(m_d,m_d,3,.3);
-	m_vertices = new Vec3*[m_d];
-	m_colors = new Vec3*[m_d];
 	
-	for(int i = 0; i<m_d;i++){
-		m_vertices[i] = new Vec3[m_d];
-		m_colors[i] = new Vec3[m_d];
-		z = i*step;
-		for(int j = 0; j<m_d; j++){
-			x = j*step;
-			y = p[i][j]*(3.0/2.0)*step;
-			Vec3 point(x,y*2,z);
-			m_vertices[i][j] = point;
-			
-			colorVal = p[i][j]*(3.0/2.0)+.5;
-			m_colors[i][j] = Vec3(1-colorVal,colorVal,colorVal);
-		}
-	}
-}
-
-
-void Generator::smooth_perlin()
-{
-	m_d = 80;
-	float step = 5.0/m_d;
-	float x,y,z;
-	Vec3 color;
-	Perlin* perlin = new Perlin(6, 2, 1, time(NULL));
-	
-	m_vertices = new Vec3*[m_d];
-	m_colors = new Vec3*[m_d];
-	
-	for(int i = 0; i<m_d;i++){
-		m_vertices[i] = new Vec3[m_d];
-		m_colors[i] = new Vec3[m_d];
-		z = i*step;
-		for(int j = 0; j<m_d; j++){
-			x = j*step;
-			y = perlin->Get(x/3, z/3);
-			y /= (1/y);
-			m_vertices[i][j] = Vec3(x,y*2,z);
-			
-			if(y > 0.2)
-			{
-				color = Vec3(0.9, 0.9, 0.9);
-			}
-			else if(y <= 0.2 && y > 0.1)
-			{
-				color = Vec3(0.3, 0.3, 0.3);
-			}
-			else
-			{
-				color = Vec3(0.0, 0.5, 0.0);
-			}
-			
-			m_colors[i][j] = color;
-		}
-	}
-}
-
-void Generator::high_poly_smooth_perlin()
-{
-	m_d = 400;
-	float step = 5.0/m_d;
-	float x,y,z;
-	Vec3 color;
-	Perlin* perlin = new Perlin(6, 2, 1, time(NULL));
-	
-	//qDebug() << "Perlin is" << sizeof(Perlin) << "bytes";
-	
-	//qDebug() << "Allocating" << m_d*m_d*sizeof(Vec3)*2 << "bytes for vertices and colors";
-	
-	m_vertices = new Vec3*[m_d];
-	m_colors = new Vec3*[m_d];
-	
-	for(int i = 0; i<m_d;i++){
-		m_vertices[i] = new Vec3[m_d];
-		m_colors[i] = new Vec3[m_d];
-		z = i*step;
-		for(int j = 0; j<m_d; j++){
-			x = j*step;
-			y = perlin->Get(x/3, z/3);
-			y *= y;
-			m_vertices[i][j] = Vec3(x,y*2,z);
-			
-			if(y > 0.2)
-			{
-				color = Vec3(0.9, 0.9, 0.9);
-			}
-			else if(y <= 0.2 && y > 0.1)
-			{
-				color = Vec3(0.3, 0.3, 0.3);
-			}
-			else
-			{
-				color = Vec3(0.1, 0.4, 0.1);
-			}
-			
-			m_colors[i][j] = color;
-		}
-	}
-}
-
-
-void Generator::high_poly_mesas()
-{
-	m_d = 400;
-	float step = 5.0/m_d;
-	float x,y,z;
+	float ** yVals = new float *[m_d];
+	for(int i = 0; i<m_d; i++) yVals[i] = new float[m_d]; //heightmap yVals
 	
 	Vec3 color;
-	Perlin* perlin = new Perlin(6, 2, 1.0, time(NULL));
 	
 	m_vertices = new Vec3*[m_d];
 	m_colors = new Vec3*[m_d];
@@ -298,11 +61,10 @@ void Generator::high_poly_mesas()
 	for(int i = 0; i<m_d;i++){
 		m_vertices[i] = new Vec3[m_d];
 		m_colors[i] = new Vec3[m_d];
-		z = i*step;
+		z = (i*step) + (chunk_z*m_chunk_size);
 		for(int j = 0; j<m_d; j++){
-			x = j*step;
-			y = perlin->Get(x/2, z/2);
-			y *= y*2;
+			x = (j*step) + (chunk_x*m_chunk_size);
+			y = base_height(x, z);
 			
 			if(y > 0.3)
 			{
@@ -322,11 +84,17 @@ void Generator::high_poly_mesas()
 
 		}
 	}
-
 }
 
 
-QList<Polygon*> Generator::polygons(QString scene_name)
+float Generator::base_height(float x, float z)
+{
+	float y = m_base_height_perlin->Get(x/2, z/2);	
+	return y*y*2;
+}
+
+
+QList<Polygon*> Generator::polygons_at(int x, int z)
 {
 	m_polys.clear();
 	
@@ -347,53 +115,8 @@ QList<Polygon*> Generator::polygons(QString scene_name)
 		
 		m_d = 0;
 	}
-	
-	
-	if(scene_name == "Sine Wave")
-	{
-		sinewave();
-	}
-	else if(scene_name == "Sombrero")
-	{
-		sombrero();
-	}
-	else if(scene_name == "High-poly Sine Wave")
-	{	
-		high_poly_sinewave();
-	}
-	else if(scene_name == "High-poly Sombrero")
-	{
-		high_poly_sombrero();
-	}
-	else if(scene_name == "Perlin Object")
-	{
-		perlin_object();
-	}
-	else if(scene_name == "Smooth Perlin")
-	{
-		smooth_perlin();
-	}
-	else if(scene_name == "High-poly Smooth Perlin")
-	{
-		high_poly_smooth_perlin();
-	}
-	else if(scene_name == "High-poly Mesas")
-	{
-		high_poly_mesas();
-	}
-	
-	/*for(int i = 0; i < m_d-1; i++)
-	{
-		for(int j = 0; j < m_d-1; j++)
-		{
-			Polygon* poly = new Polygon();
-			poly->set_vertices(m_vertices[i][j], m_vertices[i][j+1], m_vertices[i+1][j+1], m_vertices[i+1][j]);
-			poly->set_colors(m_colors[i][j], m_colors[i][j+1], m_colors[i+1][j+1], m_colors[i+1][j]);
-			m_polys.append(poly);
-		}
-	}*/
-	
-	qDebug() << "Allocated" << m_d*m_d*sizeof(Polygon) << "bytes for polygons.";
+
+	chunk_at(x, z);
 	
 	return m_polys;
 }

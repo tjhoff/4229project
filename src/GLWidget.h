@@ -40,6 +40,7 @@ class GLWidget : public QGLWidget
 	private:
 		void draw();
 		void lighting();
+		void change_current_chunk();
 		void gluPerspective(GLdouble fovy, GLdouble aspect, GLdouble near, GLdouble far);
 		
 		GLfloat m_xrot;
@@ -58,8 +59,19 @@ class GLWidget : public QGLWidget
 		QList<Polygon*> m_polygons;
 		Generator* m_generator;
 		Heightmap * heightmap;
-		TriangleMesh * tMesh;
-		GLuint m_displayList;
+		TriangleMesh* tmesh_center;
+		TriangleMesh* tmesh_n;
+		TriangleMesh* tmesh_nw;
+		TriangleMesh* tmesh_w;
+		TriangleMesh* tmesh_sw;
+		TriangleMesh* tmesh_s;
+		TriangleMesh* tmesh_se;
+		TriangleMesh* tmesh_e;
+		TriangleMesh* tmesh_ne;
+		GLuint m_displayLists;
+		
+		int m_current_xchunk;
+		int m_current_zchunk;
 		
 		GLfloat m_ambient;
 		GLfloat m_diffuse;

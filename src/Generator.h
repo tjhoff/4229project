@@ -4,6 +4,7 @@
 #include <QList>
 #include "Polygon.h"
 #include "Heightmap.h"
+#include "Perlin.h"
 
 //-------------------------------
 //     Base Generator Class
@@ -16,32 +17,21 @@ class Generator
 	public:
 		Generator();
 		~Generator();
-		QList<Polygon*> polygons(QString scene_name);
-		float* default_translation(QString scene_name);
+		QList<Polygon*> polygons_at(int x, int z);
+		float* default_translation();
 		Heightmap * heightmap;
 		Vec3** m_vertices;
 		Vec3** m_colors;
 		int m_d;
+		float m_chunk_size;
 	private:
-		void sombrero();
-		void sinewave();
-		void high_poly_sombrero();
-		void high_poly_sinewave();
-		double sombrero_height(double x, double y);
-		void perlin_object();
-		void smooth_perlin();
-		void high_poly_smooth_perlin();
-		void high_poly_mesas();
-		
+		void chunk_at(int x, int z);	
+		float base_height(float x, float z);	
 		QList<Polygon*> m_polys;
-		
-		
-		
 		float* m_default_translation;
+		int m_seed;
 		
-		
-		
-		
+		Perlin* m_base_height_perlin;
 };
 
 #endif

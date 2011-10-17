@@ -1,121 +1,239 @@
+/* coherent noise function over 1, 2 or 3 dimensions */
+/* (copyright Ken Perlin) */
+
 #include <stdlib.h>
-#include <time.h>
+#include <stdio.h>
 #include <math.h>
-#include <new>
-#include <iostream>
-#define PI 3.141592653589793
 
-// random floating point bewteen -1 and 1
+#include "Perlin.h"
 
-float frand(){
-	return (float)rand()/(float)RAND_MAX;
+#define B SAMPLE_SIZE
+#define BM (SAMPLE_SIZE-1)
+
+#define N 0x1000
+#define NP 12   /* 2^N */
+#define NM 0xfff
+
+#define s_curve(t) ( t * t * (3.0f - 2.0f * t) )
+#define lerp(t, a, b) ( a + t * (b - a) )
+
+#define setup(i,b0,b1,r0,r1)\
+	t = vec[i] + N;\
+	b0 = ((int)t) & BM;\
+	b1 = (b0+1) & BM;\
+	r0 = t - (int)t;\
+	r1 = r0 - 1.0f;
+
+float Perlin::noise1(float arg)
+{
+	int bx0, bx1;
+	float rx0, rx1, sx, t, u, v, vec[1];
+
+	vec[0] = arg;
+
+	if (mStart)
+  {
+    srand(mSeed);
+		mStart = false;
+		init();
+	}
+
+	setup(0, bx0,bx1, rx0,rx1);
+
+	sx = s_curve(rx0);
+
+	u = rx0 * g1[ p[ bx0 ] ];
+	v = rx1 * g1[ p[ bx1 ] ];
+
+	return lerp(sx, u, v);
 }
 
-// makes some uniform noise
+float Perlin::noise2(float vec[2])
+{
+	int bx0, bx1, by0, by1, b00, b10, b01, b11;
+	float rx0, rx1, ry0, ry1, *q, sx, sy, a, b, t, u, v;
+	int i, j;
 
-float ** makeUniform(int width, int height){
-	float ** noise = new float*[height];
-	for(int i = 0; i<height; i++) noise[i] = new float[width];
-	
-	for(int i = 0; i < height; i++){
-		for(int j = 0; j < width; j++){
-			noise[i][j] = frand();
-		}
+	if (mStart)
+  {
+    srand(mSeed);
+		mStart = false;
+		init();
 	}
-	return noise;
+
+	setup(0,bx0,bx1,rx0,rx1);
+	setup(1,by0,by1,ry0,ry1);
+
+	i = p[bx0];
+	j = p[bx1];
+
+	b00 = p[i + by0];
+	b10 = p[j + by0];
+	b01 = p[i + by1];
+	b11 = p[j + by1];
+
+	sx = s_curve(rx0);
+	sy = s_curve(ry0);
+
+  #define at2(rx,ry) ( rx * q[0] + ry * q[1] )
+
+	q = g2[b00];
+	u = at2(rx0,ry0);
+	q = g2[b10];
+	v = at2(rx1,ry0);
+	a = lerp(sx, u, v);
+
+	q = g2[b01];
+	u = at2(rx0,ry1);
+	q = g2[b11];
+	v = at2(rx1,ry1);
+	b = lerp(sx, u, v);
+
+	return lerp(sy, a, b);
 }
 
-// tbh I have no idea what this does
+float Perlin::noise3(float vec[3])
+{
+	int bx0, bx1, by0, by1, bz0, bz1, b00, b10, b01, b11;
+	float rx0, rx1, ry0, ry1, rz0, rz1, *q, sy, sz, a, b, c, d, t, u, v;
+	int i, j;
 
-int * sample_points(int x, int t, int max_x){
-	int * ret = new int[3];
-	ret[0] = (floor(x/t*t));
-	ret[1] = (ret[0] + t) % max_x;
-	ret[2] = (x - ret[0]) / t;
-	return ret;
+	if (mStart)
+  {
+    srand(mSeed);
+		mStart = false;
+		init();
+	}
+
+	setup(0, bx0,bx1, rx0,rx1);
+	setup(1, by0,by1, ry0,ry1);
+	setup(2, bz0,bz1, rz0,rz1);
+
+	i = p[ bx0 ];
+	j = p[ bx1 ];
+
+	b00 = p[ i + by0 ];
+	b10 = p[ j + by0 ];
+	b01 = p[ i + by1 ];
+	b11 = p[ j + by1 ];
+
+	t  = s_curve(rx0);
+	sy = s_curve(ry0);
+	sz = s_curve(rz0);
+
+  #define at3(rx,ry,rz) ( rx * q[0] + ry * q[1] + rz * q[2] )
+
+	q = g3[ b00 + bz0 ] ; u = at3(rx0,ry0,rz0);
+	q = g3[ b10 + bz0 ] ; v = at3(rx1,ry0,rz0);
+	a = lerp(t, u, v);
+
+	q = g3[ b01 + bz0 ] ; u = at3(rx0,ry1,rz0);
+	q = g3[ b11 + bz0 ] ; v = at3(rx1,ry1,rz0);
+	b = lerp(t, u, v);
+
+	c = lerp(sy, a, b);
+
+	q = g3[ b00 + bz1 ] ; u = at3(rx0,ry0,rz1);
+	q = g3[ b10 + bz1 ] ; v = at3(rx1,ry0,rz1);
+	a = lerp(t, u, v);
+
+	q = g3[ b01 + bz1 ] ; u = at3(rx0,ry1,rz1);
+	q = g3[ b11 + bz1 ] ; v = at3(rx1,ry1,rz1);
+	b = lerp(t, u, v);
+
+	d = lerp(sy, a, b);
+
+	return lerp(sz, c, d);
 }
 
-// second-best interpolation (smoothing?)
+void Perlin::normalize2(float v[2])
+{
+	float s;
 
-float ** cosine_interpolation(int k,int width, int height){
-	int t = pow(2,k);
-	float ** noise = makeUniform(width,height);
-	float ** smoothNoise = new float*[height];
-	for(int i = 0; i<height; i++) smoothNoise[i] = new float[width];
-	int x0,x1,y0,y1;
-	float x_alpha, y_alpha;
-
-	float a0, a1;
-	int * ret;
-	for(int i = 0; i<width; i++){
-		ret=sample_points(i,t,width);
-		x0 = ret[0];x1 = ret[1]; x_alpha = ret[2];
-		x_alpha = (1-cos(x_alpha*PI))/2;
-		for(int j = 0; j<width; j++){
-			ret = sample_points(j,t,height);
-			y0=ret[0];y1=ret[1];y_alpha=ret[2];
-			y_alpha = (1-cos(y_alpha*PI))/2;
-			
-			a0 = (1-x_alpha)*(noise[x0][y0]) + (x_alpha)*(noise[x1][y0]);
-			a1 = (1-x_alpha)*(noise[x0][y1]) + (x_alpha)*(noise[x1][y1]);
-			
-			smoothNoise[i][j] = (1-y_alpha)*a0+(y_alpha)*a1;
-			
-		}
-		
-	}
-	return smoothNoise;
+	s = (float)sqrt(v[0] * v[0] + v[1] * v[1]);
+  s = 1.0f/s;
+	v[0] = v[0] * s;
+	v[1] = v[1] * s;
 }
 
-// again, wtf
+void Perlin::normalize3(float v[3])
+{
+	float s;
 
-float ** perlinFromSmooth(int width,int height,int layers,float falloff, bool normalize){
-	
-	float ** perlinNoise = new float*[height];
-	for(int i = 0; i<height; i++) perlinNoise[i] = new float[width];
-	for(int i = 0; i<height; i++){
-		for(int j=0; j<width; j++){
-			perlinNoise[i][j] = 0;
-		}
-	}
-	float r = 1;
-	float ** sNoise;
-	for(int k = 0; k<layers;k++){
-		r=r*falloff;
-		sNoise = cosine_interpolation(layers-k-1,width,height);
-		for(int i = 0; i<height; i++){
-			for(int j=0; j<width; j++){
-				perlinNoise[i][j] += sNoise[i][j]*r;
-			}
-		}
-	}
-	
-	if (!normalize) return perlinNoise;
-	
-	r = 1;
-	float w = 1;
-	
-	for(int k = 0; k<layers;k++){
-		r = r* falloff;
-		w+=r;
-	}
-	for(int i = 0; i<height; i++){
-		for(int j=0; j<width; j++){
-			perlinNoise[i][j] = perlinNoise[i][j]/w;
-		}
-	}
-	
-	return perlinNoise;
+	s = (float)sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2]);
+  s = 1.0f/s;
+
+	v[0] = v[0] * s;
+	v[1] = v[1] * s;
+	v[2] = v[2] * s;
 }
 
-// aaaaand it returns a [height][width] array. I ran it and it seemed like it was producing random numbers,
-// and the python graphic seemed to point to that version of it working. We should test it out!
+void Perlin::init(void)
+{
+	int i, j, k;
 
-float ** perlin_noise(int width, int height, int layers, float falloff){
+	for (i = 0 ; i < B ; i++)
+  {
+		p[i] = i;
+		g1[i] = (float)((rand() % (B + B)) - B) / B;
+		for (j = 0 ; j < 2 ; j++)
+			g2[i][j] = (float)((rand() % (B + B)) - B) / B;
+		normalize2(g2[i]);
+		for (j = 0 ; j < 3 ; j++)
+			g3[i][j] = (float)((rand() % (B + B)) - B) / B;
+		normalize3(g3[i]);
+	}
 
-	float ** p;
-	p = perlinFromSmooth(width, height, layers, falloff, true);
-	return p;
+	while (--i)
+  {
+		k = p[i];
+		p[i] = p[j = rand() % B];
+		p[j] = k;
+	}
 
+	for (i = 0 ; i < B + 2 ; i++)
+  {
+		p[B + i] = p[i];
+		g1[B + i] = g1[i];
+		for (j = 0 ; j < 2 ; j++)
+			g2[B + i][j] = g2[i][j];
+		for (j = 0 ; j < 3 ; j++)
+			g3[B + i][j] = g3[i][j];
+	}
+
+}
+
+
+float Perlin::perlin_noise_2D(float vec[2])
+{
+  int terms    = mOctaves;
+	float freq   = mFrequency;
+	float result = 0.0f;
+  float amp = mAmplitude;
+
+  vec[0]*=mFrequency;
+  vec[1]*=mFrequency;
+
+	for( int i=0; i<terms; i++ )
+	{
+		result += noise2(vec)*amp;
+		vec[0] *= 2.0f;
+		vec[1] *= 2.0f;
+    amp*=0.5f;
+	}
+
+
+	return result;
+}
+
+
+
+Perlin::Perlin(int octaves,float freq,float amp,int seed)
+{
+  mOctaves = octaves;
+  mFrequency = freq;
+  mAmplitude = amp;
+  mSeed = seed;
+  mStart = true;
 }
 
