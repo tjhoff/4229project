@@ -14,6 +14,14 @@
 
 #include <vector>
 
+enum Direction {
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT,
+	ALL
+};
+
 class GLWidget : public QGLWidget
 {
 	Q_OBJECT
@@ -40,7 +48,7 @@ class GLWidget : public QGLWidget
 	private:
 		void draw();
 		void lighting();
-		void change_current_chunk();
+		void change_current_chunk(Direction dir);
 		void gluPerspective(GLdouble fovy, GLdouble aspect, GLdouble near, GLdouble far);
 		
 		GLfloat m_xrot;
@@ -68,8 +76,16 @@ class GLWidget : public QGLWidget
 		TriangleMesh* tmesh_se;
 		TriangleMesh* tmesh_e;
 		TriangleMesh* tmesh_ne;
-		GLuint m_displayLists;
-		
+		GLuint m_nList;
+		GLuint m_nwList;
+		GLuint m_wList;
+		GLuint m_swList;
+		GLuint m_sList;
+		GLuint m_seList;
+		GLuint m_eList;
+		GLuint m_neList;
+		GLuint m_centerList;
+				
 		int m_current_xchunk;
 		int m_current_zchunk;
 		

@@ -5,6 +5,8 @@
 #include <QPainter>
 #include <unistd.h>
 
+#include <time.h>
+
 GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 {
 	setFormat(QGLFormat(QGL::DoubleBuffer | QGL::DepthBuffer));
@@ -69,17 +71,10 @@ void GLWidget::drawScene()
 	{
 		m_polygons.clear();
 		delete m_generator;
-		
-		glDeleteLists(m_displayLists, 9);
 	}
 	
 	m_generator = new Generator();
-
-	m_current_xchunk = 0;
-	m_current_zchunk = 0;
-	
-	change_current_chunk();
-
+	change_current_chunk(ALL);
 	updateGL();
 }
 
@@ -172,12 +167,12 @@ void GLWidget::wheelEvent(QWheelEvent* event)
 	{
 		if(event->delta() > 0)
 		{
-			m_speed += .001;
+			m_speed += .05;
 			//m_zoom += 0.1;
 		}
 		else if(event->delta() < 0)
 		{
-			m_speed -= .001;
+			m_speed -= .05;
 			//m_zoom -= 0.1;
 		}
 	}
@@ -212,26 +207,22 @@ void GLWidget::keyPressEvent(QKeyEvent* event){
 		}
 		case Qt::Key_Up:
 		{
-			m_current_zchunk -= 1;
-			change_current_chunk();
+			change_current_chunk(UP);
 			break;
 		}
 		case Qt::Key_Down:
 		{
-			m_current_zchunk += 1;
-			change_current_chunk();
+			change_current_chunk(DOWN);
 			break;
 		}
 		case Qt::Key_Left:
 		{
-			m_current_xchunk -= 1;
-			change_current_chunk();
+			change_current_chunk(LEFT);
 			break;
 		}
 		case Qt::Key_Right:
 		{
-			m_current_xchunk += 1;
-			change_current_chunk();
+			change_current_chunk(RIGHT);
 			break;
 		}
 		default:
@@ -267,44 +258,44 @@ void GLWidget::draw()
 	}
 	
 	glPushMatrix();
-	glTranslatef(2.5, 5.0*sin(m_light_rotation), 2.5*cos(m_light_rotation)+2.5);
+	glTranslatef(2.5, 5.0, 2.5);
 	lighting();
 	glPopMatrix();
 
 	glPushMatrix();
-	glCallList(m_displayLists);
+	glCallList(m_nList);
 	glPopMatrix();
-
+	
 	glPushMatrix();
-	glCallList(m_displayLists+1);
+	glCallList(m_nwList);
 	glPopMatrix();
-
+	
 	glPushMatrix();
-	glCallList(m_displayLists+2);
+	glCallList(m_wList);
 	glPopMatrix();
-
+	
 	glPushMatrix();
-	glCallList(m_displayLists+3);
+	glCallList(m_swList);
 	glPopMatrix();
-
+	
 	glPushMatrix();
-	glCallList(m_displayLists+4);
+	glCallList(m_sList);
 	glPopMatrix();
-
+	
 	glPushMatrix();
-	glCallList(m_displayLists+5);
+	glCallList(m_seList);
 	glPopMatrix();
-
+	
 	glPushMatrix();
-	glCallList(m_displayLists+6);
+	glCallList(m_eList);
 	glPopMatrix();
-
+	
 	glPushMatrix();
-	glCallList(m_displayLists+7);
+	glCallList(m_neList);
 	glPopMatrix();
-
+	
 	glPushMatrix();
-	glCallList(m_displayLists+8);
+	glCallList(m_centerList);
 	glPopMatrix();
 	
 	char cameraLocation[100];
@@ -340,69 +331,272 @@ void GLWidget::gluPerspective(GLdouble fovy, GLdouble aspect, GLdouble zNear, GL
 }
 
 
-void GLWidget::change_current_chunk()
+void GLWidget::change_current_chunk(Direction dir)
 {
-	glDeleteLists(m_displayLists, 9);
-	m_displayLists = glGenLists(9);
-	
-	glNewList(m_displayLists, GL_COMPILE);
-	m_generator->polygons_at(m_current_xchunk, m_current_zchunk);
-	tmesh_center = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
+	double start_time = clock()/1000;
+	switch(dir)
+	{
+		case UP:
+		{
+			m_current_zchunk -= 1;
+			GLuint old_sw = m_swList;
+			GLuint old_s = m_sList;
+			GLuint old_se = m_seList;
+			
+			glDeleteLists(old_sw, 1);
+			glDeleteLists(old_s, 1);
+			glDeleteLists(old_se, 1);
+			
+			m_swList = m_wList;
+			m_sList = m_centerList;
+			m_seList = m_eList;
+			
+			m_eList = m_neList;
+			m_centerList = m_nList;
+			m_wList = m_nwList;
+			
+			m_neList = glGenLists(1);
+			m_nList = glGenLists(1);
+			m_nwList = glGenLists(1);
+			
+			glNewList(m_nList, GL_COMPILE);
+			m_generator->polygons_at(m_current_xchunk, m_current_zchunk-1);
+			tmesh_n = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
+			tmesh_n->compile();
+			glEndList();
+			
+			glNewList(m_neList, GL_COMPILE);
+			m_generator->polygons_at(m_current_xchunk+1, m_current_zchunk-1);
+			tmesh_ne = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
+			tmesh_ne->compile();
+			glEndList();
+			
+			glNewList(m_nwList, GL_COMPILE);
+			m_generator->polygons_at(m_current_xchunk-1, m_current_zchunk-1);
+			tmesh_nw = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
+			tmesh_nw->compile();
+			glEndList();
+		
+			break;
+		}
+		case DOWN:
+		{
+			m_current_zchunk += 1;
+			
+			GLuint old_nw = m_nwList;
+			GLuint old_n = m_nList;
+			GLuint old_ne = m_neList;
+			
+			glDeleteLists(old_nw, 1);
+			glDeleteLists(old_n, 1);
+			glDeleteLists(old_ne, 1);
+			
+			m_nwList = m_wList;
+			m_nList = m_centerList;
+			m_neList = m_eList;
+			
+			m_wList = m_swList;
+			m_centerList = m_sList;
+			m_eList = m_seList;
+			
+			m_swList = glGenLists(1);
+			m_sList = glGenLists(1);
+			m_seList = glGenLists(1);
+			
+			glNewList(m_sList, GL_COMPILE);
+			m_generator->polygons_at(m_current_xchunk, m_current_zchunk+1);
+			tmesh_s = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
+			tmesh_s->compile();
+			glEndList();
+			
+			glNewList(m_swList, GL_COMPILE);
+			m_generator->polygons_at(m_current_xchunk-1, m_current_zchunk+1);
+			tmesh_sw = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
+			tmesh_sw->compile();
+			glEndList();
+			
+			glNewList(m_seList, GL_COMPILE);
+			m_generator->polygons_at(m_current_xchunk+1, m_current_zchunk+1);
+			tmesh_se = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
+			tmesh_se->compile();
+			glEndList();
+			
+			break;
+		}
+		case LEFT:
+		{
+			m_current_xchunk -= 1;
+			
+			GLuint old_ne = m_neList;
+			GLuint old_e = m_eList;
+			GLuint old_se = m_seList;
+			
+			glDeleteLists(old_ne, 1);
+			glDeleteLists(old_e, 1);
+			glDeleteLists(old_se, 1);
+			
+			m_neList = m_nList;
+			m_eList = m_centerList;
+			m_seList = m_sList;
+			
+			m_nList = m_nwList;
+			m_centerList = m_wList;
+			m_sList = m_swList;
+			
+			m_nwList = glGenLists(1);
+			m_wList = glGenLists(1);
+			m_swList = glGenLists(1);
+			
+			glNewList(m_nwList, GL_COMPILE);
+			m_generator->polygons_at(m_current_xchunk-1, m_current_zchunk-1);
+			tmesh_nw = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
+			tmesh_nw->compile();
+			glEndList();
+			
+			glNewList(m_wList, GL_COMPILE);
+			m_generator->polygons_at(m_current_xchunk-1, m_current_zchunk);
+			tmesh_w = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
+			tmesh_w->compile();
+			glEndList();
+			
+			glNewList(m_swList, GL_COMPILE);
+			m_generator->polygons_at(m_current_xchunk-1, m_current_zchunk+1);
+			tmesh_sw = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
+			tmesh_sw->compile();
+			glEndList();
+			
+			break;
+		}
+		case RIGHT:
+		{
+			m_current_xchunk += 1;
+			
+			GLuint old_nw = m_nwList;
+			GLuint old_w = m_wList;
+			GLuint old_sw = m_swList;
+			
+			glDeleteLists(old_nw, 1);
+			glDeleteLists(old_w, 1);
+			glDeleteLists(old_sw, 1);
+			
+			m_nwList = m_nList;
+			m_wList = m_centerList;
+			m_swList = m_sList;
+			
+			m_nList = m_neList;
+			m_centerList = m_eList;
+			m_sList = m_seList;
+			
+			m_neList = glGenLists(1);
+			m_eList = glGenLists(1);
+			m_seList = glGenLists(1);
+			
+			glNewList(m_neList, GL_COMPILE);
+			m_generator->polygons_at(m_current_xchunk+1, m_current_zchunk-1);
+			tmesh_ne = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
+			tmesh_ne->compile();
+			glEndList();
+			
+			glNewList(m_eList, GL_COMPILE);
+			m_generator->polygons_at(m_current_xchunk+1, m_current_zchunk);
+			tmesh_e = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
+			tmesh_e->compile();
+			glEndList();
+			
+			glNewList(m_seList, GL_COMPILE);
+			m_generator->polygons_at(m_current_xchunk+1, m_current_zchunk+1);
+			tmesh_se = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
+			tmesh_se->compile();
+			glEndList();
+			
+			break;
+		}
+		case ALL:
+			m_current_xchunk = 0;
+			m_current_zchunk = 0;
+			
+			glDeleteLists(m_nwList, 1);
+			glDeleteLists(m_wList, 1);
+			glDeleteLists(m_swList, 1);
+			glDeleteLists(m_sList, 1);
+			glDeleteLists(m_seList, 1);
+			glDeleteLists(m_eList, 1);
+			glDeleteLists(m_neList, 1);
+			glDeleteLists(m_centerList, 1);
+			
+			m_nwList = glGenLists(1);
+			m_wList = glGenLists(1);
+			m_swList = glGenLists(1);
+			m_sList = glGenLists(1);
+			m_seList = glGenLists(1);
+			m_eList = glGenLists(1);
+			m_neList = glGenLists(1);
+			m_nList = glGenLists(1);
+			m_centerList = glGenLists(1);
+			
+			glNewList(m_nList, GL_COMPILE);
+			m_generator->polygons_at(m_current_xchunk, m_current_zchunk-1);
+			tmesh_n = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
+			tmesh_n->compile();
+			glEndList();
+			
+			glNewList(m_nwList, GL_COMPILE);
+			m_generator->polygons_at(m_current_xchunk-1, m_current_zchunk-1);
+			tmesh_nw = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
+			tmesh_nw->compile();
+			glEndList();
+			
+			glNewList(m_wList, GL_COMPILE);
+			m_generator->polygons_at(m_current_xchunk-1, m_current_zchunk);
+			tmesh_w = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
+			tmesh_w->compile();
+			glEndList();
+			
+			glNewList(m_swList, GL_COMPILE);
+			m_generator->polygons_at(m_current_xchunk-1, m_current_zchunk+1);
+			tmesh_sw = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
+			tmesh_sw->compile();
+			glEndList();
+			
+			glNewList(m_sList, GL_COMPILE);
+			m_generator->polygons_at(m_current_xchunk, m_current_zchunk+1);
+			tmesh_s = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
+			tmesh_s->compile();
+			glEndList();
+			
+			glNewList(m_seList, GL_COMPILE);
+			m_generator->polygons_at(m_current_xchunk+1, m_current_zchunk+1);
+			tmesh_se = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
+			tmesh_se->compile();
+			glEndList();
+			
+			glNewList(m_eList, GL_COMPILE);
+			m_generator->polygons_at(m_current_xchunk+1, m_current_zchunk);
+			tmesh_e = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
+			tmesh_e->compile();
+			glEndList();
+			
+			glNewList(m_neList, GL_COMPILE);
+			m_generator->polygons_at(m_current_xchunk+1, m_current_zchunk-1);
+			tmesh_ne = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
+			tmesh_ne->compile();
+			glEndList();
+			
+			glNewList(m_centerList, GL_COMPILE);
+			m_generator->polygons_at(m_current_xchunk, m_current_zchunk);
+			tmesh_center = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
+			tmesh_center->compile();
+			glEndList();
+			
+			break;
+	}
+		
 	heightmap = new Heightmap(tmesh_center,tmesh_center->width,tmesh_center->height,5.0/tmesh_center->width,0.0,0.0);
 	cam = new TerrainCamera(2.5,2.5, heightmap);
-	tmesh_center->compile();
-	glEndList();
-	
-	glNewList(m_displayLists+1, GL_COMPILE);
-	m_generator->polygons_at(m_current_xchunk, m_current_zchunk-1);
-	tmesh_n = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
-	tmesh_n->compile();
-	glEndList();
-	
-	glNewList(m_displayLists+2, GL_COMPILE);
-	m_generator->polygons_at(m_current_xchunk-1, m_current_zchunk-1);
-	tmesh_nw = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
-	tmesh_nw->compile();
-	glEndList();
-	
-	glNewList(m_displayLists+3, GL_COMPILE);
-	m_generator->polygons_at(m_current_xchunk-1, m_current_zchunk);
-	tmesh_w = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
-	tmesh_w->compile();
-	glEndList();
-
-	glNewList(m_displayLists+4, GL_COMPILE);
-	m_generator->polygons_at(m_current_xchunk-1, m_current_zchunk+1);
-	tmesh_sw = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
-	tmesh_sw->compile();
-	glEndList();
-	
-	glNewList(m_displayLists+5, GL_COMPILE);
-	m_generator->polygons_at(m_current_xchunk, m_current_zchunk+1);
-	tmesh_s = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
-	tmesh_s->compile();
-	glEndList();
-	
-	glNewList(m_displayLists+6, GL_COMPILE);
-	m_generator->polygons_at(m_current_xchunk+1, m_current_zchunk+1);
-	tmesh_se = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
-	tmesh_se->compile();
-	glEndList();
-	
-	glNewList(m_displayLists+7, GL_COMPILE);
-	m_generator->polygons_at(m_current_xchunk+1, m_current_zchunk);
-	tmesh_e = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
-	tmesh_e->compile();
-	glEndList();
-	
-	glNewList(m_displayLists+8, GL_COMPILE);
-	m_generator->polygons_at(m_current_xchunk+1, m_current_zchunk-1);
-	tmesh_ne = new TriangleMesh(m_generator->m_vertices,m_generator->m_colors,m_generator->m_d, m_generator->m_d);
-	tmesh_ne->compile();
-	glEndList();
 	
 	updateGL();
 
+	qDebug() << "GLWidget::change_current_chunk took" << (clock()/1000) - start_time << "milliseconds";
 }
 
 

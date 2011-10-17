@@ -4,13 +4,15 @@
 #include <QString>
 #include <QDebug>
 
+#include <time.h>
+
 
 Generator::Generator()
 {
 	m_d = 0;
 	m_seed = 5;
 	m_base_height_perlin = new Perlin(6, 2, 1, m_seed);
-	m_chunk_size = 2;
+	m_chunk_size = 5;
 }
 
 
@@ -46,7 +48,9 @@ float* Generator::default_translation()
 
 void Generator::chunk_at(int chunk_x, int chunk_z)
 {
-	m_d = 150;
+	double start_time = clock()/1000;
+	
+	m_d = 200;
 	float step = m_chunk_size/m_d;
 	float x,y,z;
 	
@@ -84,6 +88,8 @@ void Generator::chunk_at(int chunk_x, int chunk_z)
 
 		}
 	}
+	
+	qDebug() << "Generator::chunk_at() took" << (clock()/1000) - start_time << "milliseconds";
 }
 
 
