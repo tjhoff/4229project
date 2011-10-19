@@ -32,6 +32,7 @@ class Generator
 		int m_seed;
 		
 		Perlin* m_base_height_perlin;
+		Perlin* m_detail_perlin;
 };
 
 #endif

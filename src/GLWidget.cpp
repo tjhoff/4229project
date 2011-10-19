@@ -18,8 +18,8 @@ GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 	
 	m_speed = .001;
 	
-	m_ambient = 0.0; 
-	m_diffuse = .5;  
+	m_ambient = 0.3; 
+	m_diffuse = 0.5;  
 	m_specular = 1.0;  
 	m_xpos = 0;
 	m_ypos = 0;
@@ -100,7 +100,7 @@ void GLWidget::initializeGL()
 	glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_COLOR_MATERIAL);
 	
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 	
 	float ambient[] = {0.1, 0.1, 0.1, 1.0};
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
