@@ -261,6 +261,12 @@ void GLWidget::draw()
 	glPopMatrix();
 
 	glPushMatrix();
+	
+	if(!m_fps_camera)
+	{
+		glTranslatef(-2.5, 0.0, -2.5);
+	}
+	
 	glCallList(m_nList);
 	glCallList(m_nwList);
 	glCallList(m_wList);

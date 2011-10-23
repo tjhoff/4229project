@@ -51,20 +51,20 @@ TerrainTexture::TerrainTexture(float** heightmap, int width, int height)
 			texture_bits[i+2] = water_bits[i+2];
 			texture_bits[i+3] = water_bits[i+3];
 		}
-		else if(hvalue > -0.2 && hvalue < -0.15)
+		else if(hvalue > -0.2 && hvalue < -0.05)
 		{
 			texture_bits[i] = sand_bits[i];
 			texture_bits[i+1] = sand_bits[i+1];
 			texture_bits[i+2] = sand_bits[i+2];
 			texture_bits[i+3] = sand_bits[i+3];
 		}
-		else if(hvalue > 0.9)
-		{
-			texture_bits[i] = snow_bits[i];
-			texture_bits[i+1] = snow_bits[i+1];
-			texture_bits[i+2] = snow_bits[i+2];
-			texture_bits[i+3] = snow_bits[i+3];
-		}
+		//else if(hvalue > 0.9)
+		///{
+		//	texture_bits[i] = snow_bits[i];
+		//	texture_bits[i+1] = snow_bits[i+1];
+		//	texture_bits[i+2] = snow_bits[i+2];
+		//	texture_bits[i+3] = snow_bits[i+3];
+		//}
 	}
 	
 	glGenTextures(1,&m_texture_id);

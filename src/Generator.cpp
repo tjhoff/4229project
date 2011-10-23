@@ -10,7 +10,7 @@
 Generator::Generator()
 {
 	m_d = 0;
-	m_seed = 5;
+	m_seed = time(NULL);
 	m_base_height_perlin = new Perlin(1, 1, 3, m_seed);
 	m_detail_perlin = new Perlin(6, 2, 1, m_seed);
 	m_chunk_size = 5;
@@ -71,12 +71,15 @@ void Generator::chunk_at(int chunk_x, int chunk_z)
 			x = (j*step) + (chunk_x*m_chunk_size);
 			y = base_height(x, z);
 			y += m_detail_perlin->Get(x/5, z/5);
+			y -= (y/4);
+			y -= 0.5;
 			
-			if(y > 2.5)
+			if(y > 1.5)
 			{
-				color = Vec3(0.3*(y-2.5)+0.1, 0.3*(y-2.5)+0.4, 0.3*(y-2.5)+0.1);			
+				y = 3 - y;
 			}
-			else if(y < -0.2)
+
+			if(y < -0.2)
 			{
 				y = -0.2;
 				color = Vec3(0.0, 0.0, 0.6);
