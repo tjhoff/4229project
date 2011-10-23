@@ -2,10 +2,11 @@
 #include "TriangleMesh.h"
 
 #define vertex(i,j) glVertex3f(tVertices[i][j].x,tVertices[i][j].y,tVertices[i][j].z)
-#define color(i,j) glColor3f(tColors[i][j].x,tColors[i][j].y,tColors[i][j].z)
+#define color(i,j) glColor3f(1.0, 1.0, 1.0)
 #define normal(i,j) glNormal3f(tNormals[i][j].x,tNormals[i][j].y,tNormals[i][j].z)
+#define tex(i,j) glTexCoord3f((double)i/width, heightmap[i][j], (double)j/height); qDebug() << i << width << (double)i/width << "...";
 
-#define ColNormVex(i,j)   normal(i,j); color(i,j); vertex(i,j)
+#define ColNormVex(i,j)   normal(i,j); color(i,j); tex(i,j); vertex(i,j)
 
 TriangleMesh::TriangleMesh(Vec3 ** vertices, Vec3 ** colors, int vwidth, int vheight){
 
@@ -15,15 +16,19 @@ TriangleMesh::TriangleMesh(Vec3 ** vertices, Vec3 ** colors, int vwidth, int vhe
 	tVertices = new Vec3 * [height];
 	tColors = new Vec3 * [height];
 	tNormals = new Vec3 * [height];
+	
+	heightmap = new float*[height];
 
 	for(int i = 0; i < height; i++){
 		tVertices[i] = new Vec3[width];
 		tColors[i] = new Vec3[width];
 		tNormals[i] = new Vec3[width];
+		heightmap[i] = new float[width];
 		
 		for(int j = 0; j<width; j++){
 			tVertices[i][j] = vertices[i][j];
 			tColors[i][j] = colors[i][j];
+			heightmap[i][j] = vertices[i][j].y;
 		}
 	}
 	double start_time = clock()/1000;
@@ -36,52 +41,44 @@ void TriangleMesh::compile(){
 	double start_time = clock()/1000;
 	int count = 0;
 	
-	for(int i = 0; i<height-2; i++){ 
-		glBegin(GL_TRIANGLES);
-		for(int j = 0; j<width-2; j++){ 
-			switch (count){
-				case 0:
-					ColNormVex(i,j);
-					ColNormVex(i+1,j);
-					ColNormVex(i,j+1);
-
-					ColNormVex(i,j+1);
-					ColNormVex(i+1,j);
-					ColNormVex(i+1,j+1);
-
-					ColNormVex(i,j+1);
-					ColNormVex(i+1,j+1);
-					ColNormVex(i+1,j+2);
-					
-					ColNormVex(i,j+1);
-					ColNormVex(i+1,j+2);
-					ColNormVex(i,j+2);
-					break;
-				case 1:
-					ColNormVex(i,j);
-					ColNormVex(i+1,j);
-					ColNormVex(i+1,j+1);
-
-					ColNormVex(i,j);
-					ColNormVex(i+1,j+1);
-					ColNormVex(i,j+1);
-
-					ColNormVex(i,j+1);
-					ColNormVex(i+1,j+1);
-					ColNormVex(i,j+2);
-					
-					ColNormVex(i+1,j+1);
-					ColNormVex(i+1,j+2);
-					ColNormVex(i,j+2);
-					break;
-			}
-
-
-		
-		} // end j
-		count = !count;
-		glEnd();
-	} // end i
+	TerrainTexture* tex = new TerrainTexture(heightmap, width, height);
+	GLuint tex_id = tex->texture();
+	int tex_width = tex->tex_width();
+	int tex_height = tex->tex_height();
+	
+	glEnable(GL_TEXTURE_2D);
+	glBindTexture(GL_TEXTURE_2D, tex_id);
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+	
+	glColor3f(1.0, 1.0, 1.0);
+	
+	glBegin(GL_QUADS);
+	for(int i = 0; i<height-1; i++)
+	{ 
+		for(int j = 0; j<width-1; j++)
+		{ 
+			glNormal3f(tNormals[i][j].x,tNormals[i][j].y,tNormals[i][j].z);
+			glTexCoord3f((double)i/height, (double)j/width, heightmap[i][j]);
+			glVertex3f(tVertices[i][j].x,tVertices[i][j].y,tVertices[i][j].z);
+			
+			glNormal3f(tNormals[i+1][j].x,tNormals[i+1][j].y,tNormals[i+1][j].z);
+			glTexCoord3f((double)(i+1)/height, (double)j/width, heightmap[i+1][j+1]);
+			glVertex3f(tVertices[i+1][j].x,tVertices[i+1][j].y,tVertices[i+1][j].z);
+			
+			glNormal3f(tNormals[i+1][j+1].x,tNormals[i+1][j+1].y,tNormals[i+1][j+1].z);
+			glTexCoord3f((double)(i+1)/height, (double)(j+1)/width, heightmap[i+1][j+1]);
+			glVertex3f(tVertices[i+1][j+1].x,tVertices[i+1][j+1].y,tVertices[i+1][j+1].z);
+			
+			glNormal3f(tNormals[i][j+1].x,tNormals[i][j+1].y,tNormals[i][j+1].z);
+			glTexCoord3f((double)i/height, (double)(j+1)/width, heightmap[i][j+1]);
+			glVertex3f(tVertices[i][j+1].x,tVertices[i][j+1].y,tVertices[i][j+1].z);
+			
+		} 
+	}
+	
+	
+	glEnd();
+	
 	qDebug()<<"Compiling displays took "<< clock()/1000 - start_time<< "parsecs";
 
 }

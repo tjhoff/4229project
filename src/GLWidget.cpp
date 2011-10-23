@@ -100,7 +100,7 @@ void GLWidget::initializeGL()
 	glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_COLOR_MATERIAL);
 	
-	//glEnable(GL_CULL_FACE);
+	glEnable(GL_CULL_FACE);
 	
 	float ambient[] = {0.1, 0.1, 0.1, 1.0};
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
@@ -156,7 +156,6 @@ void GLWidget::mouseMoveEvent(QMouseEvent* event)
 			m_xrot += 180 * dy;
 			m_yrot += 180 * dx;
 		}
-		updateGL();
 		m_lastPos = event->pos();
 	}	
 }
@@ -188,7 +187,6 @@ void GLWidget::wheelEvent(QWheelEvent* event)
 		}
 	}
 	
-	updateGL();
 }
 
 void GLWidget::keyPressEvent(QKeyEvent* event){
@@ -264,37 +262,13 @@ void GLWidget::draw()
 
 	glPushMatrix();
 	glCallList(m_nList);
-	glPopMatrix();
-	
-	glPushMatrix();
 	glCallList(m_nwList);
-	glPopMatrix();
-	
-	glPushMatrix();
 	glCallList(m_wList);
-	glPopMatrix();
-	
-	glPushMatrix();
 	glCallList(m_swList);
-	glPopMatrix();
-	
-	glPushMatrix();
 	glCallList(m_sList);
-	glPopMatrix();
-	
-	glPushMatrix();
 	glCallList(m_seList);
-	glPopMatrix();
-	
-	glPushMatrix();
 	glCallList(m_eList);
-	glPopMatrix();
-	
-	glPushMatrix();
 	glCallList(m_neList);
-	glPopMatrix();
-	
-	glPushMatrix();
 	glCallList(m_centerList);
 	glPopMatrix();
 	
@@ -594,8 +568,6 @@ void GLWidget::change_current_chunk(Direction dir)
 	heightmap = new Heightmap(tmesh_center,tmesh_center->width,tmesh_center->height,5.0/tmesh_center->width,0.0,0.0);
 	cam = new TerrainCamera(2.5,2.5, heightmap);
 	
-	updateGL();
-
 	qDebug() << "GLWidget::change_current_chunk took" << (clock()/1000) - start_time << "milliseconds";
 }
 

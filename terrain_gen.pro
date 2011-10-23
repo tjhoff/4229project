@@ -10,28 +10,9 @@ QT += opengl
 CONFIG += qt debug
 
 # Input
-HEADERS += \
-	src/GLWidget.h\
-	src/MainWindow.h\ 
-	src/Polygon.h\
-	src/Vec3.h\
-	src/Generator.h\
- 	src/Perlin.h\
- 	src/Camera3d.h\
-	src/Heightmap.h\
-	src/TriangleMesh.h
+HEADERS += src/*.h
 
-SOURCES += \
-	src/GLWidget.cpp\
-	src/main.cpp\
-	src/MainWindow.cpp\
-	src/Polygon.cpp\
-	src/Vec3.cpp\
-	src/Generator.cpp\
-	src/Perlin.cpp\
-	src/Camera3d.cpp\
-	src/Heightmap.cpp\
-	src/TriangleMesh.cpp
+SOURCES += src/*.cpp
 
 OBJECTS_DIR = obj
 MOC_DIR = obj

@@ -13,6 +13,8 @@
 
 #include <iostream>
 
+#include "TerrainTexture.h"
+
 class TriangleMesh{
 
 	public:
@@ -23,10 +25,12 @@ class TriangleMesh{
 		int width;
 		int height;
 		
+		float** heightmap;
+		
 		Vec3 ** tVertices;
 		Vec3 ** tColors;
 		Vec3 ** tNormals;
-
+		
 };
 
 #endif
