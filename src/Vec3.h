@@ -17,6 +17,7 @@ class Vec3
 		Vec3 operator+(const Vec3& rhs);
 		Vec3 operator-(const Vec3& rhs);
 		float operator*(const Vec3& rhs);
+		bool operator==(const Vec3& rhs);
 	
 		float x;
 		float y;

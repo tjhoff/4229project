@@ -54,6 +54,10 @@ float Vec3::operator*(const Vec3& rhs)
 	return (x*rhs.x) + (y*rhs.y) + (z*rhs.z);
 }
 
+bool Vec3::operator==(const Vec3& rhs)
+{
+	return (x == rhs.x) && (y == rhs.y) && (z == rhs.z);
+}
 
 
 
