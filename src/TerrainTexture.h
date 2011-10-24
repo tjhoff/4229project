@@ -5,10 +5,12 @@
 #include <QGLWidget>
 #include <QImage>
 
+#include "Vec3.h"
+
 class TerrainTexture
 {
 	public:
-		TerrainTexture(float** heightmap, int width, int height);
+		TerrainTexture(Vec3** colormap, int width, int height);
 		GLuint texture() { return m_texture_id; }
 		int tex_width() { return m_tex_width; }
 		int tex_height() { return m_tex_height; }

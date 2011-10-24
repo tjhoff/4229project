@@ -16,18 +16,14 @@ TriangleMesh::TriangleMesh(Vec3 ** vertices, Vec3 ** colors, int vwidth, int vhe
 	tColors = new Vec3 * [height];
 	tNormals = new Vec3 * [height];
 	
-	heightmap = new float*[height];
-
 	for(int iz = 0; iz < height; iz++){
 		tVertices[iz] = new Vec3[width];
 		tColors[iz] = new Vec3[width];
 		tNormals[iz] = new Vec3[width];
-		heightmap[iz] = new float[width];
 		
 		for(int ix = 0; ix<width; ix++){
 			tVertices[iz][ix] = vertices[iz][ix];
 			tColors[iz][ix] = colors[iz][ix];
-			heightmap[iz][ix] = vertices[iz][ix].y;
 		}
 	}
 	double start_time = clock()/1000;
@@ -40,7 +36,7 @@ void TriangleMesh::compile(){
 	double start_time = clock()/1000;
 	int count = 0;
 	
-	TerrainTexture* tex = new TerrainTexture(heightmap, width, height);
+	TerrainTexture* tex = new TerrainTexture(tColors, width, height);
 	GLuint tex_id = tex->texture();
 	int tex_width = tex->tex_width();
 	int tex_height = tex->tex_height();

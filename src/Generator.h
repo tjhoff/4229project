@@ -26,7 +26,10 @@ class Generator
 		float m_chunk_size;
 	private:
 		void chunk_at(int x, int z);	
-		float base_height(float x, float z);	
+		float base_height(float x, float z);
+		void islands(int i, int j, float step, int chunk_x, int chunk_z);
+		
+			
 		QList<Polygon*> m_polys;
 		float* m_default_translation;
 		int m_seed;

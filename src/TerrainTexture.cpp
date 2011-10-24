@@ -6,9 +6,9 @@
 
 #include <QDebug>
 
-TerrainTexture::TerrainTexture(float** heightmap, int width, int height)
+TerrainTexture::TerrainTexture(Vec3** colormap, int width, int height)
 {
-	QImage forest, water, snow, sand, buf;
+	QImage forest, water, snow, sand, lava, lavarock, buf;
 	buf.load("./tex/water.bmp");
 	water = QGLWidget::convertToGLFormat(buf);
 	
@@ -21,6 +21,12 @@ TerrainTexture::TerrainTexture(float** heightmap, int width, int height)
 	buf.load("./tex/sand.bmp");
 	sand = QGLWidget::convertToGLFormat(buf);
 	
+	buf.load("./tex/lavarock.bmp");
+	lavarock = QGLWidget::convertToGLFormat(buf);
+	
+	buf.load("./tex/lava.bmp");
+	lava = QGLWidget::convertToGLFormat(buf);
+	
 	m_tex_width = forest.width();
 	m_tex_height = forest.height();
 	
@@ -28,6 +34,8 @@ TerrainTexture::TerrainTexture(float** heightmap, int width, int height)
 	unsigned char* water_bits = water.bits();
 	unsigned char* snow_bits = snow.bits();
 	unsigned char* sand_bits = sand.bits();
+	unsigned char* lavarock_bits = lavarock.bits();
+	unsigned char* lava_bits = lava.bits();
 	
 	int wratio = m_tex_width/width;
 	int hratio = m_tex_height/height;
@@ -42,22 +50,37 @@ TerrainTexture::TerrainTexture(float** heightmap, int width, int height)
 		int y = ((i/4)%m_tex_height)/hratio;
 		if(x > (width-1)) x = width-1;
 		if(y > (height-1)) y = height-1;
-		float hvalue = heightmap[y][x];
+		Vec3 color = colormap[y][x];
 		
-		if(hvalue <= -0.2)
+		if(color == Vec3(0.0, 0.0, 0.6))
 		{
 			texture_bits[i] = water_bits[i];
 			texture_bits[i+1] = water_bits[i+1];
 			texture_bits[i+2] = water_bits[i+2];
 			texture_bits[i+3] = water_bits[i+3];
 		}
-		else if(hvalue > -0.2 && hvalue < -0.05)
+		else if(color == Vec3(1.0, 1.0, 1.0))
 		{
 			texture_bits[i] = sand_bits[i];
 			texture_bits[i+1] = sand_bits[i+1];
 			texture_bits[i+2] = sand_bits[i+2];
 			texture_bits[i+3] = sand_bits[i+3];
 		}
+		else if(color == Vec3(0.2, 0.2, 0.2))
+		{
+			texture_bits[i] = lavarock_bits[i];
+			texture_bits[i+1] = lavarock_bits[i+1];
+			texture_bits[i+2] = lavarock_bits[i+2];
+			texture_bits[i+3] = lavarock_bits[i+3];
+		}
+		else if(color == Vec3(1.0, 0.0, 0.0))
+		{
+			texture_bits[i] = lava_bits[i];
+			texture_bits[i+1] = lava_bits[i+1];
+			texture_bits[i+2] = lava_bits[i+2];
+			texture_bits[i+3] = lava_bits[i+3];
+		}
+			
 		//else if(hvalue > 0.9)
 		///{
 		//	texture_bits[i] = snow_bits[i];
