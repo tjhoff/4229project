@@ -11,6 +11,7 @@
 #include "Camera3d.h"
 #include "Heightmap.h"
 #include "TriangleMesh.h"
+#include "Skybox.h"
 
 #include <vector>
 
@@ -98,6 +99,7 @@ class GLWidget : public QGLWidget
 		GLfloat m_light_rotation;
 		
 		Camera * cam;
+		Skybox * skybox;
 		
 		bool m_wireframe;
 		bool m_fps_camera;

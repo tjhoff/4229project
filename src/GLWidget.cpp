@@ -29,7 +29,7 @@ GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 	m_fps_camera = true;
 	
 	m_wireframe = false;
-	
+	skybox = new Skybox();
 	cam = new Camera3d(0.0,0.0,-7.0);
 	setFocusPolicy(Qt::StrongFocus);
 	m_update_timer = new QTimer();
@@ -116,7 +116,7 @@ void GLWidget::resizeGL(int width, int height)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	m_width = (height>0) ? (GLfloat)width/height : 1;
-	gluPerspective(45, m_width, 0.005, 15);
+	gluPerspective(45, m_width, 0.005, 22);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
@@ -243,6 +243,12 @@ void GLWidget::draw()
 	if(m_fps_camera)
 	{
 		cam->transformCamera();
+		glPushMatrix();
+		glDisable(GL_TEXTURE_2D);
+		glLoadIdentity();
+		glRotatef(-cam->pitch, 1.0,0.0,0.0);
+		skybox->draw();
+		glEnable(GL_TEXTURE_2D);
 	}
 	else
 	{
@@ -572,7 +578,6 @@ void GLWidget::change_current_chunk(Direction dir)
 	}
 		
 	heightmap = new Heightmap(tmesh_center,tmesh_center->width,tmesh_center->height,5.0/tmesh_center->width,0.0,0.0);
-	cam = new TerrainCamera(2.5,2.5, heightmap);
 	
 	qDebug() << "GLWidget::change_current_chunk took" << (clock()/1000) - start_time << "milliseconds";
 }

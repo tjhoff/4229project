@@ -1,14 +1,14 @@
 #include "Skybox.h"
-#define val 7.5
+#define val 15
 #define a glVertex3f(val, val, val)
-#define b glVertex3f(0, val, val)
-#define c glVertex3f(0, 0, val)
-#define d glVertex3f(val, 0, val)
+#define b glVertex3f(-val, val, val)
+#define c glVertex3f(-val, -val, val)
+#define d glVertex3f(val, -val, val)
 
-#define e glVertex3f(val, val, 0)
-#define f glVertex3f(val, 0, 0)
-#define g glVertex3f(0, 0, 0)
-#define h glVertex3f(0, val, 0)
+#define e glVertex3f(val, val, -val)
+#define f glVertex3f(val, -val, -val)
+#define g glVertex3f(-val, -val, -val)
+#define h glVertex3f(-val, val, -val)
 
 
 Skybox::Skybox(){
