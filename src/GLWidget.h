@@ -6,12 +6,13 @@
 #include <QTimer>
 #include <stdio.h>
 
-#include "Generator.h"
 #include "Polygon.h"
 #include "Camera3d.h"
 #include "Heightmap.h"
 #include "TriangleMesh.h"
 #include "Skybox.h"
+#include "Map.h"
+#include "Chunk.h"
 
 #include <vector>
 
@@ -66,26 +67,6 @@ class GLWidget : public QGLWidget
 		QPoint m_lastPos;
 		
 		QList<Polygon*> m_polygons;
-		Generator* m_generator;
-		Heightmap * heightmap;
-		TriangleMesh* tmesh_center;
-		TriangleMesh* tmesh_n;
-		TriangleMesh* tmesh_nw;
-		TriangleMesh* tmesh_w;
-		TriangleMesh* tmesh_sw;
-		TriangleMesh* tmesh_s;
-		TriangleMesh* tmesh_se;
-		TriangleMesh* tmesh_e;
-		TriangleMesh* tmesh_ne;
-		GLuint m_nList;
-		GLuint m_nwList;
-		GLuint m_wList;
-		GLuint m_swList;
-		GLuint m_sList;
-		GLuint m_seList;
-		GLuint m_eList;
-		GLuint m_neList;
-		GLuint m_centerList;
 				
 		int m_current_xchunk;
 		int m_current_zchunk;
@@ -97,6 +78,18 @@ class GLWidget : public QGLWidget
 		GLfloat m_ypos;
 		GLfloat m_zpos;
 		GLfloat m_light_rotation;
+		
+		Map* m_map;
+		
+		Chunk* m_nchunk;
+		Chunk* m_nwchunk;
+		Chunk* m_wchunk;
+		Chunk* m_swchunk;
+		Chunk* m_schunk;
+		Chunk* m_sechunk;
+		Chunk* m_echunk;
+		Chunk* m_nechunk;
+		Chunk* m_centerchunk;
 		
 		Camera * cam;
 		Skybox * skybox;
