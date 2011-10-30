@@ -2,7 +2,7 @@
 #define GENERATOR_H
 
 #include <QList>
-#include <stdio.h>
+#include <stdio>
 #include "Polygon.h"
 #include "Heightmap.h"
 #include "Perlin.h"

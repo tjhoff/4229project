@@ -86,8 +86,6 @@ void TerrainCamera::move(float forward){
 		heightmap = map->getChunkAt(nchunkx, nchunkz)->heightmap; 
 		map->curx = nchunkx;
 		map->curz = nchunkz;
-		chunkx = nchunkx;
-		chunkz = nchunkz;
 	}
 	y = heightmap->getYValue(x,z)+.03;
 }

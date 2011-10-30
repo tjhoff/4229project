@@ -3,12 +3,10 @@
 #include <QtOpenGL>
 #include <math.h>
 #include <iostream>
-
 #ifndef PI
 #define PI 3.141592653589793
 #endif
 
-#include "Map.h"
 #include "Heightmap.h"
 
 class Camera{
