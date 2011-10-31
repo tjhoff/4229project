@@ -103,6 +103,9 @@ void GLWidget::initializeGL()
 
 	glEnable(GL_LIGHT0);
 	glLighti(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1);
+	
+	
+	
 }
 
 
@@ -313,7 +316,6 @@ void GLWidget::gluPerspective(GLdouble fovy, GLdouble aspect, GLdouble zNear, GL
    ymin = -ymax;
    xmin = ymin * aspect;
    xmax = ymax * aspect;
-
 
    glFrustum(xmin, xmax, ymin, ymax, zNear, zFar);
 }

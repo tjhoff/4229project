@@ -7,6 +7,12 @@
 
 #define ColNormVex(i,j)   normal(i,j); color(i,j); vertex(i,j)
 
+#define BUFFER_OFFSET(i) ((char *)NULL + (i))
+
+#include <GL/gl.h>
+#include <GL/glext.h>
+#include <GL/glu.h>
+
 TriangleMesh::TriangleMesh(Vec3 ** vertices, Vec3 ** colors, int vwidth, int vheight){
 
 	width = vwidth;
@@ -28,99 +34,87 @@ TriangleMesh::TriangleMesh(Vec3 ** vertices, Vec3 ** colors, int vwidth, int vhe
 	}
 	double start_time = clock()/1000;
 	computeNormals();
+	compile();
 	qDebug()<<"Calculating normals took "<< clock()/1000 - start_time << "mirriseconds";
 	
 }
 
-void TriangleMesh::compile(){
-	double start_time = clock()/1000;
-	int count = 0;
+void TriangleMesh::compile()
+{
+	terrainVBO = new QGLBuffer(QGLBuffer::VertexBuffer);
+	terrainIBO = new QGLBuffer(QGLBuffer::IndexBuffer);
+	
+	GLsizeiptr float_buffer_size = width*height*3 + width*height*2 + width*height*3; //normals + colors + texcoords + vertices
+	GLsizeiptr byte_buffer_size = float_buffer_size*sizeof(float);
+	
+	float* bufferdata = new float[float_buffer_size];
+	
+	numIndices = width*height;
+	GLushort* indexdata = new GLushort[numIndices];
+	
+	//initialize the indexdata
+	for(int i = 0; i < width*height; i++)
+	{
+		indexdata[i] = i;
+	}
+	
+	// bufferdata looks like this
+	// norm.x norm.y norm.z tex.x tex.y vertex.x vertex.y vertex.z ...
+	
+	for(int i = 0; i < width; i++)
+	{
+		for(int j = 0; j < height; j++)
+		{
+			int index = (i*width)+j;
+			bufferdata[index] = tNormals[i][j].x;
+			bufferdata[index+1] = tNormals[i][j].y;
+			bufferdata[index+2] = tNormals[i][j].z;
+			bufferdata[index+3] = (double)(i)/height;
+			bufferdata[index+4] = (double)(j)/width;
+			bufferdata[index+5] = tVertices[i][j].x;
+			bufferdata[index+6] = tVertices[i][j].y;
+			bufferdata[index+7] = tVertices[i][j].z;
+		}
+	}
+			
+	terrainVBO->setUsagePattern(QGLBuffer::StaticDraw);
+	terrainVBO->bind();
+	terrainVBO->allocate(bufferdata, byte_buffer_size);
+	
+	terrainIBO->setUsagePattern(QGLBuffer::StaticDraw);
+	terrainIBO->bind();
+	terrainIBO->allocate(indexdata, sizeof(GLushort)*numIndices);
 	
 	TerrainTexture* tex = new TerrainTexture(tColors, width, height);
-	GLuint tex_id = tex->texture();
-	int tex_width = tex->tex_width();
-	int tex_height = tex->tex_height();
-	
+	tex_id = tex->texture();
+}
+
+
+void TriangleMesh::draw()
+{
 	glEnable(GL_TEXTURE_2D);
 	glBindTexture(GL_TEXTURE_2D, tex_id);
 	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 	
 	glColor3f(1.0, 1.0, 1.0);
-
-	for(int iz = 0; iz<height-1; iz++){ 
-		glBegin(GL_TRIANGLES);
-		for(int ix = 0; ix<width-2; ix+=2){ 
-			switch (count){
-				case 0:
-					glTexCoord2f((double)(iz)/height, (double)(ix)/width);
-					ColNormVex(iz,ix);
-					glTexCoord2f((double)(iz+1)/height, (double)(ix)/width);
-					ColNormVex(iz+1,ix);
-					glTexCoord2f((double)(iz)/height, (double)(ix+1)/width);
-					ColNormVex(iz,ix+1);
-
-					glTexCoord2f((double)(iz)/height, (double)(ix+1)/width);
-					ColNormVex(iz,ix+1);
-					glTexCoord2f((double)(iz+1)/height, (double)(ix)/width);
-					ColNormVex(iz+1,ix);
-					glTexCoord2f((double)(iz+1)/height, (double)(ix+1)/width);
-					ColNormVex(iz+1,ix+1);
-					
-					glTexCoord2f((double)(iz)/height, (double)(ix+1)/width);
-					ColNormVex(iz,ix+1);
-					glTexCoord2f((double)(iz+1)/height, (double)(ix+1)/width);
-					ColNormVex(iz+1,ix+1);
-					glTexCoord2f((double)(iz+1)/height, (double)(ix+2)/width);
-					ColNormVex(iz+1,ix+2);
-					
-					glTexCoord2f((double)(iz)/height, (double)(ix+1)/width);
-					ColNormVex(iz,ix+1);
-					glTexCoord2f((double)(iz+1)/height, (double)(ix+2)/width);
-					ColNormVex(iz+1,ix+2);
-					glTexCoord2f((double)(iz)/height, (double)(ix+2)/width);
-					ColNormVex(iz,ix+2);
-					break;
-				case 1:
-					glTexCoord2f((double)(iz)/height, (double)(ix)/width);
-					ColNormVex(iz,ix);
-					glTexCoord2f((double)(iz+1)/height, (double)(ix)/width);
-					ColNormVex(iz+1,ix);
-					glTexCoord2f((double)(iz+1)/height, (double)(ix+1)/width);
-					ColNormVex(iz+1,ix+1);
-					
-					glTexCoord2f((double)(iz)/height, (double)(ix)/width);
-					ColNormVex(iz,ix);
-					glTexCoord2f((double)(iz+1)/height, (double)(ix+1)/width);
-					ColNormVex(iz+1,ix+1);
-					glTexCoord2f((double)(iz)/height, (double)(ix+1)/width);
-					ColNormVex(iz,ix+1);
-
-					glTexCoord2f((double)(iz)/height, (double)(ix+1)/width);
-					ColNormVex(iz,ix+1);
-					glTexCoord2f((double)(iz+1)/height, (double)(ix+1)/width);
-					ColNormVex(iz+1,ix+1);
-					glTexCoord2f((double)(iz)/height, (double)(ix+2)/width);
-					ColNormVex(iz,ix+2);
-					
-					glTexCoord2f((double)(iz+1)/height, (double)(ix+1)/width);
-					ColNormVex(iz+1,ix+1);
-					glTexCoord2f((double)(iz+1)/height, (double)(ix+2)/width);
-					ColNormVex(iz+1,ix+2);
-					glTexCoord2f((double)(iz)/height, (double)(ix+2)/width);
-					ColNormVex(iz,ix+2);
-					break;
-			}
-
-
-		
-		} // end ix
-		count = !count;
-		glEnd();
-	} // end iz
+	terrainVBO->bind();
+	terrainIBO->bind();
 	
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glVertexPointer(3, GL_FLOAT, 8*sizeof(float), (GLvoid*)(5*sizeof(float)));
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+	glTexCoordPointer(2, GL_FLOAT, 8*sizeof(float), (GLvoid*)(3*sizeof(float)));
+	glEnableClientState(GL_NORMAL_ARRAY);
+	glNormalPointer(GL_FLOAT, 8*sizeof(float), (GLvoid*)NULL);
+	
+	qDebug() << "draw elements";
+	glDrawElements(GL_TRIANGLE_STRIP, numIndices, GL_UNSIGNED_SHORT, BUFFER_OFFSET(0));
+	qDebug() << "Derp";
 }
 
-void TriangleMesh::computeNormals(){
+
+void TriangleMesh::computeNormals()
+{
 	
 	Vec3 v1, v2, v3;
 	
