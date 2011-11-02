@@ -44,39 +44,56 @@ void TriangleMesh::compile()
 	terrainVBO = new QGLBuffer(QGLBuffer::VertexBuffer);
 	terrainIBO = new QGLBuffer(QGLBuffer::IndexBuffer);
 	
+	terrainVBO->create();
+	terrainIBO->create();
+	
 	GLsizeiptr float_buffer_size = width*height*3 + width*height*2 + width*height*3; //normals + colors + texcoords + vertices
 	GLsizeiptr byte_buffer_size = float_buffer_size*sizeof(float);
 	
 	float* bufferdata = new float[float_buffer_size];
 	
-	numIndices = width*height;
+	numIndices = (width-1)*(width-1)*6;
 	GLushort* indexdata = new GLushort[numIndices];
 	
+	int counter = 0;
 	//initialize the indexdata
-	for(int i = 0; i < width*height; i++)
+	for(int i = 0; i < numIndices; i+=6)
 	{
-		indexdata[i] = i;
+		indexdata[i] = counter;
+		indexdata[i+1] = counter+1;
+		indexdata[i+2] = counter+width;
+		indexdata[i+3] = counter+1;
+		indexdata[i+4] = counter+width;
+		indexdata[i+5] = counter+width+1;
+
+		counter += 1;
 	}
+	
+	
+	for(int i = 0; i < numIndices; i++)
+	{
+		qDebug() << indexdata[i];
+	}
+	
 	
 	// bufferdata looks like this
 	// norm.x norm.y norm.z tex.x tex.y vertex.x vertex.y vertex.z ...
 	
-	for(int i = 0; i < width; i++)
+	for(int index = 0; index < width*height; index+=8)
 	{
-		for(int j = 0; j < height; j++)
-		{
-			int index = (i*width)+j;
-			bufferdata[index] = tNormals[i][j].x;
-			bufferdata[index+1] = tNormals[i][j].y;
-			bufferdata[index+2] = tNormals[i][j].z;
-			bufferdata[index+3] = (double)(i)/height;
-			bufferdata[index+4] = (double)(j)/width;
-			bufferdata[index+5] = tVertices[i][j].x;
-			bufferdata[index+6] = tVertices[i][j].y;
-			bufferdata[index+7] = tVertices[i][j].z;
-		}
+		int i = index/width;
+		int j = index%width;
+		
+		bufferdata[index] = tNormals[i][j].x;
+		bufferdata[index+1] = tNormals[i][j].y;
+		bufferdata[index+2] = tNormals[i][j].z;
+		bufferdata[index+3] = (double)(i)/height;
+		bufferdata[index+4] = (double)(j)/width;
+		bufferdata[index+5] = tVertices[i][j].x;
+		bufferdata[index+6] = tVertices[i][j].y;
+		bufferdata[index+7] = tVertices[i][j].z;
 	}
-			
+	
 	terrainVBO->setUsagePattern(QGLBuffer::StaticDraw);
 	terrainVBO->bind();
 	terrainVBO->allocate(bufferdata, byte_buffer_size);
@@ -107,9 +124,7 @@ void TriangleMesh::draw()
 	glEnableClientState(GL_NORMAL_ARRAY);
 	glNormalPointer(GL_FLOAT, 8*sizeof(float), (GLvoid*)NULL);
 	
-	qDebug() << "draw elements";
-	glDrawElements(GL_TRIANGLE_STRIP, numIndices, GL_UNSIGNED_SHORT, BUFFER_OFFSET(0));
-	qDebug() << "Derp";
+	glDrawElements(GL_TRIANGLES, numIndices, GL_UNSIGNED_SHORT, BUFFER_OFFSET(0));
 }
 
 
