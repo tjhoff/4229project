@@ -51,7 +51,7 @@ void Generator::chunk_at(int chunk_x, int chunk_z)
 {
 	double start_time = clock()/1000;
 	
-	m_d = 4;
+	m_d = 201;
 	float step = m_chunk_size/(m_d-1);
 	float x,y,z;
 	

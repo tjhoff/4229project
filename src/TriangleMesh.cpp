@@ -59,6 +59,10 @@ void TriangleMesh::compile()
 	//initialize the indexdata
 	for(int i = 0; i < numIndices; i+=6)
 	{
+		if((counter%width) == (width-1))
+		{
+			counter += 1;
+		}
 		indexdata[i] = counter;
 		indexdata[i+1] = counter+1;
 		indexdata[i+2] = counter+width;
@@ -67,12 +71,6 @@ void TriangleMesh::compile()
 		indexdata[i+5] = counter+width+1;
 
 		counter += 1;
-	}
-	
-	
-	for(int i = 0; i < numIndices; i++)
-	{
-		qDebug() << indexdata[i];
 	}
 	
 	
