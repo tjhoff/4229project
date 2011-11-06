@@ -77,7 +77,7 @@ void TriangleMesh::compile()
 	// bufferdata looks like this
 	// norm.x norm.y norm.z tex.x tex.y vertex.x vertex.y vertex.z ...
 	
-	for(int index = 0; index < width*height; index+=8)
+	/*for(int index = 0; index < width*height; index+=8)
 	{
 		int i = index/width;
 		int j = index%width;
@@ -90,6 +90,22 @@ void TriangleMesh::compile()
 		bufferdata[index+5] = tVertices[i][j].x;
 		bufferdata[index+6] = tVertices[i][j].y;
 		bufferdata[index+7] = tVertices[i][j].z;
+	}*/
+
+	for(int i = 0; i < width; i++)
+	{
+		for(int j = 0; j < height; j++)
+		{
+			int index = ((i*width)+j)*8;
+			bufferdata[index] = tNormals[i][j].x;
+			bufferdata[index+1] = tNormals[i][j].y;
+			bufferdata[index+2] = tNormals[i][j].z;
+			bufferdata[index+3] = (double)(i)/height;
+			bufferdata[index+4] = (double)(j)/width;
+			bufferdata[index+5] = tVertices[i][j].x;
+			bufferdata[index+6] = tVertices[i][j].y;
+			bufferdata[index+7] = tVertices[i][j].z;
+		}
 	}
 	
 	terrainVBO->setUsagePattern(QGLBuffer::StaticDraw);
