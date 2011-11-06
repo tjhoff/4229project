@@ -99,7 +99,7 @@ void GLWidget::initializeGL()
 	glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_COLOR_MATERIAL);
 	
-	glEnable(GL_CULL_FACE);
+	//glEnable(GL_CULL_FACE);
 	
 	float ambient[] = {0.1, 0.1, 0.1, 1.0};
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
@@ -107,7 +107,6 @@ void GLWidget::initializeGL()
 	glEnable(GL_LIGHT0);
 	glLighti(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1);
 	
-
 }
 
 
@@ -303,7 +302,6 @@ void GLWidget::gluPerspective(GLdouble fovy, GLdouble aspect, GLdouble zNear, GL
    ymin = -ymax;
    xmin = ymin * aspect;
    xmax = ymax * aspect;
-
 
    glFrustum(xmin, xmax, ymin, ymax, zNear, zFar);
 }
