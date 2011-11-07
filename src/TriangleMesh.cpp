@@ -63,9 +63,9 @@ void TriangleMesh::compile()
 		{
 			counter += 1;
 		}
-		indexdata[i] = counter;
+		indexdata[i+2] = counter;
 		indexdata[i+1] = counter+1;
-		indexdata[i+2] = counter+width;
+		indexdata[i+0] = counter+width;
 		indexdata[i+3] = counter+1;
 		indexdata[i+4] = counter+width;
 		indexdata[i+5] = counter+width+1;
