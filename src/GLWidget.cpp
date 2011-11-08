@@ -220,22 +220,23 @@ void GLWidget::draw()
 		Chunk * c = m_map->getChunkAt(0,0);
 		Heightmap * hm = c->heightmap;
 		cam = new TerrainCamera(2.5,2.5,hm, m_map);
+		skybox = new Skybox();
 		m_initial_chunk = false;
 	}
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	m_light_rotation += .003;
 	change_current_chunk();
 	if(m_fps_camera)
-	{
+	{	
+		glDisable(GL_DEPTH_TEST);
 		cam->transformCamera();
 		glPushMatrix();
-		glDisable(GL_TEXTURE_2D);
 		glLoadIdentity();
 		glRotatef(-cam->pitch, 1.0,0.0,0.0);
+		glRotatef(-cam->yaw, 0.0,1.0,0.0);
 		skybox->draw();
-		glEnable(GL_TEXTURE_2D);
+		glEnable(GL_DEPTH_TEST);
 	}
 	else
 	{

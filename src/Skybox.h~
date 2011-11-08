@@ -8,9 +8,9 @@ class Skybox{
 		Skybox();
 		GLuint right;
 		GLuint left;
-		GLuint front;
-		GLuint back;
 		GLuint top;
+		GLuint back;
+		GLuint front
 		void draw();
 
 
