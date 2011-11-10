@@ -26,15 +26,9 @@ GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 	m_zpos = 0;
 	m_light_rotation = 0.0;
 	
-	m_map = new Map();
-	
 	m_fps_camera = true;
-	
 	m_initial_chunk = true;
-	
 	m_wireframe = false;
-	skybox = new Skybox();
-	//cam = new Camera3d(0.0,0.0,-7.0);
 
 	setFocusPolicy(Qt::StrongFocus);
 	m_update_timer = new QTimer();
@@ -106,6 +100,11 @@ void GLWidget::initializeGL()
 
 	glEnable(GL_LIGHT0);
 	glLighti(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1);
+	
+	skybox = new Skybox();
+	
+	m_map = new Map();
+	change_current_chunk();
 	
 }
 
@@ -217,12 +216,12 @@ void GLWidget::keyPressEvent(QKeyEvent* event){
 void GLWidget::draw()
 {
 	if (m_initial_chunk){
-		Chunk * c = m_map->getChunkAt(0,0);
-		Heightmap * hm = c->heightmap;
+		Heightmap * hm = m_nchunk->heightmap;
 		cam = new TerrainCamera(2.5,2.5,hm, m_map);
 		skybox = new Skybox();
 		m_initial_chunk = false;
 	}
+	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
