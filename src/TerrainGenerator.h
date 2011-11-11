@@ -1,5 +1,5 @@
-#ifndef GENERATOR_H
-#define GENERATOR_H
+#ifndef TERRAIN_GENERATOR_H
+#define TERRAIN_GENERATOR_H
 
 #include <QList>
 #include <stdio.h>
@@ -8,16 +8,16 @@
 #include "Perlin.h"
 
 //-------------------------------
-//     Base Generator Class
+//     Base TerrainGenerator Class
 //
 //     Subclass this for different 
 //     terrain generators
 //-------------------------------
-class Generator
+class TerrainGenerator
 {
 	public:
-		Generator();
-		~Generator();
+		TerrainGenerator();
+		~TerrainGenerator();
 		QList<Polygon*> polygons_at(int x, int z);
 		float* default_translation();
 		Heightmap * heightmap;

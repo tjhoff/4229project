@@ -1,8 +1,10 @@
 #include "Heightmap.h"
 
-Heightmap::Heightmap(TriangleMesh * mesh,int iwidth, int iheight, float hScale, float offx = 0.0, float offz = 0.0){
+#include <iostream>
+
+Heightmap::Heightmap(BufferGenerator * buf,int iwidth, int iheight, float hScale, float offx = 0.0, float offz = 0.0){
 	
-	tMesh = mesh;
+	bufGen = buf;
 	
 	scale = hScale;
 	width = iwidth;
@@ -20,7 +22,7 @@ void Heightmap::calcBases(){
 
 	for(int i = 0; i<height; i++){
 		for(int j = 0; j<width; j++){
-			baseHeights[i][j] = tMesh->tVertices[i][j].y;
+			//baseHeights[i][j] = bufGen->tVertices[i][j].y;
 		}
 	}
 

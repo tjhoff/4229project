@@ -9,7 +9,6 @@
 #include "Polygon.h"
 #include "Camera3d.h"
 #include "Heightmap.h"
-#include "TriangleMesh.h"
 #include "Skybox.h"
 #include "Map.h"
 #include "Chunk.h"

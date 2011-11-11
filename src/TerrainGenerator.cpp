@@ -1,4 +1,4 @@
-#include "Generator.h"
+#include "TerrainGenerator.h"
 
 #include <math.h>
 #include <QString>
@@ -7,7 +7,7 @@
 #include <time.h>
 
 
-Generator::Generator()
+TerrainGenerator::TerrainGenerator()
 {
 	m_d = 0;
 	m_seed = time(NULL);
@@ -17,9 +17,9 @@ Generator::Generator()
 }
 
 
-Generator::~Generator()
+TerrainGenerator::~TerrainGenerator()
 {
-	qDebug() << "Generator destructor";
+	qDebug() << "TerrainGenerator destructor";
 	if(m_d != 0)
 	{
 		for(int i = 0; i < m_d; i++)
@@ -37,7 +37,7 @@ Generator::~Generator()
 		
 
 
-float* Generator::default_translation()
+float* TerrainGenerator::default_translation()
 {
 	m_default_translation = new float[3];
 	m_default_translation[0] = -2.5;
@@ -47,7 +47,7 @@ float* Generator::default_translation()
 }
 
 
-void Generator::chunk_at(int chunk_x, int chunk_z)
+void TerrainGenerator::chunk_at(int chunk_x, int chunk_z)
 {
 	double start_time = clock()/1000;
 	
@@ -108,11 +108,11 @@ void Generator::chunk_at(int chunk_x, int chunk_z)
 		}
 	}
 	
-	qDebug() << "Generator::chunk_at() took" << (clock()/1000) - start_time << "milliseconds";
+	qDebug() << "TerrainGenerator::chunk_at() took" << (clock()/1000) - start_time << "milliseconds";
 }
 
 
-void Generator::islands(int i, int j, float step, int chunk_x, int chunk_z)
+void TerrainGenerator::islands(int i, int j, float step, int chunk_x, int chunk_z)
 {
 	float x, y, z;
 	Vec3 color;
@@ -144,14 +144,14 @@ void Generator::islands(int i, int j, float step, int chunk_x, int chunk_z)
 
 
 
-float Generator::base_height(float x, float z)
+float TerrainGenerator::base_height(float x, float z)
 {
 	float y = m_base_height_perlin->Get(x/15, z/15);	
 	return y*y*2;
 }
 
 
-QList<Polygon*> Generator::polygons_at(int x, int z)
+QList<Polygon*> TerrainGenerator::polygons_at(int x, int z)
 {
 	m_polys.clear();
 	

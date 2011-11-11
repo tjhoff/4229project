@@ -108,7 +108,7 @@ void GLWidget::initializeGL()
 	m_map = new Map();
 	
 	change_current_chunk();
-	Heightmap * hm = m_nchunk->heightmap;
+	Heightmap * hm = m_nchunk->heightMap();
 	
 	
 	cam = new TerrainCamera(2.5,2.5,hm, m_map);

@@ -83,7 +83,7 @@ void TerrainCamera::move(float forward){
 	int nchunkz = z/5;
 	if ((nchunkx != chunkx) || (nchunkz != chunkz)){ 
 		std::cout<<nchunkx<<" "<<nchunkz<<" "<<chunkx<<" "<<chunkz<<"\n";
-		heightmap = map->getChunkAt(nchunkx, nchunkz)->heightmap; 
+		heightmap = map->getChunkAt(nchunkx, nchunkz)->heightMap(); 
 		map->curx = nchunkx;
 		map->curz = nchunkz;
 		chunkx = nchunkx;

@@ -1,21 +1,20 @@
 #ifndef HEIGHTMAP
-	#define HEIGHTMAP
+#define HEIGHTMAP
 
 #include "Vec3.h"
-#ifndef TRIANGLEMESH
-#include "TriangleMesh.h"
-#endif
+#include "BufferGenerator.h"
+
 class Heightmap{
 	public:
 	
-		Heightmap(TriangleMesh * mesh, int iwidth, int iheight, float vScale, float offx, float offz);
+		Heightmap(BufferGenerator* buf, int iwidth, int iheight, float vScale, float offx, float offz);
 		float getYValue(float x, float z);
 	private:
 		void calcSlope(float * yVals, Vec3 &slope);
 		void calcBases();
 		Vec3 ** slopes;
 		
-		TriangleMesh * tMesh;
+		BufferGenerator* bufGen;
 		
 		float ** baseHeights;
 		float scale; 

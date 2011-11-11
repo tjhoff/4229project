@@ -1,7 +1,7 @@
 #include "Map.h"
 
 Map::Map(){
-	gen = new Generator();
+	gen = new TerrainGenerator();
 	curx = 0;
 	curz = 0;
 	Chunk * C = new Chunk(curx, curz, gen);
@@ -18,7 +18,7 @@ Chunk* Map::getChunkAt(int x, int z){
 	
 	for(std::vector<Chunk*>::iterator it = chunkList.begin(); it!=chunkList.end(); it++){
 		retC = *it;
-		if ((retC->x == x) && (retC->z == z)){
+		if ((retC->x() == x) && (retC->z() == z)){
 			std::cout<<"Chunk found at "<< x<<" "<<z<<"\n";	
 			return retC;
 		}
