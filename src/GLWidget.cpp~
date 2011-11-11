@@ -7,6 +7,8 @@
 
 #include <time.h>
 
+int obj;
+
 GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 {
 	setFormat(QGLFormat(QGL::DoubleBuffer | QGL::DepthBuffer));
@@ -26,15 +28,9 @@ GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 	m_zpos = 0;
 	m_light_rotation = 0.0;
 	
-	m_map = new Map();
-	
 	m_fps_camera = true;
-	
 	m_initial_chunk = true;
-	
 	m_wireframe = false;
-	skybox = new Skybox();
-	//cam = new Camera3d(0.0,0.0,-7.0);
 
 	setFocusPolicy(Qt::StrongFocus);
 	m_update_timer = new QTimer();
@@ -107,7 +103,17 @@ void GLWidget::initializeGL()
 	glEnable(GL_LIGHT0);
 	glLighti(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1);
 	
-
+	skybox = new Skybox();
+	
+	m_map = new Map();
+	
+	change_current_chunk();
+	Heightmap * hm = m_nchunk->heightmap;
+	
+	
+	cam = new TerrainCamera(2.5,2.5,hm, m_map);
+	obj = LoadOBJ("untitled.obj");
+	
 }
 
 
@@ -217,25 +223,25 @@ void GLWidget::keyPressEvent(QKeyEvent* event){
 
 void GLWidget::draw()
 {
-	if (cam == NULL){
-		Chunk * c = m_map->getChunkAt(0,0);
-		Heightmap * hm = c->heightmap;
-		cam = new TerrainCamera(2.5,2.5,hm, m_map);
+	if (m_initial_chunk){
+
 	}
+	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	m_light_rotation += .003;
 	change_current_chunk();
 	if(m_fps_camera)
-	{
+	{	
+		glDisable(GL_DEPTH_TEST);
 		cam->transformCamera();
 		glPushMatrix();
-		glDisable(GL_TEXTURE_2D);
 		glLoadIdentity();
 		glRotatef(-cam->pitch, 1.0,0.0,0.0);
+		glRotatef(-cam->yaw, 0.0,1.0,0.0);
 		skybox->draw();
-		glEnable(GL_TEXTURE_2D);
+		glEnable(GL_DEPTH_TEST);
+		glPopMatrix();
 	}
 	else
 	{
@@ -302,7 +308,6 @@ void GLWidget::gluPerspective(GLdouble fovy, GLdouble aspect, GLdouble zNear, GL
    ymin = -ymax;
    xmin = ymin * aspect;
    xmax = ymax * aspect;
-
 
    glFrustum(xmin, xmax, ymin, ymax, zNear, zFar);
 }

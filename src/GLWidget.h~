@@ -96,6 +96,7 @@ class GLWidget : public QGLWidget
 		
 		bool m_wireframe;
 		bool m_fps_camera;
+		bool m_initial_chunk;
 		
 		float* m_default_translation;
 };

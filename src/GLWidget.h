@@ -13,6 +13,7 @@
 #include "Skybox.h"
 #include "Map.h"
 #include "Chunk.h"
+#include "CSCIx229.h"
 
 #include <vector>
 

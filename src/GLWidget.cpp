@@ -7,6 +7,8 @@
 
 #include <time.h>
 
+int obj;
+
 GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 {
 	setFormat(QGLFormat(QGL::DoubleBuffer | QGL::DepthBuffer));
@@ -104,7 +106,13 @@ void GLWidget::initializeGL()
 	skybox = new Skybox();
 	
 	m_map = new Map();
+	
 	change_current_chunk();
+	Heightmap * hm = m_nchunk->heightmap;
+	
+	
+	cam = new TerrainCamera(2.5,2.5,hm, m_map);
+	obj = LoadOBJ("untitled.obj");
 	
 }
 
@@ -216,10 +224,7 @@ void GLWidget::keyPressEvent(QKeyEvent* event){
 void GLWidget::draw()
 {
 	if (m_initial_chunk){
-		Heightmap * hm = m_nchunk->heightmap;
-		cam = new TerrainCamera(2.5,2.5,hm, m_map);
-		skybox = new Skybox();
-		m_initial_chunk = false;
+
 	}
 	
 	glMatrixMode(GL_MODELVIEW);
@@ -236,6 +241,8 @@ void GLWidget::draw()
 		glRotatef(-cam->yaw, 0.0,1.0,0.0);
 		skybox->draw();
 		glEnable(GL_DEPTH_TEST);
+		glPopMatrix();
+		glCallList(obj);
 	}
 	else
 	{
