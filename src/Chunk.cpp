@@ -8,16 +8,23 @@ Chunk::Chunk(int ix,int iz, TerrainGenerator * terrainGen){
 	m_x = ix;
 	m_z = iz;
 	m_terrainGen = terrainGen;
+	
+	qDebug() << "Chunk ctor";
+	
 	create();
 }
 
 void Chunk::create(){
+	qDebug() << "Chunk::create()";
+
 	m_terrainGen->polygons_at(m_x, m_z);
 	m_width = m_terrainGen->m_d;
 	m_height = m_terrainGen->m_d;
 	
 	m_bufferGen = new BufferGenerator(m_terrainGen->m_vertices, m_terrainGen->m_colors, m_terrainGen->m_d, m_terrainGen->m_d);
 	m_heightMap = new Heightmap(m_bufferGen, m_bufferGen->width(), m_bufferGen->height(), 5.0/m_bufferGen->width(), 5.0*m_x, 5.0*m_z); 
+	
+	qDebug() << "starting vbos";
 	
 	m_terrainVBO = new QGLBuffer(QGLBuffer::VertexBuffer);
 	m_terrainIBO = new QGLBuffer(QGLBuffer::IndexBuffer);
@@ -27,21 +34,31 @@ void Chunk::create(){
 	
 	GLushort* IBOData = m_bufferGen->IBOData();
 	GLfloat* VBOData = m_bufferGen->VBOData();
+	
+	qDebug() << "Got vbodata";
 
 	int VBOSize = m_bufferGen->VBOByteSize();
 	int IBOSize = m_bufferGen->IBOByteSize();
 	int numIndices = m_bufferGen->numIndices();
 	
+	qDebug() << "Got sizes";
+	
 	m_terrainVBO->setUsagePattern(QGLBuffer::StaticDraw);
 	m_terrainVBO->bind();
 	m_terrainVBO->allocate(VBOData, VBOSize);
+	
+	qDebug() << "Bound and allocated the vbo";
 	
 	m_terrainIBO->setUsagePattern(QGLBuffer::StaticDraw);
 	m_terrainIBO->bind();
 	m_terrainIBO->allocate(IBOData, IBOSize);
 	
+	qDebug() << "Bound and allocated the ibo";
+	
 	TerrainTexture* tex = new TerrainTexture(m_terrainGen->m_colors, m_width, m_height);
 	m_texID = tex->texture();
+	
+	qDebug() << "finished generating chunk";
 }
 
 void Chunk::draw()

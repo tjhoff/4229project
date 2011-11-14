@@ -1,33 +1,33 @@
 #include "Map.h"
 
 Map::Map(){
-	gen = new TerrainGenerator();
+	m_terrainGen = new TerrainGenerator();
 	curx = 0;
 	curz = 0;
-	Chunk * C = new Chunk(curx, curz, gen);
-	chunkList.push_back(C);
 }
 
 Map::~Map(){
-	delete gen;
-	
+	delete m_terrainGen;
 }
 
 Chunk* Map::getChunkAt(int x, int z){
-	Chunk * retC;
+	Chunk* c;
 	
-	for(std::vector<Chunk*>::iterator it = chunkList.begin(); it!=chunkList.end(); it++){
-		retC = *it;
-		if ((retC->x() == x) && (retC->z() == z)){
-			std::cout<<"Chunk found at "<< x<<" "<<z<<"\n";	
-			return retC;
+	for(int i = 0; i < m_chunkList.size(); i++)
+	{
+		c = m_chunkList[i];
+		if((c->x() == x) && (c->z() == z))
+		{
+			qDebug() << "Chunk found at"<< x <<  z;
+			return c;
 		}
 	
 	}
-	std::cout<<"No chunk at "<< x<<" "<<z<<"\n";	
+	qDebug() << "No chunk at" << x << z;	
 	// if no chunk matching the coordinates was found
 
-	retC = new Chunk(x, z, gen);
-	chunkList.push_back(retC);
-	return retC;
+	c = new Chunk(x, z, m_terrainGen);
+	qDebug() << "new chunk was" << c;
+	m_chunkList.append(c);
+	return c;
 }

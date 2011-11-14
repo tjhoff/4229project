@@ -104,13 +104,11 @@ void GLWidget::initializeGL()
 	glLighti(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1);
 	
 	skybox = new Skybox();
-	
 	m_map = new Map();
 	
 	change_current_chunk();
+	qDebug() << "chunk pointer for m_nchunk" << m_nchunk;
 	Heightmap * hm = m_nchunk->heightMap();
-	
-	
 	cam = new TerrainCamera(2.5,2.5,hm, m_map);
 	obj = LoadOBJ("untitled.obj");
 	
@@ -328,6 +326,10 @@ void GLWidget::change_current_chunk()
 	m_echunk = m_map->getChunkAt(m_map->curx+1, m_map->curz);
 	m_nechunk = m_map->getChunkAt(m_map->curx+1, m_map->curz-1);
 	m_centerchunk = m_map->getChunkAt(m_map->curx, m_map->curz);
+	
+	qDebug() << "ccc m_nchunk =" << m_nchunk;
+	
+	qDebug() << "done with changing current chunk";
 	
 }
 
