@@ -4,8 +4,6 @@ Map::Map(){
 	gen = new TerrainGenerator();
 	curx = 0;
 	curz = 0;
-	Chunk * C = new Chunk(curx, curz, gen);
-	chunkList.push_back(C);
 }
 
 Map::~Map(){
@@ -14,6 +12,8 @@ Map::~Map(){
 }
 
 Chunk* Map::getChunkAt(int x, int z){
+
+	qDebug() << "Map::getChunkAt";
 	Chunk * retC;
 	
 	for(std::vector<Chunk*>::iterator it = chunkList.begin(); it!=chunkList.end(); it++){
@@ -28,6 +28,7 @@ Chunk* Map::getChunkAt(int x, int z){
 	// if no chunk matching the coordinates was found
 
 	retC = new Chunk(x, z, gen);
+	qDebug() << "new chunk" << retC;
 	chunkList.push_back(retC);
 	return retC;
 }

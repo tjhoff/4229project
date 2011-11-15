@@ -97,6 +97,7 @@ void GLWidget::initializeGL()
 	
 	glEnable(GL_CULL_FACE);
 	
+	
 	float ambient[] = {0.1, 0.1, 0.1, 1.0};
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
 
@@ -104,12 +105,11 @@ void GLWidget::initializeGL()
 	glLighti(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1);
 	
 	skybox = new Skybox();
-	
 	m_map = new Map();
 	
 	change_current_chunk();
-	Heightmap * hm = m_nchunk->heightMap();
 	
+	Heightmap * hm = m_nchunk->heightMap();
 	
 	cam = new TerrainCamera(2.5,2.5,hm, m_map);
 	obj = LoadOBJ("untitled.obj");
@@ -316,7 +316,15 @@ void GLWidget::gluPerspective(GLdouble fovy, GLdouble aspect, GLdouble zNear, GL
 
 void GLWidget::change_current_chunk()
 {
-	if((m_current_xchunk == m_map->curx) && (m_current_zchunk == m_map->curz)) return;
+	if((m_current_xchunk == m_map->curx) && (m_current_zchunk == m_map->curz))
+	{
+		return;
+	}
+	else 
+	{
+		qDebug() << "nope";
+	}
+	
 	m_current_xchunk = m_map->curx;
 	m_current_zchunk = m_map->curz;
 	m_nchunk = m_map->getChunkAt(m_map->curx, m_map->curz-1);

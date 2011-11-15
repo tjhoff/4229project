@@ -18,6 +18,7 @@ void Chunk::create(){
 	
 	m_bufferGen = new BufferGenerator(m_terrainGen->m_vertices, m_terrainGen->m_colors, m_terrainGen->m_d, m_terrainGen->m_d);
 	m_heightMap = new Heightmap(m_bufferGen, m_bufferGen->width(), m_bufferGen->height(), 5.0/m_bufferGen->width(), 5.0*m_x, 5.0*m_z); 
+	qDebug() << "Heightmap:" << m_heightMap;
 	
 	m_terrainVBO = new QGLBuffer(QGLBuffer::VertexBuffer);
 	m_terrainIBO = new QGLBuffer(QGLBuffer::IndexBuffer);
@@ -27,13 +28,14 @@ void Chunk::create(){
 	
 	GLushort* IBOData = m_bufferGen->IBOData();
 	GLfloat* VBOData = m_bufferGen->VBOData();
-
+	
 	int VBOSize = m_bufferGen->VBOByteSize();
 	int IBOSize = m_bufferGen->IBOByteSize();
 	int numIndices = m_bufferGen->numIndices();
 	
 	m_terrainVBO->setUsagePattern(QGLBuffer::StaticDraw);
 	m_terrainVBO->bind();
+	
 	m_terrainVBO->allocate(VBOData, VBOSize);
 	
 	m_terrainIBO->setUsagePattern(QGLBuffer::StaticDraw);

@@ -16,7 +16,7 @@ class Chunk{
 		int x() { return m_x; }
 		int z() { return m_z; }
 		
-		Heightmap* heightMap() { return m_heightMap; }
+		Heightmap* heightMap() { qDebug() << "ret hm" << m_heightMap; return m_heightMap; }
 		
 	private:
 		int m_x;
