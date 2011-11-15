@@ -224,10 +224,6 @@ void GLWidget::keyPressEvent(QKeyEvent* event){
 
 void GLWidget::draw()
 {
-	if (m_initial_chunk){
-
-	}
-	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
