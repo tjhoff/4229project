@@ -41,7 +41,7 @@ void Chunk::create(){
 	int IBOSize = m_bufferGen->IBOByteSize();
 	int numIndices = m_bufferGen->numIndices();
 	
-	qDebug() << "Got sizes";
+	qDebug() << "Got sizes" << VBOSize << IBOSize << numIndices;
 	
 	m_terrainVBO->setUsagePattern(QGLBuffer::StaticDraw);
 	m_terrainVBO->bind();
@@ -59,6 +59,7 @@ void Chunk::create(){
 	m_texID = tex->texture();
 	
 	qDebug() << "finished generating chunk";
+	qDebug() << "====================================";
 }
 
 void Chunk::draw()

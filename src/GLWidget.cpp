@@ -112,6 +112,9 @@ void GLWidget::initializeGL()
 	cam = new TerrainCamera(2.5,2.5,hm, m_map);
 	obj = LoadOBJ("untitled.obj");
 	
+	qDebug() << "finished with initializeGL()";
+	qDebug() << "++++++++++++++++++++++++++++++++";
+	
 }
 
 
@@ -314,7 +317,11 @@ void GLWidget::gluPerspective(GLdouble fovy, GLdouble aspect, GLdouble zNear, GL
 
 void GLWidget::change_current_chunk()
 {
-	if((m_current_xchunk == m_map->curx) && (m_current_zchunk == m_map->curz)) return;
+	if((m_current_xchunk == m_map->curx) && (m_current_zchunk == m_map->curz))
+	{
+		return;
+	}
+	
 	m_current_xchunk = m_map->curx;
 	m_current_zchunk = m_map->curz;
 	m_nchunk = m_map->getChunkAt(m_map->curx, m_map->curz-1);

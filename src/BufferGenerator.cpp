@@ -30,7 +30,7 @@ void BufferGenerator::compile()
 	size_t float_buffer_size = m_width*m_height*3 + m_width*m_height*2 + m_width*m_height*3; //normals + colors + texcoords + vertices
 	
 	m_VBOdata = new float[float_buffer_size];
-	
+	m_VBOByteSize = float_buffer_size*sizeof(float);
 	m_numIndices = (m_width-1)*(m_width-1)*6;
 	m_IBOdata = new GLushort[m_numIndices];
 	
