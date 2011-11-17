@@ -36,6 +36,9 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(par
 	
 	m_regenAction = m_toolBar->addAction("Regenerate Scene");
 	connect(m_regenAction, SIGNAL(triggered()), m_glWidget, SLOT(drawScene()));
+	
+	m_toggleParticlesAction = m_toolBar->addAction("Toggle Particles");
+	connect(m_toggleParticlesAction, SIGNAL(triggered()), m_glWidget, SLOT(toggleParticles()));
 
 	m_fullscreen = true;
 	showFullScreen();

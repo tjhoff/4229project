@@ -14,7 +14,7 @@ void Camera::transformCamera(){
 	
 	glRotatef(-pitch,1.0,0.0,0.0);
 	glRotatef(-yaw,0.0,1.0,0.0);
-	glTranslatef(-x,-y-0.5,-z);
+	glTranslatef(-x,-y-0.2,-z);
 	glScalef(czoom,czoom,czoom);
 	
 }
