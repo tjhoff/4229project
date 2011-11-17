@@ -28,6 +28,7 @@ class TerrainGenerator
 	private:
 		void chunk_at(int x, int z);	
 		float base_height(float x, float z);
+		float fuzzy_height(float middle, float plus_or_minus, float x, float z);
 		void islands(int i, int j, float step, int chunk_x, int chunk_z);
 		
 			
@@ -37,6 +38,7 @@ class TerrainGenerator
 		
 		Perlin* m_base_height_perlin;
 		Perlin* m_detail_perlin;
+		Perlin* m_height_cutoff_perlin;
 };
 
 #endif

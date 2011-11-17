@@ -13,6 +13,7 @@ TerrainGenerator::TerrainGenerator()
 	m_seed = time(NULL);
 	m_base_height_perlin = new Perlin(1, 1, 3, m_seed);
 	m_detail_perlin = new Perlin(6, 2, 1, m_seed);
+	m_height_cutoff_perlin = new Perlin(6, 2, 1, m_seed);
 	m_chunk_size = 5;
 }
 
@@ -71,9 +72,15 @@ void TerrainGenerator::chunk_at(int chunk_x, int chunk_z)
 			y -= (y/4);
 			y -= 0.5;
 			
-			if(y > 1.7)
+			// 1.7 +- 0.3
+			float crater_cutoff = fuzzy_height(1.7, 0.4, x/4, z/4);
+			
+			// -0.1 +- 0.1
+			float sand_cutoff = fuzzy_height(-0.1, 0.1, x/4, z/4);
+			
+			if(y > crater_cutoff)
 			{
-				y = 3.4 - y;
+				y = (crater_cutoff*2) - y;
 				if(y <= 0.8)
 				{
 					y = 0.8;
@@ -93,7 +100,7 @@ void TerrainGenerator::chunk_at(int chunk_x, int chunk_z)
 				y = -0.2;
 				color = Vec3(0.0, 0.0, 0.6);
 			}
-			else if(y > -0.2 && y < -0.05)
+			else if(y > -0.2 && y < sand_cutoff)
 			{
 				color = Vec3(1.0, 1.0, 1.0);
 			}
@@ -140,6 +147,12 @@ void TerrainGenerator::islands(int i, int j, float step, int chunk_x, int chunk_
 	
 	m_vertices[i][j] = Vec3(x,y,z);
 	m_colors[i][j] = color;
+}
+
+
+float Generator::fuzzy_height(float middle, float plus_or_minus, float x, float z)
+{
+	return (m_height_cutoff_perlin->Get(x, z) * plus_or_minus) + middle;
 }
 
 
