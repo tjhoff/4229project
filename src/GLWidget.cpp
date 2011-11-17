@@ -108,11 +108,15 @@ void GLWidget::initializeGL()
 	m_map = new Map();
 	
 	change_current_chunk();
-	
+
+	qDebug() << "chunk pointer for m_nchunk" << m_nchunk;
 	Heightmap * hm = m_nchunk->heightMap();
-	
+
 	cam = new TerrainCamera(2.5,2.5,hm, m_map);
 	obj = LoadOBJ("untitled.obj");
+	
+	qDebug() << "finished with initializeGL()";
+	qDebug() << "++++++++++++++++++++++++++++++++";
 	
 }
 
@@ -223,10 +227,6 @@ void GLWidget::keyPressEvent(QKeyEvent* event){
 
 void GLWidget::draw()
 {
-	if (m_initial_chunk){
-
-	}
-	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
@@ -320,10 +320,13 @@ void GLWidget::change_current_chunk()
 	{
 		return;
 	}
+<<<<<<< HEAD
 	else 
 	{
 		qDebug() << "nope";
 	}
+=======
+>>>>>>> f6e326b52a603487d7f59df56023306a18632f79
 	
 	m_current_xchunk = m_map->curx;
 	m_current_zchunk = m_map->curz;
@@ -336,6 +339,10 @@ void GLWidget::change_current_chunk()
 	m_echunk = m_map->getChunkAt(m_map->curx+1, m_map->curz);
 	m_nechunk = m_map->getChunkAt(m_map->curx+1, m_map->curz-1);
 	m_centerchunk = m_map->getChunkAt(m_map->curx, m_map->curz);
+	
+	qDebug() << "ccc m_nchunk =" << m_nchunk;
+	
+	qDebug() << "done with changing current chunk";
 	
 }
 
