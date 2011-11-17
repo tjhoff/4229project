@@ -10,10 +10,12 @@ class ParticleEngine
 		ParticleEngine();
 		~ParticleEngine();
 		
+		void compile();
 		void draw();
 		
 	private:
 		QList<Particle*> m_particles;
+		int m_nParticles;
 		
 };
 
