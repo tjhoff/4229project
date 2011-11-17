@@ -14,6 +14,7 @@
 #include "Map.h"
 #include "Chunk.h"
 #include "CSCIx229.h"
+#include "ParticleEngine.h"
 
 #include <vector>
 
@@ -37,6 +38,8 @@ class GLWidget : public QGLWidget
 		void toggleWireframe();
 		void drawScene();
 		void toggleCameraMode();
+		void toggleParticles();
+		
 		
 	protected slots:
 		void initializeGL();
@@ -92,12 +95,15 @@ class GLWidget : public QGLWidget
 		Chunk* m_nechunk;
 		Chunk* m_centerchunk;
 		
+		ParticleEngine* m_particles;
+		
 		Camera * cam;
 		Skybox * skybox;
 		
 		bool m_wireframe;
 		bool m_fps_camera;
 		bool m_initial_chunk;
+		bool m_displaying_particles;
 		
 		float* m_default_translation;
 };

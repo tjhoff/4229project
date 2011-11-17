@@ -31,6 +31,7 @@ GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 	m_fps_camera = true;
 	m_initial_chunk = true;
 	m_wireframe = false;
+	m_displaying_particles = false;
 
 	setFocusPolicy(Qt::StrongFocus);
 	m_update_timer = new QTimer();
@@ -79,6 +80,25 @@ void GLWidget::toggleCameraMode()
 }
 
 
+void GLWidget::toggleParticles()
+{
+	m_displaying_particles = !m_displaying_particles;
+	
+	if(m_displaying_particles)
+	{
+		glEnable(GL_FOG);
+		float fog_color[] = {1.0, 1.0, 1.0, 1.0};
+		float fog_density[] = {0.4 };
+		glFogfv(GL_FOG_COLOR, fog_color);
+		glFogfv(GL_FOG_DENSITY, fog_density);
+	}
+	else
+	{
+		glDisable(GL_FOG);
+	}
+}
+
+
 ////////////////////////
 //     Protected
 ////////////////////////
@@ -97,6 +117,15 @@ void GLWidget::initializeGL()
 	
 	glEnable(GL_CULL_FACE);
 	
+	if(m_displaying_particles)
+	{
+		glEnable(GL_FOG);
+		float fog_color[] = {1.0, 1.0, 1.0, 1.0};
+		float fog_density[] = {0.4 };
+		glFogfv(GL_FOG_COLOR, fog_color);
+		glFogfv(GL_FOG_DENSITY, fog_density);
+	}
+	
 	float ambient[] = {0.1, 0.1, 0.1, 1.0};
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
 
@@ -104,12 +133,12 @@ void GLWidget::initializeGL()
 	glLighti(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1);
 	
 	skybox = new Skybox();
-	
 	m_map = new Map();
 	
 	change_current_chunk();
 	Heightmap * hm = m_nchunk->heightmap;
 	
+	m_particles = new ParticleEngine();
 	
 	cam = new TerrainCamera(2.5,2.5,hm, m_map);
 	obj = LoadOBJ("untitled.obj");
@@ -267,6 +296,10 @@ void GLWidget::draw()
 		glTranslatef(m_map->curx-2.5, 0.0, m_map->curz-2.5);
 	}
 	
+	if(m_displaying_particles)
+	{
+		m_particles->draw();
+	}
 
 	m_nchunk->draw();
 	m_nwchunk->draw();
