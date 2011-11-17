@@ -150,7 +150,7 @@ void TerrainGenerator::islands(int i, int j, float step, int chunk_x, int chunk_
 }
 
 
-float Generator::fuzzy_height(float middle, float plus_or_minus, float x, float z)
+float TerrainGenerator::fuzzy_height(float middle, float plus_or_minus, float x, float z)
 {
 	return (m_height_cutoff_perlin->Get(x, z) * plus_or_minus) + middle;
 }

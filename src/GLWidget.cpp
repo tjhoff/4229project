@@ -320,13 +320,6 @@ void GLWidget::change_current_chunk()
 	{
 		return;
 	}
-<<<<<<< HEAD
-	else 
-	{
-		qDebug() << "nope";
-	}
-=======
->>>>>>> f6e326b52a603487d7f59df56023306a18632f79
 	
 	m_current_xchunk = m_map->curx;
 	m_current_zchunk = m_map->curz;
