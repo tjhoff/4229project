@@ -28,6 +28,9 @@ GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 	m_zpos = 0;
 	m_light_rotation = 0.0;
 	
+	m_current_xchunk = -99999;
+	m_current_zchunk = -99999;
+	
 	m_fps_camera = true;
 	m_initial_chunk = true;
 	m_wireframe = false;
@@ -88,7 +91,7 @@ void GLWidget::toggleParticles()
 	{
 		glEnable(GL_FOG);
 		float fog_color[] = {1.0, 1.0, 1.0, 1.0};
-		float fog_density[] = {0.4 };
+		float fog_density[] = {0.4};
 		glFogfv(GL_FOG_COLOR, fog_color);
 		glFogfv(GL_FOG_DENSITY, fog_density);
 	}
@@ -121,7 +124,7 @@ void GLWidget::initializeGL()
 	{
 		glEnable(GL_FOG);
 		float fog_color[] = {1.0, 1.0, 1.0, 1.0};
-		float fog_density[] = {0.4 };
+		float fog_density[] = {0.4};
 		glFogfv(GL_FOG_COLOR, fog_color);
 		glFogfv(GL_FOG_DENSITY, fog_density);
 	}
@@ -136,6 +139,7 @@ void GLWidget::initializeGL()
 	m_map = new Map();
 	
 	change_current_chunk();
+	qDebug() << "HARP DARP" << m_nchunk;
 	Heightmap * hm = m_nchunk->heightmap;
 	
 	m_particles = new ParticleEngine();
@@ -347,10 +351,14 @@ void GLWidget::gluPerspective(GLdouble fovy, GLdouble aspect, GLdouble zNear, GL
 
 void GLWidget::change_current_chunk()
 {
-	if((m_current_xchunk == m_map->curx) && (m_current_zchunk == m_map->curz)) return;
+	if((m_current_xchunk == m_map->curx) && (m_current_zchunk == m_map->curz))
+	{
+		return;
+	}
 	m_current_xchunk = m_map->curx;
 	m_current_zchunk = m_map->curz;
 	m_nchunk = m_map->getChunkAt(m_map->curx, m_map->curz-1);
+	qDebug() << "HERP DERP" << m_nchunk;
 	m_nwchunk = m_map->getChunkAt(m_map->curx-1, m_map->curz-1);
 	m_wchunk = m_map->getChunkAt(m_map->curx-1, m_map->curz);
 	m_swchunk = m_map->getChunkAt(m_map->curx-1, m_map->curz+1);
