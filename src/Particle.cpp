@@ -65,7 +65,7 @@ void Particle::draw()
 	glRotatef(m_xrot, 1, 0, 0);
 	glRotatef(m_yrot, 0, 1, 0);
 	glRotatef(m_zrot, 0, 0, 1);
-	glScalef(0.03, 0.03, 0.03);
+	glScalef(0.02, 0.02, 0.02);
 	
 	glBegin(GL_POLYGON);
 	glNormal3f(0, 0, 1);

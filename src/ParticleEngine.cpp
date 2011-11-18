@@ -7,7 +7,7 @@
 
 ParticleEngine::ParticleEngine()
 {
-	m_nParticles = 1250;
+	m_nParticles = 5250;
 	srand(time(NULL));
 	for(int i = 0; i < m_nParticles; i++)
 	{

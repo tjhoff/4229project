@@ -18,7 +18,7 @@ GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 	m_zrot = 0;	
 	m_zoom = 1.0;
 	
-	m_speed = .001;
+	m_speed = .05;
 	
 	m_ambient = 0.3; 
 	m_diffuse = 0.5;  
@@ -203,12 +203,10 @@ void GLWidget::wheelEvent(QWheelEvent* event)
 		if(event->delta() > 0)
 		{
 			m_speed += .05;
-			//m_zoom += 0.1;
 		}
 		else if(event->delta() < 0)
 		{
 			m_speed -= .05;
-			//m_zoom -= 0.1;
 		}
 	}
 	else
