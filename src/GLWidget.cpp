@@ -7,7 +7,7 @@
 
 #include <time.h>
 
-int obj;
+
 
 GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 {
@@ -35,7 +35,6 @@ GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 	m_initial_chunk = true;
 	m_wireframe = false;
 	m_displaying_particles = false;
-
 	setFocusPolicy(Qt::StrongFocus);
 	m_update_timer = new QTimer();
 	connect(m_update_timer, SIGNAL(timeout()), this, SLOT(updateGL()));
@@ -136,16 +135,17 @@ void GLWidget::initializeGL()
 	glLighti(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1);
 	
 	skybox = new Skybox();
+	object = new Object("tree.obj");
+	object->setScale(.1);
 	m_map = new Map();
 	
 	change_current_chunk();
 	qDebug() << "HARP DARP" << m_nchunk;
 	Heightmap * hm = m_nchunk->heightmap;
-	
+	object->setLocation(2.5, hm->getYValue(2.5,2.5), 2.5);
 	m_particles = new ParticleEngine();
 	
 	cam = new TerrainCamera(2.5,2.5,hm, m_map);
-	obj = LoadOBJ("untitled.obj");
 	
 }
 
@@ -272,8 +272,13 @@ void GLWidget::draw()
 		glRotatef(-cam->yaw, 0.0,1.0,0.0);
 		skybox->draw();
 		glEnable(GL_DEPTH_TEST);
+		glTranslatef(-2.5, 0, -2.5);
+		if(m_displaying_particles)
+		{
+			m_particles->draw();
+		}	
 		glPopMatrix();
-		glCallList(obj);
+		object->draw();
 	}
 	else
 	{
@@ -298,10 +303,7 @@ void GLWidget::draw()
 		glTranslatef(m_map->curx-2.5, 0.0, m_map->curz-2.5);
 	}
 	
-	if(m_displaying_particles)
-	{
-		m_particles->draw();
-	}
+
 
 	m_nchunk->draw();
 	m_nwchunk->draw();

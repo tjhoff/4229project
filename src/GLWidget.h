@@ -15,6 +15,7 @@
 #include "Chunk.h"
 #include "CSCIx229.h"
 #include "ParticleEngine.h"
+#include "Object.h"
 
 #include <vector>
 
@@ -99,7 +100,7 @@ class GLWidget : public QGLWidget
 		
 		Camera * cam;
 		Skybox * skybox;
-		
+		Object * object;
 		bool m_wireframe;
 		bool m_fps_camera;
 		bool m_initial_chunk;
