@@ -39,6 +39,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(par
 	
 	m_toggleParticlesAction = m_toolBar->addAction("Toggle Particles");
 	connect(m_toggleParticlesAction, SIGNAL(triggered()), m_glWidget, SLOT(toggleParticles()));
+	
+	m_toggleShadersAction = m_toolBar->addAction("Toggle Shaders");
+	connect(m_toggleShadersAction, SIGNAL(triggered()), m_glWidget, SLOT(toggleShaders()));
+	
+	m_reloadShadersAction = m_toolBar->addAction("Reload Shaders");
+	connect(m_reloadShadersAction, SIGNAL(triggered()), m_glWidget, SLOT(reloadShaders()));
 
 	m_fullscreen = true;
 	showFullScreen();

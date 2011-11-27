@@ -40,7 +40,8 @@ class GLWidget : public QGLWidget
 		void drawScene();
 		void toggleCameraMode();
 		void toggleParticles();
-		
+		void toggleShaders();
+		void reloadShaders();
 		
 	protected slots:
 		void initializeGL();
@@ -105,8 +106,14 @@ class GLWidget : public QGLWidget
 		bool m_fps_camera;
 		bool m_initial_chunk;
 		bool m_displaying_particles;
+		bool m_using_shaders;
 		
 		float* m_default_translation;
+		
+		QGLShaderProgram* m_blurProgram;
+		QGLShader* m_blurShader;
+		
+		QGLFramebufferObject* m_fbo;
 };
 
 #endif

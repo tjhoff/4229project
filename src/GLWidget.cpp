@@ -20,7 +20,7 @@ GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 	
 	m_speed = .05;
 	
-	m_ambient = 0.3; 
+	m_ambient = 0.7; 
 	m_diffuse = 0.5;  
 	m_specular = 1.0;  
 	m_xpos = 0;
@@ -35,6 +35,8 @@ GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 	m_initial_chunk = true;
 	m_wireframe = false;
 	m_displaying_particles = false;
+	m_using_shaders = false;
+	
 	setFocusPolicy(Qt::StrongFocus);
 	m_update_timer = new QTimer();
 	connect(m_update_timer, SIGNAL(timeout()), this, SLOT(updateGL()));
@@ -79,6 +81,32 @@ void GLWidget::drawScene()
 void GLWidget::toggleCameraMode()
 {
 	m_fps_camera = !m_fps_camera;
+}
+
+void GLWidget::toggleShaders()
+{
+	m_using_shaders = !m_using_shaders;
+	
+	if(m_using_shaders)
+	{
+		m_blurProgram->bind();
+	}
+	else
+	{
+		m_blurProgram->release();
+	}
+}
+
+void GLWidget::reloadShaders()
+{
+	m_blurProgram->removeShader(m_blurShader);
+
+	delete m_blurShader;
+	m_blurShader = new QGLShader(QGLShader::Fragment);
+	m_blurShader->compileSourceFile("./shaders/blur.f.glsl");
+	
+	m_blurProgram->addShader(m_blurShader);
+	m_blurProgram->link();
 }
 
 
@@ -135,7 +163,7 @@ void GLWidget::initializeGL()
 	glLighti(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1);
 	
 	skybox = new Skybox();
-	object = new Object("tree.obj");
+	object = new Object("untitled.obj");
 	object->setScale(.1);
 	m_map = new Map();
 	
@@ -147,6 +175,14 @@ void GLWidget::initializeGL()
 	
 	cam = new TerrainCamera(2.5,2.5,hm, m_map);
 	
+	m_blurShader = new QGLShader(QGLShader::Fragment);
+	m_blurShader->compileSourceFile("./shaders/blur.f.glsl");
+		
+	m_blurProgram = new QGLShaderProgram();
+	m_blurProgram->addShader(m_blurShader);
+	m_blurProgram->link();
+	
+	m_fbo = new QGLFramebufferObject(QSize(1366, 768), QGLFramebufferObject::NoAttachment);
 }
 
 
@@ -254,14 +290,13 @@ void GLWidget::keyPressEvent(QKeyEvent* event){
 
 void GLWidget::draw()
 {
-	if (m_initial_chunk){
-
-	}
+	m_fbo->bind();
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
 	change_current_chunk();
+	
 	if(m_fps_camera)
 	{	
 		glDisable(GL_DEPTH_TEST);
@@ -289,6 +324,11 @@ void GLWidget::draw()
 	
 		glScalef(0.5, 0.5, 0.5);
 		glScalef(m_zoom, m_zoom, m_zoom);
+		
+		if(m_displaying_particles)
+		{
+			m_particles->draw();
+		}	
 	}
 	
 	glPushMatrix();
@@ -302,8 +342,6 @@ void GLWidget::draw()
 	{
 		glTranslatef(m_map->curx-2.5, 0.0, m_map->curz-2.5);
 	}
-	
-
 
 	m_nchunk->draw();
 	m_nwchunk->draw();
@@ -323,6 +361,19 @@ void GLWidget::draw()
 	char chunkloc[80];
 	sprintf(chunkloc, "Chunk (%4i, %4i)", m_map->curx, m_map->curz);
 	renderText(0,50, chunkloc);
+	
+	m_fbo->release();
+
+	glLoadIdentity();
+	glTranslatef(0.0, 0.0, -2.4);
+	glBindTexture(GL_TEXTURE_2D, m_fbo->texture());
+	
+	glBegin(GL_POLYGON);
+	glTexCoord2f(0.0, 1.0); glVertex2f(-m_width, 1.0);
+	glTexCoord2f(0.0, 0.0); glVertex2f(-m_width, -1.0);
+	glTexCoord2f(1.0, 0.0); glVertex2f(m_width, -1.0);
+	glTexCoord2f(1.0, 1.0); glVertex2f(m_width, 1.0);
+	glEnd();
 }
 
 void GLWidget::lighting()
@@ -360,7 +411,6 @@ void GLWidget::change_current_chunk()
 	m_current_xchunk = m_map->curx;
 	m_current_zchunk = m_map->curz;
 	m_nchunk = m_map->getChunkAt(m_map->curx, m_map->curz-1);
-	qDebug() << "HERP DERP" << m_nchunk;
 	m_nwchunk = m_map->getChunkAt(m_map->curx-1, m_map->curz-1);
 	m_wchunk = m_map->getChunkAt(m_map->curx-1, m_map->curz);
 	m_swchunk = m_map->getChunkAt(m_map->curx-1, m_map->curz+1);

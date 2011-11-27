@@ -36,6 +36,8 @@ class MainWindow : public QMainWindow
 		QAction* m_regenAction;
 		QAction* m_toggleCameraAction;
 		QAction* m_toggleParticlesAction;
+		QAction* m_toggleShadersAction;
+		QAction* m_reloadShadersAction;
 		
 		GLWidget* m_glWidget;
 		

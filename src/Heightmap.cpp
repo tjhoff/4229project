@@ -4,6 +4,8 @@ Heightmap::Heightmap(TriangleMesh * mesh,int iwidth, int iheight, float hScale, 
 	
 	tMesh = mesh;
 	
+	qDebug() << offx << offz;
+	
 	scale = hScale;
 	width = iwidth;
 	height = iheight;
@@ -16,14 +18,13 @@ Heightmap::Heightmap(TriangleMesh * mesh,int iwidth, int iheight, float hScale, 
 	calcBases();
 }
 
-void Heightmap::calcBases(){
-
+void Heightmap::calcBases()
+{
 	for(int i = 0; i<height; i++){
 		for(int j = 0; j<width; j++){
 			baseHeights[i][j] = tMesh->tVertices[i][j].y;
 		}
 	}
-
 }
 
 void Heightmap::calcSlope(float * yVals, Vec3& slope){
