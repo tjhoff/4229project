@@ -290,7 +290,7 @@ void GLWidget::keyPressEvent(QKeyEvent* event){
 
 void GLWidget::draw()
 {
-	m_fbo->bind();
+	//m_fbo->bind();
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -354,6 +354,8 @@ void GLWidget::draw()
 	m_centerchunk->draw();
 	
 	glPopMatrix();
+	
+	glLoadIdentity();
 	char cameraLocation[100];
 	sprintf(cameraLocation, "x:%2.3f y:%2.3f z:%2.3f yaw:%2.3f pitch:%2.3f", cam->x, cam->y, cam->z, cam->yaw, cam->pitch);
 	glColor3f(1.0,1.0,1.0);
@@ -362,7 +364,7 @@ void GLWidget::draw()
 	sprintf(chunkloc, "Chunk (%4i, %4i)", m_map->curx, m_map->curz);
 	renderText(0,50, chunkloc);
 	
-	m_fbo->release();
+	/*m_fbo->release();
 
 	glLoadIdentity();
 	glTranslatef(0.0, 0.0, -2.4);
@@ -373,7 +375,7 @@ void GLWidget::draw()
 	glTexCoord2f(0.0, 0.0); glVertex2f(-m_width, -1.0);
 	glTexCoord2f(1.0, 0.0); glVertex2f(m_width, -1.0);
 	glTexCoord2f(1.0, 1.0); glVertex2f(m_width, 1.0);
-	glEnd();
+	glEnd();*/
 }
 
 void GLWidget::lighting()
