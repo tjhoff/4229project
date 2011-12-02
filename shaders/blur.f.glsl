@@ -1,8 +1,6 @@
 #version 120
 
-uniform float fade_factor;
 uniform sampler2D texture;
-
 varying vec2 texcoord;
 
 float blur_size = 1.0/512.0;

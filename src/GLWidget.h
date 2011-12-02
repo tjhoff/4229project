@@ -16,6 +16,7 @@
 #include "CSCIx229.h"
 #include "ParticleEngine.h"
 #include "Object.h"
+#include "ShaderManager.h"
 
 #include <vector>
 
@@ -96,6 +97,8 @@ class GLWidget : public QGLWidget
 		Chunk* m_echunk;
 		Chunk* m_nechunk;
 		Chunk* m_centerchunk;
+		
+		ShaderManager* m_shaderManager;
 		
 		ParticleEngine* m_particles;
 		

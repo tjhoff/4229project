@@ -85,16 +85,7 @@ void GLWidget::toggleCameraMode()
 
 void GLWidget::toggleShaders()
 {
-	m_using_shaders = !m_using_shaders;
-	
-	if(m_using_shaders)
-	{
-		m_blurProgram->bind();
-	}
-	else
-	{
-		m_blurProgram->release();
-	}
+	m_shaderManager->toggleShaders();
 }
 
 void GLWidget::reloadShaders()
@@ -175,13 +166,7 @@ void GLWidget::initializeGL()
 	
 	cam = new TerrainCamera(2.5,2.5,hm, m_map);
 	
-	m_blurShader = new QGLShader(QGLShader::Fragment);
-	m_blurShader->compileSourceFile("./shaders/blur.f.glsl");
-		
-	m_blurProgram = new QGLShaderProgram();
-	m_blurProgram->addShader(m_blurShader);
-	m_blurProgram->link();
-	
+	m_shaderManager = new ShaderManager();	
 	m_fbo = new QGLFramebufferObject(QSize(1366, 768), QGLFramebufferObject::NoAttachment);
 }
 
@@ -290,7 +275,7 @@ void GLWidget::keyPressEvent(QKeyEvent* event){
 
 void GLWidget::draw()
 {
-	//m_fbo->bind();
+	m_fbo->bind();
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -342,6 +327,7 @@ void GLWidget::draw()
 	{
 		glTranslatef(m_map->curx-2.5, 0.0, m_map->curz-2.5);
 	}
+	
 
 	m_nchunk->draw();
 	m_nwchunk->draw();
@@ -364,18 +350,9 @@ void GLWidget::draw()
 	sprintf(chunkloc, "Chunk (%4i, %4i)", m_map->curx, m_map->curz);
 	renderText(0,50, chunkloc);
 	
-	/*m_fbo->release();
-
-	glLoadIdentity();
-	glTranslatef(0.0, 0.0, -2.4);
-	glBindTexture(GL_TEXTURE_2D, m_fbo->texture());
+	m_fbo->release();
 	
-	glBegin(GL_POLYGON);
-	glTexCoord2f(0.0, 1.0); glVertex2f(-m_width, 1.0);
-	glTexCoord2f(0.0, 0.0); glVertex2f(-m_width, -1.0);
-	glTexCoord2f(1.0, 0.0); glVertex2f(m_width, -1.0);
-	glTexCoord2f(1.0, 1.0); glVertex2f(m_width, 1.0);
-	glEnd();*/
+	m_shaderManager->draw(m_fbo->texture(), m_width);	
 }
 
 void GLWidget::lighting()
