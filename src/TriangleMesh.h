@@ -6,6 +6,7 @@
 #include <QDebug>
 #include <math.h>
 #include "Vec3.h"
+#include "Global.h"
 #ifndef TIME
 #define TIME
 #include "time.h"
@@ -19,6 +20,7 @@ class TriangleMesh{
 
 	public:
 		TriangleMesh(Vec3 ** vertices, Vec3 ** colors, int vwidth, int vheight);
+		~TriangleMesh();
 		void compile();
 		void computeNormals();
 		void draw();

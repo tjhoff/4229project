@@ -9,6 +9,13 @@ Chunk::Chunk(int ix,int iz, Generator * m_gen){
 	create();
 }
 
+Chunk::~Chunk(){
+
+	delete tMesh;
+	delete heightmap;
+
+}
+
 void Chunk::create(){
 	gen->polygons_at(x, z);
 	tMesh= new TriangleMesh(gen->m_vertices,gen->m_colors,gen->m_d, gen->m_d);

@@ -19,15 +19,20 @@ class ThreadedProcessor : public QThread
 #include <vector>
 #include "Chunk.h"
 #include "Generator.h"
+#include "Global.h"
+
 class Map{
 	public:
 		Map();
 		~Map();
 		std::vector<Chunk*> chunkList;
 		Chunk* getChunkAt(int x, int z);
+		void deleteChunkAt(int x, int z);
+		void deleteFurthestChunk();
 		Generator * gen;
 		int curx;
 		int curz;
+		int numCurrentChunks;
 };
 
 #endif

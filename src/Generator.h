@@ -6,6 +6,7 @@
 #include "Polygon.h"
 #include "Heightmap.h"
 #include "Perlin.h"
+#include "Global.h"
 
 //-------------------------------
 //     Base Generator Class

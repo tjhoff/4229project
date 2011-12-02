@@ -4,6 +4,7 @@
 #include <QtOpenGL>
 #include <QGLWidget>
 #include <QImage>
+#include "Global.h"
 
 #include "Vec3.h"
 

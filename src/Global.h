@@ -1,0 +1,2 @@
+#define CHUNK_SIZE 5.0
+#define CURRENT_CHUNK_LIMIT 25

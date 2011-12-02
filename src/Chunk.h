@@ -4,12 +4,14 @@
 // Chunk.h
 #include "TriangleMesh.h"
 #include "Generator.h"
+#include "Global.h"
 
 #include <QtOpenGL>
 
 class Chunk{
 	public: 
 		Chunk(int ix,int iz, Generator * m_gen);
+		~Chunk();
 		int x;
 		int z;
 		int displayName;

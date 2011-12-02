@@ -39,6 +39,28 @@ TriangleMesh::TriangleMesh(Vec3 ** vertices, Vec3 ** colors, int vwidth, int vhe
 	
 }
 
+TriangleMesh::~TriangleMesh(){
+
+	/*for (int i = 0; i<height; i++){
+		for(int j = 0; j< height; j++){
+			delete tVertices[i][j];
+			delete tColors[i][j];
+			delete tNormals[i][j];
+		}
+		
+	}*/
+	for (int i = 0; i<height; i++){
+		delete tVertices[i];
+		delete tColors[i];
+		delete tNormals[i];
+	}
+	delete tVertices;
+	delete tColors;
+	delete tNormals;
+	qDebug()<< "Take THAT, memory leaks!";
+
+}
+
 void TriangleMesh::compile()
 {
 	terrainVBO = new QGLBuffer(QGLBuffer::VertexBuffer);

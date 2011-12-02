@@ -1,6 +1,7 @@
 #ifndef HEIGHTMAP
 	#define HEIGHTMAP
 
+#include "Global.h"
 #include "Vec3.h"
 #ifndef TRIANGLEMESH
 #include "TriangleMesh.h"
