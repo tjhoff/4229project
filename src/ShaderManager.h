@@ -14,6 +14,7 @@ class ShaderManager
 	private:
 		QGLShaderProgram* m_blurProgram;
 		QGLShader* m_blurShader;
+		QGLShader* m_vxShader;
 		
 		GLuint m_texHandle;
 		bool m_using_shaders;
