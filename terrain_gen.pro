@@ -8,6 +8,7 @@ DEPENDPATH += .
 INCLUDEPATH += .
 QT += opengl
 CONFIG += qt debug
+LIBS += -lGLEW
 
 # Input
 HEADERS += src/*.h

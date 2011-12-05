@@ -14,7 +14,7 @@ Generator::Generator()
 	m_base_height_perlin = new Perlin(1, 1, 3, m_seed);
 	m_detail_perlin = new Perlin(6, 2, 1, m_seed);
 	m_height_cutoff_perlin = new Perlin(6, 2, 1, m_seed);
-	m_chunk_size = 5;
+	m_chunk_size = CHUNK_SIZE;
 }
 
 

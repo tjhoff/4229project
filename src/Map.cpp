@@ -69,9 +69,9 @@ Chunk* Map::getChunkAt(int x, int z){
 	// if no chunk matching the coordinates was found
 	numCurrentChunks +=1;
 	
-	if (numCurrentChunks >= CURRENT_CHUNK_LIMIT){
-		deleteFurthestChunk();
-	}
+	//if (numCurrentChunks >= CURRENT_CHUNK_LIMIT){
+	//	deleteFurthestChunk();
+	//}
 	
 	retC = new Chunk(x, z, gen);
 	chunkList.push_back(retC);

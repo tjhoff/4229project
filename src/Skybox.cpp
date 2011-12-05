@@ -61,8 +61,8 @@ Skybox::Skybox(){
 }
 
 void Skybox::draw(){
-	glDisable(GL_LIGHTING);
 	glEnable(GL_TEXTURE_2D);
+	glDisable(GL_LIGHTING);
 	
 	glBindTexture(GL_TEXTURE_2D, right);
 	glBegin(GL_QUADS);
@@ -101,6 +101,7 @@ void Skybox::draw(){
 		glTexCoord2f(1.0,1.0);b;
 		glTexCoord2f(0.0,1.0);h;
 	glEnd();
+	
 	glEnable(GL_LIGHTING);
 }
 

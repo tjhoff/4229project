@@ -43,9 +43,12 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(par
 	m_toggleShadersAction = m_toolBar->addAction("Toggle Shaders");
 	connect(m_toggleShadersAction, SIGNAL(triggered()), m_glWidget, SLOT(toggleShaders()));
 	
-	m_reloadShadersAction = m_toolBar->addAction("Reload Shaders");
-	connect(m_reloadShadersAction, SIGNAL(triggered()), m_glWidget, SLOT(reloadShaders()));
-
+	m_toggleToonLighting = m_toolBar->addAction("Toggle Toon Lighting");
+	connect(m_toggleToonLighting, SIGNAL(triggered()), m_glWidget, SLOT(toggleToonLighting()));
+	
+	m_toggleDynamicWater = m_toolBar->addAction("Toggle Dynamic Water");
+	connect(m_toggleDynamicWater, SIGNAL(triggered()), m_glWidget, SLOT(toggleDynamicWater()));
+	
 	m_fullscreen = true;
 	showFullScreen();
 	

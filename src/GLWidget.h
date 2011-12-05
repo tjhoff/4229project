@@ -1,6 +1,7 @@
 #ifndef GL_WIDGET_H
 #define GL_WIDGET_H
 
+#include <GL/glew.h>
 #include <QtOpenGL>
 #include <QGLWidget>
 #include <QTimer>
@@ -17,6 +18,8 @@
 #include "ParticleEngine.h"
 #include "Object.h"
 #include "ShaderManager.h"
+#include "ToonShader.h"
+#include "WaterShader.h"
 
 #include <vector>
 
@@ -42,7 +45,8 @@ class GLWidget : public QGLWidget
 		void toggleCameraMode();
 		void toggleParticles();
 		void toggleShaders();
-		void reloadShaders();
+		void toggleToonLighting();
+		void toggleDynamicWater();
 		
 	protected slots:
 		void initializeGL();
@@ -102,6 +106,9 @@ class GLWidget : public QGLWidget
 		
 		ParticleEngine* m_particles;
 		
+		ToonShader* m_toonShader;
+		WaterShader* m_waterShader;
+		
 		Camera * cam;
 		Skybox * skybox;
 		Object * object;
@@ -110,13 +117,13 @@ class GLWidget : public QGLWidget
 		bool m_initial_chunk;
 		bool m_displaying_particles;
 		bool m_using_shaders;
+		bool m_toon_lighting;
+		bool m_dynamic_water;
 		
 		float* m_default_translation;
 		
-		QGLShaderProgram* m_blurProgram;
-		QGLShader* m_blurShader;
-		
 		QGLFramebufferObject* m_fbo;
+		GLuint m_depthBuf;
 };
 
 #endif

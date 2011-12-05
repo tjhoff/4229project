@@ -9,6 +9,7 @@
 
 
 
+
 GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 {
 	setFormat(QGLFormat(QGL::DoubleBuffer | QGL::DepthBuffer));
@@ -20,8 +21,8 @@ GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 	
 	m_speed = .05;
 	
-	m_ambient = 0.7; 
-	m_diffuse = 0.5;  
+	m_ambient = 0.9; 
+	m_diffuse = 1.0;  
 	m_specular = 1.0;  
 	m_xpos = 0;
 	m_ypos = 0;
@@ -36,6 +37,8 @@ GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 	m_wireframe = false;
 	m_displaying_particles = false;
 	m_using_shaders = false;
+	m_toon_lighting = false;
+	m_dynamic_water = false;
 	
 	setFocusPolicy(Qt::StrongFocus);
 	m_update_timer = new QTimer();
@@ -88,18 +91,15 @@ void GLWidget::toggleShaders()
 	m_shaderManager->toggleShaders();
 }
 
-void GLWidget::reloadShaders()
+void GLWidget::toggleToonLighting()
 {
-	m_blurProgram->removeShader(m_blurShader);
-
-	delete m_blurShader;
-	m_blurShader = new QGLShader(QGLShader::Fragment);
-	m_blurShader->compileSourceFile("./shaders/blur.f.glsl");
-	
-	m_blurProgram->addShader(m_blurShader);
-	m_blurProgram->link();
+	m_toon_lighting = !m_toon_lighting;
 }
 
+void GLWidget::toggleDynamicWater()
+{
+	m_dynamic_water = !m_dynamic_water;
+}
 
 void GLWidget::toggleParticles()
 {
@@ -133,10 +133,16 @@ void GLWidget::initializeGL()
 	glShadeModel(GL_SMOOTH);
 	glEnable(GL_NORMALIZE);
 	glEnable(GL_LIGHTING);
-	glColorMaterial(GL_FRONT,GL_AMBIENT_AND_DIFFUSE);
+	glColorMaterial(GL_FRONT_AND_BACK,GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_COLOR_MATERIAL);
 	
 	glEnable(GL_CULL_FACE);
+	
+	if (GLEW_OK != glewInit())
+	{
+		qDebug() << "glewInit() failed!";
+		exit(1);
+	}
 	
 	if(m_displaying_particles)
 	{
@@ -151,7 +157,7 @@ void GLWidget::initializeGL()
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
 
 	glEnable(GL_LIGHT0);
-	glLighti(GL_LIGHT0, GL_CONSTANT_ATTENUATION, 1);
+	glLighti(GL_LIGHT0, GL_NONE, 1);
 	
 	skybox = new Skybox();
 	object = new Object("untitled.obj");
@@ -167,7 +173,13 @@ void GLWidget::initializeGL()
 	cam = new TerrainCamera(2.5,2.5,hm, m_map);
 	
 	m_shaderManager = new ShaderManager();	
-	m_fbo = new QGLFramebufferObject(QSize(1366, 768), QGLFramebufferObject::NoAttachment);
+	
+	m_toonShader = new ToonShader();
+	m_waterShader = new WaterShader();
+	
+	m_fbo = new QGLFramebufferObject(1366, 768, QGLFramebufferObject::NoAttachment);
+	
+	glGenRenderbuffersEXT(1, &m_depthBuf);
 }
 
 
@@ -177,14 +189,13 @@ void GLWidget::resizeGL(int width, int height)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	m_width = (height>0) ? (GLfloat)width/height : 1;
-	gluPerspective(45, m_width, 0.005, 22);
+	gluPerspective(45, m_width, 0.1, 22);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
 
 void GLWidget::paintGL()
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	draw();
 }
 
@@ -274,12 +285,21 @@ void GLWidget::keyPressEvent(QKeyEvent* event){
 ///////////////////////////
 
 void GLWidget::draw()
-{
+{	
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
 	m_fbo->bind();
+	
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-
+	
+	if(m_toon_lighting)
+	{
+		m_toonShader->bind();
+	}
+	
 	change_current_chunk();
 	
 	if(m_fps_camera)
@@ -287,10 +307,16 @@ void GLWidget::draw()
 		glDisable(GL_DEPTH_TEST);
 		cam->transformCamera();
 		glPushMatrix();
+		
 		glLoadIdentity();
 		glRotatef(-cam->pitch, 1.0,0.0,0.0);
 		glRotatef(-cam->yaw, 0.0,1.0,0.0);
 		skybox->draw();
+		
+		glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, m_depthBuf);
+		glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT32, 1366, 768);
+		glFramebufferRenderbufferEXT( GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, m_depthBuf); 
+		
 		glEnable(GL_DEPTH_TEST);
 		glTranslatef(-2.5, 0, -2.5);
 		if(m_displaying_particles)
@@ -316,10 +342,7 @@ void GLWidget::draw()
 		}	
 	}
 	
-	glPushMatrix();
-	glTranslatef(2.5, 5.0, 2.5);
 	lighting();
-	glPopMatrix();
 
 	glPushMatrix();
 	
@@ -328,7 +351,11 @@ void GLWidget::draw()
 		glTranslatef(m_map->curx-2.5, 0.0, m_map->curz-2.5);
 	}
 	
-
+	if(m_dynamic_water)
+	{
+		m_waterShader->bind();
+	}
+	
 	m_nchunk->draw();
 	m_nwchunk->draw();
 	m_wchunk->draw();
@@ -338,6 +365,11 @@ void GLWidget::draw()
 	m_echunk->draw();
 	m_nechunk->draw();
 	m_centerchunk->draw();
+	
+	if(m_dynamic_water)
+	{
+		m_waterShader->release();
+	}
 	
 	glPopMatrix();
 	
@@ -350,7 +382,13 @@ void GLWidget::draw()
 	sprintf(chunkloc, "Chunk (%4i, %4i)", m_map->curx, m_map->curz);
 	renderText(0,50, chunkloc);
 	
+	if(m_toon_lighting)
+	{
+		m_toonShader->release();
+	}
+	
 	m_fbo->release();
+	glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
 	
 	m_shaderManager->draw(m_fbo->texture(), m_width);	
 }
@@ -360,7 +398,7 @@ void GLWidget::lighting()
 	float Ambient[] = {m_ambient, m_ambient, m_ambient, 1.0};
 	float Diffuse[] = {m_diffuse, m_diffuse, m_diffuse, 1.0};
 	float Specular[] = {m_specular, m_specular, m_specular, 1.0};
-	float Position[] = {m_xpos, m_ypos, m_zpos, 1.0};
+	float Position[] = {m_xpos, m_ypos, m_zpos, 0.0};
 	
 	glLightfv(GL_LIGHT0, GL_AMBIENT , Ambient);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE , Diffuse);

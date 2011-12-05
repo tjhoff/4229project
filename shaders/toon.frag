@@ -1,0 +1,56 @@
+//  Cartoon fragment shader
+//  Adapted from Lighthouse3D
+
+varying vec3 N;
+varying vec3 L;
+uniform sampler2D tex;
+
+void main()
+{
+   float intensity = dot(normalize(N),normalize(L));
+   vec4 color = (texture2D(tex, gl_TexCoord[0].st));
+   float f;
+  /* if (color.r > 0.95)
+      color.r= 1.0;
+   else if (color.r > 0.5)
+      color.r = 0.6;
+   else if (color.r > 0.25)
+      color.r = 0.4;
+   else
+      color.r = 0.2;
+
+   if (color.g > 0.95)
+      color.g= 1.0;
+   else if (color.g > 0.5)
+      color.g = 0.6;
+   else if (color.g > 0.25)
+      color.g = 0.4;
+   else
+      color.g = 0.2;
+      
+   if (color.b > 0.95)
+      color.b= 1.0;
+   else if (color.b > 0.5)
+      color.b = 0.6;
+   else if (color.b > 0.25)
+      color.b = 0.4;
+   else
+      color.b = 0.2;*/
+
+	if (intensity > 0.95)
+      f= 1.0;
+   else if (intensity > 0.5)
+      f = 0.6;
+   else if (intensity > 0.25)
+      f = 0.4;
+   else
+      f = 0.2;
+      
+  // f = intensity;
+          
+   color = normalize(color)/(f*3);
+
+   gl_FragColor = color;
+}
+
+

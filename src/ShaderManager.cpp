@@ -5,10 +5,10 @@
 ShaderManager::ShaderManager()
 {
 	m_blurShader = new QGLShader(QGLShader::Fragment);
-	m_blurShader->compileSourceFile("./shaders/blur.f.glsl");
+	m_blurShader->compileSourceFile("./shaders/blur.frag");
 	
 	m_vxShader = new QGLShader(QGLShader::Vertex);
-	m_vxShader->compileSourceFile("./shaders/blur.v.glsl");
+	m_vxShader->compileSourceFile("./shaders/blur.vert");
 		
 	m_blurProgram = new QGLShaderProgram();
 	m_blurProgram->addShader(m_blurShader);
@@ -35,7 +35,6 @@ ShaderManager::ShaderManager()
 	m_ibo->setUsagePattern(QGLBuffer::StaticDraw);
 	m_ibo->bind();
 	m_ibo->allocate(indices, 4*sizeof(GLuint));
-	
 }
 
 

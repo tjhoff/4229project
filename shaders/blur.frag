@@ -15,10 +15,10 @@ void main()
 		for(int j = -kernel_size; j < kernel_size; j++)
  		{
  			vec2 loc = vec2(texcoord.x + (i * blur_size), texcoord.y + (j * blur_size));
- 			float multiplier = 1.0/(74.0);
+ 			float multiplier = 1.0/(50.0);
  			sum += texture2D(texture, loc) * multiplier;
  		}
  	}
- 	
-   	gl_FragColor = sum;
+ 	float brightness = (sum.x + sum.y + sum.z)/3.0;
+   	gl_FragColor = mix(texture2D(texture, texcoord), sum, pow(brightness, 4));
 }	
