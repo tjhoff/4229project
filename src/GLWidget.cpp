@@ -288,9 +288,9 @@ void GLWidget::draw()
 {	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	m_fbo->bind();
+	//m_fbo->bind();
 	
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -313,9 +313,9 @@ void GLWidget::draw()
 		glRotatef(-cam->yaw, 0.0,1.0,0.0);
 		skybox->draw();
 		
-		glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, m_depthBuf);
-		glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT32, 1366, 768);
-		glFramebufferRenderbufferEXT( GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, m_depthBuf); 
+		//glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, m_depthBuf);
+		//glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT32, 1366, 768);
+		//glFramebufferRenderbufferEXT( GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, m_depthBuf); 
 		
 		glEnable(GL_DEPTH_TEST);
 		glTranslatef(-2.5, 0, -2.5);
@@ -387,10 +387,10 @@ void GLWidget::draw()
 		m_toonShader->release();
 	}
 	
-	m_fbo->release();
-	glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
+	//m_fbo->release();
+	//glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
 	
-	m_bloomShader->draw(m_fbo->texture(), m_width);	
+	//m_bloomShader->draw(m_fbo->texture(), m_width);	
 }
 
 void GLWidget::lighting()
