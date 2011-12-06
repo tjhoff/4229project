@@ -25,7 +25,7 @@ GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 	m_diffuse = 1.0;  
 	m_specular = 1.0;  
 	m_xpos = 0;
-	m_ypos = 0;
+	m_ypos = 20;
 	m_zpos = 0;
 	m_light_rotation = 0.0;
 	
@@ -158,6 +158,7 @@ void GLWidget::initializeGL()
 
 	glEnable(GL_LIGHT0);
 	glLighti(GL_LIGHT0, GL_NONE, 1);
+
 	
 	skybox = new Skybox();
 	object = new Object("untitled.obj");
@@ -294,16 +295,6 @@ void GLWidget::draw()
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	
-	if(m_toon_lighting)
-	{
-		m_toonShader->bind();
-	}
-	
-	change_current_chunk();
-	
-	if(m_fps_camera)
-	{	
 		glDisable(GL_DEPTH_TEST);
 		cam->transformCamera();
 		glPushMatrix();
@@ -318,6 +309,16 @@ void GLWidget::draw()
 		//glFramebufferRenderbufferEXT( GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, m_depthBuf); 
 		
 		glEnable(GL_DEPTH_TEST);
+	if(m_toon_lighting)
+	{
+		m_toonShader->bind();
+	}
+	
+	change_current_chunk();
+	
+	if(m_fps_camera)
+	{	
+
 		glTranslatef(-2.5, 0, -2.5);
 		if(m_displaying_particles)
 		{
@@ -399,7 +400,6 @@ void GLWidget::lighting()
 	float Diffuse[] = {m_diffuse, m_diffuse, m_diffuse, 1.0};
 	float Specular[] = {m_specular, m_specular, m_specular, 1.0};
 	float Position[] = {m_xpos, m_ypos, m_zpos, 0.0};
-	
 	glLightfv(GL_LIGHT0, GL_AMBIENT , Ambient);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE , Diffuse);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, Specular);
