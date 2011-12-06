@@ -36,7 +36,7 @@ class MainWindow : public QMainWindow
 		QAction* m_regenAction;
 		QAction* m_toggleCameraAction;
 		QAction* m_toggleParticlesAction;
-		QAction* m_toggleShadersAction;
+		QAction* m_toggleBloomAction;
 		QAction* m_toggleToonLighting;
 		QAction* m_toggleDynamicWater;
 		

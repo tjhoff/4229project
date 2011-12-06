@@ -48,7 +48,7 @@ void main()
       
   // f = intensity;
           
-   color = normalize(color)/(f*3);
+   color = normalize(color)/(f*3.0);
 
    gl_FragColor = color;
 }

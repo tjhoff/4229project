@@ -86,9 +86,9 @@ void GLWidget::toggleCameraMode()
 	m_fps_camera = !m_fps_camera;
 }
 
-void GLWidget::toggleShaders()
+void GLWidget::toggleBloom()
 {
-	m_shaderManager->toggleShaders();
+	m_bloomShader->toggleShaders();
 }
 
 void GLWidget::toggleToonLighting()
@@ -172,7 +172,7 @@ void GLWidget::initializeGL()
 	
 	cam = new TerrainCamera(2.5,2.5,hm, m_map);
 	
-	m_shaderManager = new ShaderManager();	
+	m_bloomShader = new BloomShader();	
 	
 	m_toonShader = new ToonShader();
 	m_waterShader = new WaterShader();
@@ -390,7 +390,7 @@ void GLWidget::draw()
 	m_fbo->release();
 	glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
 	
-	m_shaderManager->draw(m_fbo->texture(), m_width);	
+	m_bloomShader->draw(m_fbo->texture(), m_width);	
 }
 
 void GLWidget::lighting()

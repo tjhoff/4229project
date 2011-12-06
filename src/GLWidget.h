@@ -17,7 +17,7 @@
 #include "CSCIx229.h"
 #include "ParticleEngine.h"
 #include "Object.h"
-#include "ShaderManager.h"
+#include "BloomShader.h"
 #include "ToonShader.h"
 #include "WaterShader.h"
 
@@ -44,7 +44,7 @@ class GLWidget : public QGLWidget
 		void drawScene();
 		void toggleCameraMode();
 		void toggleParticles();
-		void toggleShaders();
+		void toggleBloom();
 		void toggleToonLighting();
 		void toggleDynamicWater();
 		
@@ -102,7 +102,7 @@ class GLWidget : public QGLWidget
 		Chunk* m_nechunk;
 		Chunk* m_centerchunk;
 		
-		ShaderManager* m_shaderManager;
+		BloomShader* m_bloomShader;
 		
 		ParticleEngine* m_particles;
 		

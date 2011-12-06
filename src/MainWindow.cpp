@@ -40,8 +40,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(par
 	m_toggleParticlesAction = m_toolBar->addAction("Toggle Particles");
 	connect(m_toggleParticlesAction, SIGNAL(triggered()), m_glWidget, SLOT(toggleParticles()));
 	
-	m_toggleShadersAction = m_toolBar->addAction("Toggle Shaders");
-	connect(m_toggleShadersAction, SIGNAL(triggered()), m_glWidget, SLOT(toggleShaders()));
+	m_toggleBloomAction = m_toolBar->addAction("Toggle Bloom");
+	connect(m_toggleBloomAction, SIGNAL(triggered()), m_glWidget, SLOT(toggleBloom()));
 	
 	m_toggleToonLighting = m_toolBar->addAction("Toggle Toon Lighting");
 	connect(m_toggleToonLighting, SIGNAL(triggered()), m_glWidget, SLOT(toggleToonLighting()));
