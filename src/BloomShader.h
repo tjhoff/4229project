@@ -22,7 +22,8 @@ class BloomShader
 		QGLShader* m_vertVertShader;
 		
 		GLuint m_texHandle;
-		int m_shaderTextureLocation;
+		int m_horizShaderTextureLocation;
+		int m_vertShaderTextureLocation;
 		
 		QGLFramebufferObject* m_fbo;
 		

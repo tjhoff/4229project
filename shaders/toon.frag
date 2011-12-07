@@ -23,7 +23,7 @@ void main()
       f = 0.25;
 
    color = normalize(color)*f;
-   if (S != 0 ) {
+   if (S != 0.0 ) {
    		color.b = S*.4;
    		color -= .05;
 	}

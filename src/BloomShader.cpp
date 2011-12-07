@@ -26,6 +26,9 @@ BloomShader::BloomShader(QGLWidget* glw)
 	m_vertBlurProgram->addShader(m_vertVertShader);
 	m_vertBlurProgram->link();
 	
+	m_horizShaderTextureLocation = m_horizBlurProgram->uniformLocation("texture");
+	m_vertShaderTextureLocation = m_vertBlurProgram->uniformLocation("texture");
+	
 	m_glw = glw;
 	
 	m_fbo = new QGLFramebufferObject(m_glw->width(), m_glw->width(), QGLFramebufferObject::NoAttachment);
@@ -48,8 +51,7 @@ void BloomShader::draw(GLuint tex, float width)
 	m_horizBlurProgram->bind();
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_texHandle);
-	m_horizBlurProgram->setUniformValue(m_shaderTextureLocation, 0);
-	glBindTexture(GL_TEXTURE_2D, m_texHandle);
+	m_horizBlurProgram->setUniformValue(m_horizShaderTextureLocation, 0);
 	
 	glLoadIdentity();
 	glTranslatef(0.0, 0.0, -2.4);
@@ -71,7 +73,7 @@ void BloomShader::draw(GLuint tex, float width)
 	m_vertBlurProgram->bind();
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, m_texHandle);
-	m_vertBlurProgram->setUniformValue(m_shaderTextureLocation, 0);
+	m_vertBlurProgram->setUniformValue(m_vertShaderTextureLocation, 0);
 	
 	glLoadIdentity();
 	glTranslatef(0.0, 0.0, -2.4);
