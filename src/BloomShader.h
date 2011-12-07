@@ -6,10 +6,11 @@
 class BloomShader
 {
 	public:
-		BloomShader();
+		BloomShader(QGLWidget* glw);
 
 		void toggleShaders();
 		void draw(GLuint tex, float width);
+		void resize(int width, int height);
 		
 	private:
 		QGLShaderProgram* m_horizBlurProgram;
@@ -21,10 +22,11 @@ class BloomShader
 		QGLShader* m_vertVertShader;
 		
 		GLuint m_texHandle;
-		bool m_using_shaders;
 		int m_shaderTextureLocation;
 		
 		QGLFramebufferObject* m_fbo;
+		
+		QGLWidget* m_glw;
 };
 
 #endif

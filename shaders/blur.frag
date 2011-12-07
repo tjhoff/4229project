@@ -20,5 +20,5 @@ void main()
  		}
  	}
  	float brightness = (sum.x + sum.y + sum.z)/3.0;
-   	gl_FragColor = mix(texture2D(texture, texcoord), sum, pow(brightness, 4));
+   	gl_FragColor = mix(texture2D(texture, texcoord), sum, pow(brightness, 4.0));
 }	

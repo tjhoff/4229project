@@ -121,6 +121,7 @@ class GLWidget : public QGLWidget
 		bool m_using_shaders;
 		bool m_toon_lighting;
 		bool m_dynamic_water;
+		bool m_using_bloom;
 		
 		float* m_default_translation;
 		

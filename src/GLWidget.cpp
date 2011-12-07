@@ -8,8 +8,6 @@
 #include <time.h>
 
 
-
-
 GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 {
 	setFormat(QGLFormat(QGL::DoubleBuffer | QGL::DepthBuffer));
@@ -90,7 +88,7 @@ void GLWidget::toggleCameraMode()
 
 void GLWidget::toggleBloom()
 {
-	m_bloomShader->toggleShaders();
+	m_using_bloom = !m_using_bloom;
 }
 
 void GLWidget::toggleToonLighting()
@@ -174,12 +172,12 @@ void GLWidget::initializeGL()
 	//cam = new TerrainCamera(2.5,2.5,hm, m_map);
 	cam = new Camera3d(0,1.0,0, m_map);
 	
-	m_bloomShader = new BloomShader();	
+	m_bloomShader = new BloomShader(this);	
 	
 	m_toonShader = new ToonShader();
 	m_waterShader = new WaterShader();
 	
-	m_fbo = new QGLFramebufferObject(1366, 768, QGLFramebufferObject::NoAttachment);
+	m_fbo = new QGLFramebufferObject(width(), height(), QGLFramebufferObject::NoAttachment);
 	
 	glGenRenderbuffersEXT(1, &m_depthBuf);
 }
@@ -187,6 +185,9 @@ void GLWidget::initializeGL()
 
 void GLWidget::resizeGL(int width, int height)
 {
+	delete m_fbo;
+	m_fbo = new QGLFramebufferObject(width, height, QGLFramebufferObject::NoAttachment);
+	m_bloomShader->resize(width, height);
 	glViewport(0, 0, width, height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -290,9 +291,11 @@ void GLWidget::draw()
 {	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	
-	//m_fbo->bind();
-	
-	//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	if(m_using_bloom)
+	{
+		m_fbo->bind();
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -307,12 +310,15 @@ void GLWidget::draw()
 	glRotatef(-cam->pitch, 1.0,0.0,0.0);
 	glRotatef(-cam->yaw, 0.0,1.0,0.0);
 	skybox->draw();
-		
-		//glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, m_depthBuf);
-		//glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT32, 1366, 768);
-		//glFramebufferRenderbufferEXT( GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, m_depthBuf); 
-		
-		glEnable(GL_DEPTH_TEST);
+	
+	if(m_using_bloom)
+	{	
+		glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, m_depthBuf);
+		glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT32, width(), height());
+		glFramebufferRenderbufferEXT( GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, m_depthBuf); 
+	}
+	
+	glEnable(GL_DEPTH_TEST);
 	if(m_toon_lighting)
 	{
 		m_toonShader->bind();
@@ -391,10 +397,12 @@ void GLWidget::draw()
 		m_toonShader->release();
 	}
 	
-	//m_fbo->release();
-	//glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
-	
-	//m_bloomShader->draw(m_fbo->texture(), m_width);	
+	if(m_using_bloom)
+	{
+		m_fbo->release();
+		glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, 0);
+		m_bloomShader->draw(m_fbo->texture(), m_width);	
+	}
 }
 
 void GLWidget::lighting()
