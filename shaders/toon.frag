@@ -3,39 +3,15 @@
 
 varying vec3 N;
 varying vec3 L;
+varying float S;
 uniform sampler2D tex;
 
 void main()
 {
    float intensity = dot(normalize(N),normalize(L));
    vec4 color = (texture2D(tex, gl_TexCoord[0].st));
-   float f;
-  /* if (color.r > 0.95)
-      color.r= 1.0;
-   else if (color.r > 0.5)
-      color.r = 0.6;
-   else if (color.r > 0.25)
-      color.r = 0.4;
-   else
-      color.r = 0.2;
+      float f;
 
-   if (color.g > 0.95)
-      color.g= 1.0;
-   else if (color.g > 0.5)
-      color.g = 0.6;
-   else if (color.g > 0.25)
-      color.g = 0.4;
-   else
-      color.g = 0.2;
-      
-   if (color.b > 0.95)
-      color.b= 1.0;
-   else if (color.b > 0.5)
-      color.b = 0.6;
-   else if (color.b > 0.25)
-      color.b = 0.4;
-   else
-      color.b = 0.2;*/
 
    if (intensity > 0.95)
       f= 1.0;
@@ -44,11 +20,13 @@ void main()
    else if (intensity > 0.25)
       f = 0.4;
    else
-      f = 0.2;
-
+      f = 0.25;
 
    color = normalize(color)*f;
-	color.rgb*=2.0*f;
+   if (S != 0 ) {
+   		color.b = S*.4;
+   		color -= .05;
+	}
 	color.a = 1.0;
    gl_FragColor = color;
 }

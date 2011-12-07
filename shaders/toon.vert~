@@ -1,17 +1,17 @@
 //  Cartoon vertex shader
 //  Adapted from Lighthouse3D
 
-varying float NdotL;
+varying vec3 N;
+varying vec3 L;
 	
 void main()
 {
    //  P is the vertex coordinate on body
    vec3 P = vec3(gl_ModelViewMatrix * gl_Vertex);
    //  L is the light vector
-   vec3 L = normalize(vec3(gl_LightSource[0].position));
+   L = vec3(gl_LightSource[0].position) - P;
    //  Normal
-   vec3 N = gl_NormalMatrix * gl_Normal;
-   NdotL = max(dot(N, L), 0.0);
+   N = gl_NormalMatrix * gl_Normal;
    gl_TexCoord[0] = gl_MultiTexCoord0;
    gl_Position = ftransform();
 } 

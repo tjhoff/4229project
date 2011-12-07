@@ -3,6 +3,7 @@
 
 varying vec3 N;
 varying vec3 L;
+varying float S;
 	
 void main()
 {
@@ -12,6 +13,7 @@ void main()
    L = vec3(gl_LightSource[0].position) - P;
    //  Normal
    N = gl_NormalMatrix * gl_Normal;
+   if (gl_Vertex.y < -.4) S = 1;
    gl_TexCoord[0] = gl_MultiTexCoord0;
    gl_Position = ftransform();
 } 

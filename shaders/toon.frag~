@@ -48,7 +48,7 @@ void main()
 
 
    color = normalize(color)*f;
-	color.rgb*=2.0;
+	color.rgb*=2.0*f;
 	color.a = 1.0;
    gl_FragColor = color;
 }
