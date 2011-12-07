@@ -8,7 +8,7 @@ Ks 0.132768 0.132768 0.132768
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd /home/tj/augh/tex/bark.bmp
+map_Kd ./tex/bark.bmp
 
 
 newmtl Material.001_BarkDecidious0107_S.j
@@ -19,7 +19,7 @@ Ks 0.132768 0.132768 0.132768
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd /home/tj/augh/tex/bark.bmp
+map_Kd ./tex/bark.bmp
 
 
 newmtl Material.001_Groundplants0153_5_S.
@@ -30,6 +30,6 @@ Ks 0.132768 0.132768 0.132768
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd /home/tj/augh/tex/leaves.bmp
+map_Kd ./tex/leaves.bmp
 
 
