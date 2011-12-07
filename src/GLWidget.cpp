@@ -179,7 +179,7 @@ void GLWidget::initializeGL()
 	
 	m_fbo = new QGLFramebufferObject(width(), height(), QGLFramebufferObject::NoAttachment);
 	
-	glGenRenderbuffersEXT(1, &m_depthBuf);
+	glGenRenderbuffers(1, &m_depthBuf);
 }
 
 
@@ -313,9 +313,9 @@ void GLWidget::draw()
 	
 	if(m_using_bloom)
 	{	
-		//glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, m_depthBuf);
-		//glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT32, width(), height());
-		//glFramebufferRenderbufferEXT( GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, m_depthBuf); 
+		glBindRenderbuffer(GL_RENDERBUFFER, m_depthBuf);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32, width(), height());
+		glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthBuf); 
 	}
 	
 	glEnable(GL_DEPTH_TEST);
