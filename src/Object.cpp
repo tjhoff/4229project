@@ -33,6 +33,8 @@ void Object::draw(){
 	glRotated(yRot, 0, 1, 0);
 	glRotated(xRot, 1, 0, 0);
 	glScaled(scale, scale, scale);
+	
 	glCallList(displayname);
+	
 	glPopMatrix();
 }

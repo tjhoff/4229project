@@ -1,6 +1,7 @@
 // object.h
 #include "CSCIx229.h"
-
+#include <time.h>
+#include <stdio.h>
 #ifndef OBJECT
 #define OBJECT
 class Object{

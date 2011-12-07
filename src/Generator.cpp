@@ -11,8 +11,8 @@ Generator::Generator()
 {
 	m_d = 0;
 	m_seed = time(NULL);
-	m_base_height_perlin = new Perlin(1, 1, 5, m_seed);
-	m_detail_perlin = new Perlin(4, 2, 1, m_seed);
+	m_base_height_perlin = new Perlin(1, 2, 5, m_seed);
+	m_detail_perlin = new Perlin(3, 2, 1, m_seed);
 	m_height_cutoff_perlin = new Perlin(6, 2, 1, m_seed);
 	m_chunk_size = CHUNK_SIZE;
 }
@@ -97,8 +97,8 @@ void Generator::chunk_at(int chunk_x, int chunk_z)
 			}
 			else if(y < -0.2)
 			{
-				y = -0.2;
-				color = Vec3(0.0, 0.0, 0.6);
+				y = y;
+				color = Vec3(.1,.4,.1);
 			}
 			else if(y > -0.2 && y < sand_cutoff)
 			{
@@ -137,8 +137,8 @@ void Generator::islands(int i, int j, float step, int chunk_x, int chunk_z)
 
 	if(y < -0.2)
 	{
-		y = -0.2;
-		color = Vec3(0.0, 0.0, 0.6);
+		y = y*3;
+		color = Vec3(0.1, 0.4, 0.1);
 	}
 	else
 	{

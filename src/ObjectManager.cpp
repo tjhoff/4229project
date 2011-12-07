@@ -17,13 +17,12 @@ ObjectManager::~ObjectManager(){
 void ObjectManager::drawObjects(){
 	std::vector<Object*>::iterator it;
 	if (objVec.size() == 0) return;
+	int time = clock();
 	for (it = objVec.begin(); it!=objVec.end(); it++){
 		Object* obj = *it;
-		printf("Object drawn\n");
 		obj->draw();
 		
 	}
-
 }
 
 void ObjectManager::addObject(Object* newObject){

@@ -48,19 +48,32 @@ void Camera::rotate(float ayaw, float apitch){
 	else pitch += apitch;	
 }
 
-Camera3d::Camera3d(float ax, float ay, float az){
+Camera3d::Camera3d(float ax, float ay, float az, Map* nmap){
+	map = nmap;
 	x = ax;
 	y = ay;
 	z = az;
 	yaw = 0.0;
 	pitch = 0.0;
 	czoom = 1.0;
+	chunkx = 0;
+	chunkz = 0;
 }
 
 void Camera3d::move(float forward){
+	
 	x += forward * -(sin(yaw*PI/180));
 	y += forward * (sin(pitch*PI/180));
 	z += forward * -(cos(yaw*PI/180));
+	int nchunkx = x/5;
+	int nchunkz = z/5;
+	if ((nchunkx != chunkx) || (nchunkz != chunkz)){ 
+		map->getChunkAt(nchunkx, nchunkz);
+		map->curx = nchunkx;
+		map->curz = nchunkz;
+		chunkx = nchunkx;
+		chunkz = nchunkz;
+	}
 }
 
 TerrainCamera::TerrainCamera(float ax, float az, Heightmap * heightMap, Map * m_map){
@@ -79,8 +92,17 @@ TerrainCamera::TerrainCamera(float ax, float az, Heightmap * heightMap, Map * m_
 void TerrainCamera::move(float forward){
 	x += forward * (-sin(yaw*PI/180));
 	z += forward * (-cos(yaw*PI/180));
-	int nchunkx = x/5;
-	int nchunkz = z/5;
+	int nchunkx;
+	int nchunkz;
+	if (x<0){
+		nchunkx = -(fabs(x)/5);
+	}
+	nchunkx = x/5;
+	if (z<0){
+		nchunkz = -(fabs(z)/5);
+	}
+	nchunkz = z/5;
+	
 	if ((nchunkx != chunkx) || (nchunkz != chunkz)){ 
 		std::cout<<nchunkx<<" "<<nchunkz<<" "<<chunkx<<" "<<chunkz<<"\n";
 		heightmap = map->getChunkAt(nchunkx, nchunkz)->heightmap; 

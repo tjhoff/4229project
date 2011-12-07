@@ -29,6 +29,8 @@ GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 	m_zpos = 0;
 	m_light_rotation = 0.0;
 	
+	m_counter = 0;
+	
 	m_current_xchunk = -99999;
 	m_current_zchunk = -99999;
 	
@@ -169,7 +171,8 @@ void GLWidget::initializeGL()
 	Heightmap * hm = m_nchunk->heightmap;
 	m_particles = new ParticleEngine();
 	
-	cam = new TerrainCamera(2.5,2.5,hm, m_map);
+	//cam = new TerrainCamera(2.5,2.5,hm, m_map);
+	cam = new Camera3d(0,1.0,0, m_map);
 	
 	m_bloomShader = new BloomShader();	
 	
@@ -293,14 +296,17 @@ void GLWidget::draw()
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-		glDisable(GL_DEPTH_TEST);
-		cam->transformCamera();
-		glPushMatrix();
+	m_zpos = sin(m_counter/500.0)*20;
+	m_ypos = cos(m_counter/500.0)*20;
+	m_counter++;
+	glDisable(GL_DEPTH_TEST);
+	cam->transformCamera();
+	glPushMatrix();
 		
-		glLoadIdentity();
-		glRotatef(-cam->pitch, 1.0,0.0,0.0);
-		glRotatef(-cam->yaw, 0.0,1.0,0.0);
-		skybox->draw();
+	glLoadIdentity();
+	glRotatef(-cam->pitch, 1.0,0.0,0.0);
+	glRotatef(-cam->yaw, 0.0,1.0,0.0);
+	skybox->draw();
 		
 		//glBindRenderbufferEXT(GL_RENDERBUFFER_EXT, m_depthBuf);
 		//glRenderbufferStorageEXT(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT32, 1366, 768);
@@ -397,6 +403,10 @@ void GLWidget::lighting()
 	float Diffuse[] = {m_diffuse, m_diffuse, m_diffuse, 1.0};
 	float Specular[] = {m_specular, m_specular, m_specular, 1.0};
 	float Position[] = {m_xpos, m_ypos, m_zpos, 0.0};
+	glBegin(GL_LINES);
+	glVertex3f(m_xpos, m_ypos, m_zpos);
+	glVertex3f(0,0,0);
+	glEnd();
 	glLightfv(GL_LIGHT0, GL_AMBIENT , Ambient);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE , Diffuse);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, Specular);

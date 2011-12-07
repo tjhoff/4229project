@@ -90,6 +90,8 @@ class GLWidget : public QGLWidget
 		GLfloat m_zpos;
 		GLfloat m_light_rotation;
 		
+		GLint m_counter;
+		
 		Map* m_map;
 		
 		Chunk* m_nchunk;

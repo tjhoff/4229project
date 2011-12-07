@@ -50,8 +50,6 @@ float Heightmap::getYValue(float x, float z){
 	z = (z-zOffset)/scale;
 	x = fabs(x);
 	z = fabs(z);
-	std::cout<<"heightmap x "<<x<< " z " << z <<"\n";
-	
 	int ix = (int)x; // get integer value to grab quad
 	int iz = (int)z;
 	

@@ -32,8 +32,11 @@ class Camera{
 class Camera3d: public Camera{
 
 	public:
-		Camera3d(float ax, float ay, float az);
+		Camera3d(float ax, float ay, float az, Map *nmap);
 		void move(float forward);
+		Map * map;
+		int chunkx;
+		int chunkz;
 };
 
 class TerrainCamera: public Camera{
