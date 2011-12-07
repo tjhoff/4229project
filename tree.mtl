@@ -1,0 +1,35 @@
+# Blender MTL File: 'tree.blend'
+# Material Count: 3
+newmtl Material.001
+Ns 176.470588
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.467537 0.251851
+Ks 0.132768 0.132768 0.132768
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd /home/tj/augh/tex/bark.bmp
+
+
+newmtl Material.001_BarkDecidious0107_S.j
+Ns 176.470588
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.467537 0.251851
+Ks 0.132768 0.132768 0.132768
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd /home/tj/augh/tex/bark.bmp
+
+
+newmtl Material.001_Groundplants0153_5_S.
+Ns 176.470588
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.467537 0.251851
+Ks 0.132768 0.132768 0.132768
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd /home/tj/augh/tex/leaves.bmp
+
+

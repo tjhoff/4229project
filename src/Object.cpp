@@ -2,11 +2,11 @@
 
 #include "Object.h"
 
-Object::Object(char* filename){
-	load(filename);
-	x = 0;
-	y = 0;
-	z = 0;
+Object::Object(int disp, float nx, float ny, float nz){
+	displayname = disp;
+	x = nx;
+	y = ny;
+	z = nz;
 	scale = 1;
 	xRot = 0;
 	yRot = 0;
@@ -24,9 +24,7 @@ void Object::setScale(double nscale){
 	scale = nscale;
 }
 
-void Object::load(char* filename){
-	displayname = LoadOBJ(filename);
-}
+
 
 void Object::draw(){
 	glPushMatrix();

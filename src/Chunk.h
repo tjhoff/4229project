@@ -5,6 +5,7 @@
 #include "TriangleMesh.h"
 #include "Generator.h"
 #include "Global.h"
+#include "ObjectManager.h"
 
 #include <QtOpenGL>
 
@@ -20,7 +21,8 @@ class Chunk{
 		Generator * gen;
 		void create();
 		void compile();
-		void draw();	
+		void draw();
+		ObjectManager manager;
 };
 
 #endif

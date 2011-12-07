@@ -161,14 +161,12 @@ void GLWidget::initializeGL()
 
 	
 	skybox = new Skybox();
-	object = new Object("untitled.obj");
-	object->setScale(.1);
+	LoadOBJ("tree.obj");
 	m_map = new Map();
 	
 	change_current_chunk();
 	qDebug() << "HARP DARP" << m_nchunk;
 	Heightmap * hm = m_nchunk->heightmap;
-	object->setLocation(2.5, hm->getYValue(2.5,2.5), 2.5);
 	m_particles = new ParticleEngine();
 	
 	cam = new TerrainCamera(2.5,2.5,hm, m_map);
@@ -325,7 +323,6 @@ void GLWidget::draw()
 			m_particles->draw();
 		}	
 		glPopMatrix();
-		object->draw();
 	}
 	else
 	{

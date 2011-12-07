@@ -1,14 +1,14 @@
 #include "Skybox.h"
-#define val 1.0
-#define a glVertex3f(val/2, val/4, val/2)
-#define b glVertex3f(-val/2, val/4, val/2)
-#define c glVertex3f(-val/2, -val/8, val/2)
-#define d glVertex3f(val/2, -val/8, val/2)
+#define val 5
+#define a glVertex3f(val, val, val)
+#define b glVertex3f(-val, val, val)
+#define c glVertex3f(-val, -val, val)
+#define d glVertex3f(val, -val, val)
 
-#define e glVertex3f(val/2, val/4, -val/2)
-#define f glVertex3f(val/2, -val/8, -val/2)
-#define g glVertex3f(-val/2, -val/8, -val/2)
-#define h glVertex3f(-val/2, val/4, -val/2)
+#define e glVertex3f(val, val, -val)
+#define f glVertex3f(val, -val, -val)
+#define g glVertex3f(-val, -val, -val)
+#define h glVertex3f(-val, val, -val)
 
 
 Skybox::Skybox(){
@@ -18,16 +18,16 @@ Skybox::Skybox(){
 	
 	glEnable(GL_TEXTURE_2D);
 	QImage Iright, Ileft, Ifront, Iback, Itop, buffer;
-	buffer.load("./tex/right62.jpg");
+	buffer.load("./tex/right.jpg");
 	Iright = QGLWidget::convertToGLFormat(buffer);
 	glGenTextures(1,&right);
 	glBindTexture(GL_TEXTURE_2D, right);
 	glTexImage2D(GL_TEXTURE_2D, 0, 4, m_tex_width, m_tex_height, 0, GL_RGBA, GL_UNSIGNED_BYTE, Iright.bits());
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 	
 	
-	buffer.load("./tex/left62.jpg");
+	buffer.load("./tex/left.jpg");
 	Ileft = QGLWidget::convertToGLFormat(buffer);
 	glGenTextures(1,&left);
 	glBindTexture(GL_TEXTURE_2D, left);
@@ -35,7 +35,7 @@ Skybox::Skybox(){
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 	
-	buffer.load("./tex/front62.jpg");
+	buffer.load("./tex/front.jpg");
 	Ifront = QGLWidget::convertToGLFormat(buffer);
 	glGenTextures(1,&front);
 	glBindTexture(GL_TEXTURE_2D,front );
@@ -43,7 +43,7 @@ Skybox::Skybox(){
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 	
-	buffer.load("./tex/back62.jpg");
+	buffer.load("./tex/back.jpg");
 	Iback = QGLWidget::convertToGLFormat(buffer);
 	glGenTextures(1,&back);
 	glBindTexture(GL_TEXTURE_2D, back);
@@ -51,7 +51,7 @@ Skybox::Skybox(){
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
 	
-	buffer.load("./tex/top62.jpg");
+	buffer.load("./tex/top.jpg");
 	Itop = QGLWidget::convertToGLFormat(buffer);
 	glGenTextures(1,&top);
 	glBindTexture(GL_TEXTURE_2D, top);

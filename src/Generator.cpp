@@ -11,8 +11,8 @@ Generator::Generator()
 {
 	m_d = 0;
 	m_seed = time(NULL);
-	m_base_height_perlin = new Perlin(1, 1, 3, m_seed);
-	m_detail_perlin = new Perlin(6, 2, 1, m_seed);
+	m_base_height_perlin = new Perlin(1, 1, 5, m_seed);
+	m_detail_perlin = new Perlin(4, 2, 1, m_seed);
 	m_height_cutoff_perlin = new Perlin(6, 2, 1, m_seed);
 	m_chunk_size = CHUNK_SIZE;
 }
@@ -159,7 +159,7 @@ float Generator::fuzzy_height(float middle, float plus_or_minus, float x, float 
 
 float Generator::base_height(float x, float z)
 {
-	float y = m_base_height_perlin->Get(x/15, z/15);	
+	float y = m_base_height_perlin->Get(x/30, z/30);	
 	return y*y*2;
 }
 
