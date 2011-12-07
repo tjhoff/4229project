@@ -1,18 +1,18 @@
-#ifndef WATER_SHADER_H
-#define WATER_SHADER_H
+#ifndef PLAIN_SHADER_H
+#define PLAIN_SHADER_H
 
 #include <QtOpenGL>
 
-class WaterShader 
+class PlainShader
 {
 	public:
-		WaterShader();
+		PlainShader();
 		void bind();
 		void release();
-	
+		
 	private:
-		int m_time;
 		QGLShaderProgram* m_shaderProg;
+
 };
 
 #endif

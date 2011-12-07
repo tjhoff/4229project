@@ -38,7 +38,7 @@ GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 	m_displaying_particles = false;
 	m_using_shaders = false;
 	m_toon_lighting = false;
-	m_dynamic_water = false;
+	m_bloom_not_broken = true;
 	
 	setFocusPolicy(Qt::StrongFocus);
 	m_update_timer = new QTimer();
@@ -91,14 +91,14 @@ void GLWidget::toggleBloom()
 	m_using_bloom = !m_using_bloom;
 }
 
+void GLWidget::toggleBloomFix()
+{
+	m_bloom_not_broken = !m_bloom_not_broken;
+}
+
 void GLWidget::toggleToonLighting()
 {
 	m_toon_lighting = !m_toon_lighting;
-}
-
-void GLWidget::toggleDynamicWater()
-{
-	m_dynamic_water = !m_dynamic_water;
 }
 
 void GLWidget::toggleParticles()
@@ -173,13 +173,13 @@ void GLWidget::initializeGL()
 	cam = new Camera3d(0,1.0,0, m_map);
 	
 	m_bloomShader = new BloomShader(this);	
-	
 	m_toonShader = new ToonShader();
-	m_waterShader = new WaterShader();
-	
+	m_plainShader = new PlainShader();
 	m_fbo = new QGLFramebufferObject(width(), height(), QGLFramebufferObject::NoAttachment);
 	
 	glGenRenderbuffers(1, &m_depthBuf);
+	
+	qDebug() << "GL_MAX_TEXTURE_COORDS" << GL_MAX_TEXTURE_COORDS;
 }
 
 
@@ -311,17 +311,21 @@ void GLWidget::draw()
 	glRotatef(-cam->yaw, 0.0,1.0,0.0);
 	skybox->draw();
 	
-	if(m_using_bloom)
+	if(m_using_bloom && m_bloom_not_broken)
 	{	
 		glBindRenderbuffer(GL_RENDERBUFFER, m_depthBuf);
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT32, width(), height());
-		glFramebufferRenderbuffer( GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthBuf); 
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_depthBuf); 
 	}
 	
 	glEnable(GL_DEPTH_TEST);
 	if(m_toon_lighting)
 	{
 		m_toonShader->bind();
+	}
+	else
+	{
+		m_plainShader->bind();
 	}
 	
 	change_current_chunk();
@@ -361,11 +365,6 @@ void GLWidget::draw()
 		glTranslatef(m_map->curx-2.5, 0.0, m_map->curz-2.5);
 	}
 	
-	if(m_dynamic_water)
-	{
-		m_waterShader->bind();
-	}
-	
 	m_nchunk->draw();
 	m_nwchunk->draw();
 	m_wchunk->draw();
@@ -375,11 +374,6 @@ void GLWidget::draw()
 	m_echunk->draw();
 	m_nechunk->draw();
 	m_centerchunk->draw();
-	
-	if(m_dynamic_water)
-	{
-		m_waterShader->release();
-	}
 	
 	glPopMatrix();
 	
@@ -395,6 +389,10 @@ void GLWidget::draw()
 	if(m_toon_lighting)
 	{
 		m_toonShader->release();
+	}
+	else
+	{
+		m_plainShader->release();
 	}
 	
 	if(m_using_bloom)

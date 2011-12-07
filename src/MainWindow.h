@@ -38,7 +38,7 @@ class MainWindow : public QMainWindow
 		QAction* m_toggleParticlesAction;
 		QAction* m_toggleBloomAction;
 		QAction* m_toggleToonLighting;
-		QAction* m_toggleDynamicWater;
+		QAction* m_toggleBloomFix;		
 		
 		GLWidget* m_glWidget;
 		

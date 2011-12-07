@@ -19,7 +19,7 @@
 #include "Object.h"
 #include "BloomShader.h"
 #include "ToonShader.h"
-#include "WaterShader.h"
+#include "PlainShader.h"
 
 #include <vector>
 
@@ -46,8 +46,8 @@ class GLWidget : public QGLWidget
 		void toggleParticles();
 		void toggleBloom();
 		void toggleToonLighting();
-		void toggleDynamicWater();
-		
+		void toggleBloomFix();
+				
 	protected slots:
 		void initializeGL();
 		void resizeGL(int width, int height);
@@ -105,11 +105,9 @@ class GLWidget : public QGLWidget
 		Chunk* m_centerchunk;
 		
 		BloomShader* m_bloomShader;
-		
 		ParticleEngine* m_particles;
-		
 		ToonShader* m_toonShader;
-		WaterShader* m_waterShader;
+		PlainShader* m_plainShader;
 		
 		Camera * cam;
 		Skybox * skybox;
@@ -120,8 +118,8 @@ class GLWidget : public QGLWidget
 		bool m_displaying_particles;
 		bool m_using_shaders;
 		bool m_toon_lighting;
-		bool m_dynamic_water;
 		bool m_using_bloom;
+		bool m_bloom_not_broken;
 		
 		float* m_default_translation;
 		

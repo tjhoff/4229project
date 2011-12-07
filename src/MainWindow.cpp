@@ -46,8 +46,8 @@ MainWindow::MainWindow(QWidget *parent, Qt::WindowFlags flags) : QMainWindow(par
 	m_toggleToonLighting = m_toolBar->addAction("Toggle Toon Lighting");
 	connect(m_toggleToonLighting, SIGNAL(triggered()), m_glWidget, SLOT(toggleToonLighting()));
 	
-	m_toggleDynamicWater = m_toolBar->addAction("Toggle Dynamic Water");
-	connect(m_toggleDynamicWater, SIGNAL(triggered()), m_glWidget, SLOT(toggleDynamicWater()));
+	m_toggleBloomFix = m_toolBar->addAction("Click this if the terrain has dissappeared");
+	connect(m_toggleBloomFix, SIGNAL(triggered()), m_glWidget, SLOT(toggleBloomFix()));
 	
 	m_fullscreen = true;
 	showFullScreen();

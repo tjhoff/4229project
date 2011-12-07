@@ -13,6 +13,7 @@ class Chunk{
 	public: 
 		Chunk(int ix,int iz, Generator * m_gen);
 		~Chunk();
+		GLuint texture() { return tMesh->tex_id; }
 		int x;
 		int z;
 		int displayName;
