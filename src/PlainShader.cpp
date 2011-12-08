@@ -12,11 +12,20 @@ PlainShader::PlainShader()
 	m_shaderProg->addShader(vert);
 	m_shaderProg->addShader(frag);
 	m_shaderProg->link();
+
+	m_shaderFogFlag = m_shaderProg->uniformLocation("fog_enabled");
+	m_shaderProg->setUniformValue(m_shaderFogFlag, false);
+}
+
+void PlainShader::setFogEnabled(bool enabled)
+{
+	m_fogEnabled = enabled;
 }
 
 void PlainShader::bind()
 {
 	m_shaderProg->bind();
+	m_shaderProg->setUniformValue(m_shaderFogFlag, m_fogEnabled);
 }
 
 void PlainShader::release()

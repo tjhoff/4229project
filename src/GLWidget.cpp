@@ -118,6 +118,9 @@ void GLWidget::toggleParticles()
 	{
 		glDisable(GL_FOG);
 	}
+	
+	m_plainShader->setFogEnabled(m_displaying_particles);
+	m_toonShader->setFogEnabled(m_displaying_particles);
 }
 
 
@@ -149,7 +152,7 @@ void GLWidget::initializeGL()
 	{
 		glEnable(GL_FOG);
 		float fog_color[] = {1.0, 1.0, 1.0, 1.0};
-		float fog_density[] = {0.4};
+		float fog_density[] = {0.3};
 		glFogfv(GL_FOG_COLOR, fog_color);
 		glFogfv(GL_FOG_DENSITY, fog_density);
 	}
@@ -187,8 +190,6 @@ void GLWidget::initializeGL()
 	m_fbo = new QGLFramebufferObject(width(), height(), QGLFramebufferObject::NoAttachment);
 	
 	glGenRenderbuffers(1, &m_depthBuf);
-	
-	qDebug() << "GL_MAX_TEXTURE_COORDS" << GL_MAX_TEXTURE_COORDS;
 }
 
 
@@ -328,6 +329,12 @@ void GLWidget::draw()
 	}
 	
 	glEnable(GL_DEPTH_TEST);
+	
+	if(m_displaying_particles)
+	{
+		m_particles->draw();
+	}	
+	
 	if(m_toon_lighting)
 	{
 		m_toonShader->bind();
@@ -343,10 +350,6 @@ void GLWidget::draw()
 	{	
 
 		glTranslatef(-2.5, 0, -2.5);
-		if(m_displaying_particles)
-		{
-			m_particles->draw();
-		}	
 		glPopMatrix();
 	}
 	else
@@ -358,11 +361,6 @@ void GLWidget::draw()
 	
 		glScalef(0.5, 0.5, 0.5);
 		glScalef(m_zoom, m_zoom, m_zoom);
-		
-		if(m_displaying_particles)
-		{
-			m_particles->draw();
-		}	
 	}
 	
 	

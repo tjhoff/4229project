@@ -9,9 +9,12 @@ class PlainShader
 		PlainShader();
 		void bind();
 		void release();
+		void setFogEnabled(bool enabled);
 		
 	private:
 		QGLShaderProgram* m_shaderProg;
+		GLuint m_shaderFogFlag;
+		bool m_fogEnabled;
 
 };
 

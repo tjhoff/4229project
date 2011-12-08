@@ -4,7 +4,10 @@
 varying vec3 N;
 varying vec3 L;
 varying float S;
+varying float distance;
+
 uniform sampler2D tex;
+uniform bool fog_enabled;
 
 void main()
 {
@@ -30,9 +33,16 @@ void main()
 		color.b = S*.4;
 		color -= S*.05;
 	}
+	
+	if(fog_enabled)
+	{
+		float z = (gl_FragCoord.z / gl_FragCoord.w) / 8.0;
+		color += vec4(z, z, z, 1.0);
+	}
 
 	color *= f;
 	color.a = 1.0;
+	
 	gl_FragColor = color;
 }
 

@@ -4,6 +4,7 @@
 varying vec3 N;
 varying vec3 L;
 varying float S;
+varying float distance;
 	
 void main()
 {
@@ -27,4 +28,6 @@ void main()
 	
 	gl_TexCoord[0] = gl_MultiTexCoord0;
 	gl_Position = ftransform();
+	
+	distance = sqrt(pow(gl_Position.x, 2.0) + pow(gl_Position.z, 2.0));
 } 
