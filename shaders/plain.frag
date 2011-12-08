@@ -1,30 +1,31 @@
-uniform sampler2D texture;
+//  Cartoon fragment shader
+//  Adapted from Lighthouse3D
 
 varying vec3 N;
-varying vec3 v;
+varying vec3 L;
 varying float S;
+uniform sampler2D tex;
 
-void main(void)
+void main()
 {
-	vec3 L = normalize(gl_LightSource[0].position.xyz - v);   
-	vec4 diffuse = gl_FrontLightProduct[0].diffuse * max(dot(N,L), 0.0);  
-	diffuse = clamp(diffuse, 0.0, 1.0); 
-	
-	float avg = (diffuse.x + diffuse.y + diffuse.z + diffuse.w)/4.0;
-	if(avg < 0.25)
-	{
-		diffuse = vec4(0.25);
-	}
-	
-	vec4 color = (texture2D(texture, gl_TexCoord[0].st)) * diffuse;
-	color.a = 1.0;
+	float intensity = dot(normalize(N),normalize(L));
+	vec4 color = (texture2D(tex, gl_TexCoord[0].st));
 
-	if (S != 0.0 ) 
-	{
+	if(intensity < 0.1)
+		intensity = 0.1;
+
+	color = normalize(color);
+	if (S >= 2.0){
+		color.rgb = vec3(0.3,.2+S-2.0,.1);
+	}
+	else if (S < 2.0 && S > 0.0 ) {
 		color.b = S*.4;
-		color -= .05;
+		color -= S*.05;
 	}
 
+	color *=intensity;
+	color.a = 1.0;
 	gl_FragColor = color;
 }
-    
+
+
