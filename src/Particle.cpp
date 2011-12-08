@@ -29,6 +29,7 @@ void Particle::compile()
 
 void Particle::draw()
 {
+
 	m_y -= 0.015;
 	if(m_y < -1)
 	{
@@ -69,10 +70,10 @@ void Particle::draw()
 	
 	glBegin(GL_POLYGON);
 	glNormal3f(0, 0, 1);
-	glVertex3f(-0.5, -0.5, 0.001);
-	glVertex3f(-0.5, 0.5, 0.001);
-	glVertex3f(0.5, 0.5, 0.001);
-	glVertex3f(0.5, -0.5, 0.001);
+	glTexCoord2f(0, 0); glVertex3f(-0.5, -0.5, 0.001);
+	glTexCoord2f(0, 1); glVertex3f(-0.5, 0.5, 0.001);
+	glTexCoord2f(1, 1); glVertex3f(0.5, 0.5, 0.001);
+	glTexCoord2f(1, 0); glVertex3f(0.5, -0.5, 0.001);
 	glEnd();
 	
 	glEnable(GL_LIGHTING);

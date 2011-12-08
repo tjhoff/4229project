@@ -39,6 +39,7 @@ GLWidget::GLWidget(QWidget* parent) : QGLWidget(parent)
 	m_using_shaders = false;
 	m_toon_lighting = false;
 	m_bloom_not_broken = true;
+	m_using_bloom = false;
 	
 	setFocusPolicy(Qt::StrongFocus);
 	m_update_timer = new QTimer();
@@ -109,7 +110,7 @@ void GLWidget::toggleParticles()
 	{
 		glEnable(GL_FOG);
 		float fog_color[] = {1.0, 1.0, 1.0, 1.0};
-		float fog_density[] = {0.4};
+		float fog_density[] = {0.3};
 		glFogfv(GL_FOG_COLOR, fog_color);
 		glFogfv(GL_FOG_DENSITY, fog_density);
 	}
