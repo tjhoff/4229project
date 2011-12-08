@@ -19,8 +19,6 @@ Skybox::Skybox(){
 	QImage Iright, Ileft, Ifront, Iback, Itop, Ibottom, buffer;
 	
 	
-
-	
 	buffer.load("./tex/day/right.bmp");
 	Iright = QGLWidget::convertToGLFormat(buffer);
 	glGenTextures(1,&right);
@@ -79,46 +77,46 @@ void Skybox::draw(){
 	glBindTexture(GL_TEXTURE_2D, right);
 	glBegin(GL_QUADS);
 		
-		glTexCoord2f(1.0,1.0);b(5.0);
-		glTexCoord2f(0.0,1.0);a(5.0);
-		glTexCoord2f(0.0,0.0);d(5.0);
-		glTexCoord2f(1.0,0.0);c(5.0);
+		glTexCoord2f(0.999,0.999);b(5.0);
+		glTexCoord2f(0.001,0.999);a(5.0);
+		glTexCoord2f(0.001,0.001);d(5.0);
+		glTexCoord2f(0.999,0.001);c(5.0);
 	glEnd();
 	
 	glBindTexture(GL_TEXTURE_2D, front);
 	glBegin(GL_QUADS);	
-		glTexCoord2f(1.0,1.0);a(5.0);
-		glTexCoord2f(0.0,1.0);e(5.0);
-		glTexCoord2f(0.0,0.0);f(5.0);
-		glTexCoord2f(1.0,0.0);d(5.0);
+		glTexCoord2f(0.999,0.999);a(5.0);
+		glTexCoord2f(0.001,0.999);e(5.0);
+		glTexCoord2f(0.001,0.001);f(5.0);
+		glTexCoord2f(0.999,0.001);d(5.0);
 	glEnd();
 	glBindTexture(GL_TEXTURE_2D, left);
 	glBegin(GL_QUADS);
-		glTexCoord2f(1.0,1.0);e(5.0);
-		glTexCoord2f(0.0,1.0);h(5.0);
-		glTexCoord2f(0.0,0.0);g(5.0);
-		glTexCoord2f(1.0,0.0);f(5.0);
+		glTexCoord2f(0.999,0.999);e(5.0);
+		glTexCoord2f(0.001,0.999);h(5.0);
+		glTexCoord2f(0.001,0.001);g(5.0);
+		glTexCoord2f(0.999,0.001);f(5.0);
 	glEnd();
 	glBindTexture(GL_TEXTURE_2D, back);
 	glBegin(GL_QUADS);
-		glTexCoord2f(1.0,1.0);h(5.0);
-		glTexCoord2f(0.0,1.0);b(5.0);
-		glTexCoord2f(0.0,0.0);c(5.0);
-		glTexCoord2f(1.0,0.0);g(5.0);
+		glTexCoord2f(0.999,0.999);h(5.0);
+		glTexCoord2f(0.001,0.999);b(5.0);
+		glTexCoord2f(0.001,0.001);c(5.0);
+		glTexCoord2f(0.999,0.001);g(5.0);
 	glEnd();
 	glBindTexture(GL_TEXTURE_2D, top);
 	glBegin(GL_QUADS);
-		glTexCoord2f(0.0,0.0);e(5.0);
-		glTexCoord2f(1.0,0.0);a(5.0);
-		glTexCoord2f(1.0,1.0);b(5.0);
-		glTexCoord2f(0.0,1.0);h(5.0);
+		glTexCoord2f(0.001,0.001);e(5.0);
+		glTexCoord2f(0.999,0.001);a(5.0);
+		glTexCoord2f(0.999,0.999);b(5.0);
+		glTexCoord2f(0.001,0.999);h(5.0);
 	glEnd();
 	glBindTexture(GL_TEXTURE_2D, bottom);
 	glBegin(GL_QUADS);
-		glTexCoord2f(0.0,0.0);c(5.0);
-		glTexCoord2f(1.0,0.0);d(5.0);
-		glTexCoord2f(1.0,1.0);f(5.0);
-		glTexCoord2f(0.0,1.0);g(5.0);
+		glTexCoord2f(0.001,0.001);c(5.0);
+		glTexCoord2f(0.999,0.001);d(5.0);
+		glTexCoord2f(0.999,0.999);f(5.0);
+		glTexCoord2f(0.001,0.999);g(5.0);
 	glEnd();
 	glEnable(GL_LIGHTING);
 	glDisable(GL_TEXTURE_2D);
