@@ -37,7 +37,7 @@ void tree(){
 	glScalef(.4,.4,.4);
 	glPushMatrix();
 	glScalef(.1,1.0,.1);
-	glColor3f(.6,.4,.5);
+	glColor3f(.6,.4,0);
 	cylinder(36);
 	glPopMatrix();
 	glPushMatrix();
@@ -53,9 +53,47 @@ void tree(){
 
 }
 
+void leaf(){
+	glBegin(GL_LINES);
+	
+
+	
+	glEnd();
+	glBegin(GL_TRIANGLES);
+		glNormal3f(1,0,0);
+		glVertex3f(0.0,1.0,-1.0);
+		glVertex3f(0.0,1.0,1.0);
+		glVertex3f(0.0,2.0,0.0);
+
+		glNormal3f(-1,0,0);
+		glVertex3f(0.01,1.0,1.0);
+		glVertex3f(0.01,1.0,-1.0);
+		glVertex3f(0.01,2.0,0.0);
+	glEnd();
+}
+
 void treeRecurse(int level){
-	if (level > 4) return;
-	int branches = rand()%2;
+	if (level > 3) return;
+	if (level >2){
+		glColor3f(.6,.4,1);
+		int leaves = rand()%7;
+		for (int i = 0; i<leaves; i++){
+			float rpos = (rand()%50)/100.0 + .5;
+			float rrot = (rand()%1500)/20.0 - 25 ;
+			float ryrot = (rand()%1800)/10.0;
+			glPushMatrix();
+			glTranslatef(0,rpos,0);
+	
+			glRotatef(ryrot, 0,1,0);
+			glRotatef(rrot,0,0,1);
+			glScalef(.5,.5,.5);
+			leaf();
+			glPopMatrix();
+
+		}
+	
+	}
+	int branches = rand()%3;
 	if (level > 3) branches = 0;
 	
 	
@@ -72,10 +110,9 @@ void treeRecurse(int level){
 	for (int i = 0; i<branches+1; i++) treeRecurse(level+1);
 	glPopMatrix();
 	
-	
+	glColor3f(.6,.4,0);
 	glPushMatrix();
 	glScalef(.1,1.0,.1);
-	glColor3f(.6,.4 + ((float)level/12),.5);
 	cylinder(36);
 	glPopMatrix();
 	glPushMatrix();

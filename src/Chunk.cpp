@@ -21,7 +21,7 @@ void Chunk::create(){
 	tMesh= new TriangleMesh(gen->m_vertices,gen->m_colors,gen->m_d, gen->m_d);
 	heightmap = new Heightmap(tMesh, tMesh->width, tMesh->height, CHUNK_SIZE/tMesh->width, CHUNK_SIZE*x, CHUNK_SIZE*z); 
 	Vec3** colors = gen->m_colors;
-	for (int i = 0; i<30; i++){
+	for (int i = 0; i<20; i++){
 	
 		float rx = ((rand()%1000)/(1000.0/CHUNK_SIZE)+x*CHUNK_SIZE);
 		float rz = ((rand()%1000)/(1000.0/CHUNK_SIZE)+z*CHUNK_SIZE);

@@ -18,14 +18,23 @@ void main()
    else if (intensity > 0.5)
       f = 0.6;
    else if (intensity > 0.25)
-      f = 0.4;
+      f = 0.3;
    else
-      f = 0.25;
-
-   color = normalize(color)*f;
-   if (S != 0.0 ) {
+      f = 0.1;
+	
+   color = normalize(color);
+   if (S < 2.0 && S > 0.0 ) {
    		color.b = S*.4;
-   		color -= .05;
+   		color -= S*.05;
+	}
+	else if (S!=0){
+		color.rgb = vec3(0.3,.2+S-2.0,.1);
+		
+		color *= f;
+		
+	}
+	else {
+		color *=f;
 	}
 	color.a = 1.0;
    gl_FragColor = color;
