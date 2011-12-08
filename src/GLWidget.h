@@ -8,6 +8,7 @@
 #include <stdio.h>
 
 #include "Polygon.h"
+#include "Shapes.h"
 #include "Camera3d.h"
 #include "Heightmap.h"
 #include "TriangleMesh.h"

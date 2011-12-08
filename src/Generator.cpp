@@ -73,12 +73,12 @@ void Generator::chunk_at(int chunk_x, int chunk_z)
 			y -= 0.5;
 			
 			// 1.7 +- 0.3
-			float crater_cutoff = fuzzy_height(1.7, 0.4, x/4, z/4);
+			//float crater_cutoff = fuzzy_height(1.7, 0.4, x/4, z/4);
 			
 			// -0.1 +- 0.1
 			float sand_cutoff = fuzzy_height(-0.1, 0.1, x/4, z/4);
 			
-			if(y > crater_cutoff)
+			/*if(y > crater_cutoff)
 			{
 				y = (crater_cutoff*2) - y;
 				if(y <= 0.8)
@@ -94,8 +94,8 @@ void Generator::chunk_at(int chunk_x, int chunk_z)
 				{
 					color = Vec3(0.1, 0.4, 0.1);
 				}		
-			}
-			else if(y < -0.2)
+			}*/
+			if(y < -0.2)
 			{
 				y = y;
 				color = Vec3(.1,.4,.1);

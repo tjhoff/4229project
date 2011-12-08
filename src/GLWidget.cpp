@@ -161,7 +161,11 @@ void GLWidget::initializeGL()
 
 	
 	skybox = new Skybox();
-	LoadOBJ("tree.obj");
+	for (int i = 1; i<10; i++){
+		glNewList(i, GL_COMPILE);
+		tree();
+		glEndList();
+	}
 	m_map = new Map();
 	
 	change_current_chunk();
