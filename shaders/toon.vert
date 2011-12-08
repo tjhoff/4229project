@@ -15,8 +15,15 @@ void main()
 	N = gl_NormalMatrix * gl_Normal;
 	S = 0.0;
 	vec2 treecolor = vec2(.6,.4);
-	if (gl_Color.rg == treecolor) S = gl_Color.b+2.0;
-	if (gl_Vertex.y <= -.4) S = (-2.0)*gl_Vertex.y;
+	vec4 glcolor = gl_Color;
+	
+	if(glcolor.b < 0.001)
+	{
+		glcolor.b = 0.001;
+	}
+	
+	if (gl_Color.rg == treecolor) S = glcolor.b+2.0;
+	else if (gl_Vertex.y <= -.4) S = (-2.0)*gl_Vertex.y;
 	
 	gl_TexCoord[0] = gl_MultiTexCoord0;
 	gl_Position = ftransform();

@@ -23,15 +23,15 @@ void main()
       f = 0.1;
 	
    color = normalize(color);
-   if (S < 2.0 && S > 0.0 ) {
-   		color.b = S*.4;
-   		color -= S*.05;
-	}
-	else if (S!=0){
+   if (S >= 2.0){
 		color.rgb = vec3(0.3,.2+S-2.0,.1);
 		
 		color *= f;
 		
+	}
+   else if (S < 2.0 && S > 0.0 ) {
+   		color.b = S*.4;
+   		color -= S*.05;
 	}
 	else {
 		color *=f;

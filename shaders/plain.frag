@@ -2,6 +2,7 @@ uniform sampler2D texture;
 
 varying vec3 N;
 varying vec3 v;
+varying float S;
 
 void main(void)
 {
@@ -9,7 +10,7 @@ void main(void)
 	vec4 diffuse = gl_FrontLightProduct[0].diffuse * max(dot(N,L), 0.0);  
 	diffuse = clamp(diffuse, 0.0, 1.0); 
 	
-	float avg = (diffuse.x + diffuse.y + diffuse.z + diffuse.w)/4;
+	float avg = (diffuse.x + diffuse.y + diffuse.z + diffuse.w)/4.0;
 	if(avg < 0.25)
 	{
 		diffuse = vec4(0.25);
@@ -17,6 +18,12 @@ void main(void)
 	
 	vec4 color = (texture2D(texture, gl_TexCoord[0].st)) * diffuse;
 	color.a = 1.0;
+
+	if (S != 0.0 ) 
+	{
+		color.b = S*.4;
+		color -= .05;
+	}
 
 	gl_FragColor = color;
 }

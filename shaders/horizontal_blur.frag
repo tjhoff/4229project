@@ -1,7 +1,7 @@
 uniform sampler2D texture;
 varying vec2 texcoord;
  
-const float blurSize = 2.0/512.0; 
+const float blurSize = 1.0/512.0; 
  
 void main(void)
 {
