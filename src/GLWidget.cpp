@@ -166,6 +166,10 @@ void GLWidget::initializeGL()
 		tree();
 		glEndList();
 	}
+	glNewList(11, GL_COMPILE);
+	glColor3f(1.0,1.0,1.0);
+	sphere();
+	glEndList();
 	m_map = new Map();
 	
 	change_current_chunk();
@@ -314,7 +318,7 @@ void GLWidget::draw()
 	glRotatef(-cam->pitch, 1.0,0.0,0.0);
 	glRotatef(-cam->yaw, 0.0,1.0,0.0);
 	skybox->draw();
-	
+	lighting();
 	if(m_using_bloom && m_bloom_not_broken)
 	{	
 		glBindRenderbuffer(GL_RENDERBUFFER, m_depthBuf);
@@ -360,7 +364,7 @@ void GLWidget::draw()
 		}	
 	}
 	
-	lighting();
+	
 
 	glPushMatrix();
 	
@@ -413,10 +417,13 @@ void GLWidget::lighting()
 	float Diffuse[] = {m_diffuse, m_diffuse, m_diffuse, 1.0};
 	float Specular[] = {m_specular, m_specular, m_specular, 1.0};
 	float Position[] = {m_xpos, m_ypos, m_zpos, 0.0};
-	glBegin(GL_LINES);
-	glVertex3f(m_xpos, m_ypos, m_zpos);
-	glVertex3f(0,0,0);
-	glEnd();
+	glPushMatrix();
+	glTranslatef(m_xpos, m_ypos, m_zpos);
+	glDisable(GL_LIGHTING);
+	
+	glCallList(11);
+	glEnable(GL_LIGHTING);
+	glPopMatrix();
 	glLightfv(GL_LIGHT0, GL_AMBIENT , Ambient);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE , Diffuse);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, Specular);

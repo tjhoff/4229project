@@ -33,6 +33,36 @@ void cone(int segments){
 
 }
 
+void sphere(){
+	int inc = 5;
+	double x,y,z;
+	for (int ph = -90; ph<90;ph+=inc){
+		glBegin(GL_QUAD_STRIP);
+		//glVertex3f(sin((i)*3.14/180)/3, 0, cos((i)*3.14/180)/3);
+		for(int th = 0; th<=360; th+=(2*inc)){
+			//if (th == 180) glColor3f(1.0,0.0,0.0);
+			//else glColor3f(.4,.4,1.0);
+			x = sin(th * PI/180)*cos(ph * PI/180);
+			y = cos(th * PI/180)*cos(ph * PI/180);
+			z = sin(ph * PI/180);
+			
+			glNormal3f(x,y,z);
+			glVertex3f(x,y,z);
+			
+			x = sin(th * PI/180)*cos((ph+inc) * PI/180);
+			y = cos(th * PI/180)*cos((ph+inc) * PI/180);
+			z = sin((ph+inc) * PI/180);
+			
+			glNormal3f(x,y,z);
+			glVertex3f(x,y,z);
+			
+		}
+		glEnd();
+		
+
+	}
+}
+
 void tree(){
 	glScalef(.4,.4,.4);
 	glPushMatrix();

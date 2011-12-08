@@ -12,3 +12,5 @@ void cone(int segments);
 void tree();
 
 void treeRecurse(int level);
+
+void sphere();

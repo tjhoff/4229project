@@ -11,6 +11,7 @@ class Skybox{
 		GLuint front;
 		GLuint back;
 		GLuint top;
+		GLuint bottom;
 		void draw();
 
 

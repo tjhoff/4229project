@@ -29,8 +29,11 @@ void ParticleEngine::compile()
 
 void ParticleEngine::draw()
 {
+	glDisable(GL_TEXTURE_2D);
+	glColor3f(1,1,1);
 	for(int i = 0; i < m_particles.size(); i++)
 	{
 		m_particles[i]->draw();
 	}
+	glEnable(GL_TEXTURE_2D);
 }
